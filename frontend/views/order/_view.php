@@ -37,11 +37,11 @@ use common\models\Orders;
             <div class="row mb-5">
                 <div class="mb-3 mb-sm-0 col-md-6">
                     <h5 class="font-weight-bold">Bill From</h5>
-                    <p></p><span style="white-space: pre-line;"> </span>
+                    <p></p><span style="white-space: pre-line;"><?= $order_details->dealer->dealer_name ?> </span>
                 </div>
                 <div class="text-sm-right col-md-6">
                     <h5 class="font-weight-bold">Bill To</h5>
-                    <p></p><span style="white-space: pre-line;"> </span>
+                    <p></p><span style="white-space: pre-line;"><?= $order_details->dealer->distributor->dist_name ?> </span>
                 </div>
             </div>
             <div class="row">
@@ -61,34 +61,42 @@ use common\models\Orders;
                                 <th role="columnheader" scope="col" aria-colindex="4" class="">
                                     <div>Unit</div>
                                 </th>
+                                <th role="columnheader" scope="col" aria-colindex="4" class="">
+                                    <div>Quantity</div>
+                                </th>
                                 <th role="columnheader" scope="col" aria-colindex="5" class="">
                                     <div>Cost</div>
                                 </th>
                             </tr>
                         </thead>
                         <tbody role="rowgroup"><!---->
+                        <?php 
+                        $count=0 ;
+                        $total=0
+                        ?>
+                        <?php foreach($result as $key => $value) { ?>
+                             <?php 
+                             $count++;
+                             $total+=$value->amount;
+                              ?>
                             <tr role="row" class="">
-                                <td aria-colindex="1" role="cell" class=""></td>
-                                <td aria-colindex="2" role="cell" class=""></td>
-                                <td aria-colindex="3" role="cell" class=""></td>
-                                <td aria-colindex="4" role="cell" class=""></td>
-                                <td aria-colindex="5" role="cell" class=""></td>
+                                <td aria-colindex="1" role="cell" class=""><?= $count ?></td>
+                                <td aria-colindex="2" role="cell" class=""><?= $value->item_name ?></td>
+                                <td aria-colindex="3" role="cell" class=""><?= $value->rate?></td>
+                                <td aria-colindex="4" role="cell" class=""><?= $value->pack ?></td>
+                                <td aria-colindex="4" role="cell" class=""><?= $value->qty ?></td>
+                                <td aria-colindex="5" role="cell" class=""><?= $value->amount ?></td>
                             </tr>
-                            <tr role="row" class="">
-                                <td aria-colindex="1" role="cell" class=""></td>
-                                <td aria-colindex="2" role="cell" class=""></td>
-                                <td aria-colindex="3" role="cell" class=""></td>
-                                <td aria-colindex="4" role="cell" class=""></td>
-                                <td aria-colindex="5" role="cell" class=""></td>
-                            </tr><!----><!---->
+                            <?php } ?>
+                            
                         </tbody><!---->
                     </table>
                 </div>
                 <div class="col-md-12">
                     <div class="invoice-summary float-right">
-                        <p> Sub total: <span>44</span></p>
-                        <p> Vat: <span> 5.28 </span></p>
-                        <h5 class="font-weight-bold"> Grand Total: <span> 49.28 </span></h5>
+                        <!-- <p> Sub total: <span>44</span></p>
+                        <p> Vat: <span> 5.28 </span></p> -->
+                        <h5 class="font-weight-bold"> Grand Total: <span> <?= $total ?> </span></h5>
                     </div>
                 </div>
             </div>

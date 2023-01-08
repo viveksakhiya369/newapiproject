@@ -11,6 +11,7 @@ use Exception;
 use Yii;
 use yii\base\Model;
 use yii\bootstrap5\Modal;
+use yii\helpers\Url;
 use yii\web\Controller;
 
 class OrderController extends Controller{
@@ -54,13 +55,13 @@ class OrderController extends Controller{
                     if($flag){
                         $transaction->commit();
                         Yii::$app->session->setFlash("success","Your order placed successfully");
-                        return $this->redirect(Yii::$app->getUrlManager()->createUrl('order/index'));
+                        return $this->redirect(Url::to(['order/index','sent'=>true]));
                     }
                 }
             }
         }catch(Exception $e){
             Yii::$app->session->setFlash("error",$e->getMessage());
-            return $this->redirect(Yii::$app->getUrlManager()->createUrl('order/index'));
+            return $this->redirect(Url::to(['order/index','sent'=>true]));
         }
         return $this->render('create',[
             'model'=>$model,
@@ -84,7 +85,7 @@ class OrderController extends Controller{
         }
         $result=$orders->where(['orders.order_no'=>$order_no])->all();
         $oneorder=Orders::find()->joinWith(['dealer','dealer.distributor'])->where(['order_no'=>$order_no])->groupBy('order_no')->one();
-        echo'<pre>';print_r($oneorder);exit();
+        // echo'<pre>';print_r($oneorder);exit();
         return $this->render('_view',[
             'result'=>$result,
             'order_details'=>$oneorder,

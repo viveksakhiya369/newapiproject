@@ -100,7 +100,7 @@ use yii\web\View;
 
 </div>
 <?php
-
+$count=0;
 $this->registerJs('
 var count=0;
 $(".dynamicform_wrapper").on("beforeInsert", function(e, item) {
@@ -108,18 +108,25 @@ $(".dynamicform_wrapper").on("beforeInsert", function(e, item) {
 });
 
 $(".dynamicform_wrapper").on("afterInsert", function(e, item) {
+    '.$count++.'
+
+    console.log('.$count.')
     $(".select2").select2();
     count++;
-    $("#orders-"+count+"-item_id").change(function(){
-        getalldetails(count,$(this).val());
-    });
-    $("#orders-"+count+"-qty").keyup(function(){
-        var rate=$("#orders-"+count+"-rate").val();
-        var quantity=$(this).val();
-        var amount=quantity * rate;
-        $("#orders-"+count+"-amount").val(amount);
-    })
-    console.log(count);
+    for (let i = 0; i <= count; i++) {
+        $("#orders-"+i+"-item_id").change(function(){
+            getalldetails(i,$(this).val());
+        });
+        
+        $("#orders-"+i+"-qty").keyup(function(){
+            var rate=$("#orders-"+i+"-rate").val();
+            var quantity=$(this).val();
+            var amount=quantity * rate;
+            $("#orders-"+i+"-amount").val(amount);
+        })
+    }
+    
+     console.log(count);
     console.log("afterInsert");
 });
 

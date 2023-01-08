@@ -42,7 +42,7 @@ class OrdersSearch extends Orders
      */
     public function search($params)
     {
-        $query = Orders::find();
+        $query = Orders::find()->groupBy('order_no');
         if(!in_array(Yii::$app->user->identity->role_id,[User::SUPER_ADMIN])){
             if(isset($params['receieved'])&&($params['receieved']==1)){
                 if(Yii::$app->user->identity->role_id==User::DISTRIBUTOR){
