@@ -10,7 +10,7 @@ use yii\helpers\Url;
                         <div class="triangle"></div>
                     </li>
                     <?php if(in_array(Yii::$app->user->identity->role_id,[User::SUPER_ADMIN])){ ?>
-                    <li class="nav-item"><a class="nav-item-hold" href="<?php echo yii\helpers\Url::to(['user/index']) ?>"><i class="nav-icon i-Bar-Chart"></i><span class="nav-text">Manage Users</span></a>
+                    <li class="nav-item"><a class="nav-item-hold" href="<?php echo yii\helpers\Url::to(['user/index']) ?>"><i class="nav-icon i-Administrator"></i><span class="nav-text">Manage Users</span></a>
                         <div class="triangle"></div>
                     </li>
                     <?php } if(in_array(Yii::$app->user->identity->role_id,[User::SUPER_ADMIN])){ ?>
@@ -18,7 +18,7 @@ use yii\helpers\Url;
                         <div class="triangle"></div>
                     </li>
                     <?php } if(in_array(Yii::$app->user->identity->role_id,[User::SUPER_ADMIN,User::DISTRIBUTOR])) { ?>
-                     <li class="nav-item"><a class="nav-item-hold" href="<?php echo yii\helpers\Url::to(['dealer/index']) ?>"><i class="nav-icon i-Library"></i><span class="nav-text">Manage Dealers</span></a>
+                     <li class="nav-item"><a class="nav-item-hold" href="<?php echo yii\helpers\Url::to(['dealer/index']) ?>"><i class="nav-icon i-Affiliate"></i><span class="nav-text">Manage Dealers</span></a>
                         <div class="triangle"></div>
                     </li>
                     <?php } if(in_array(Yii::$app->user->identity->role_id,[User::SUPER_ADMIN])){  ?>
@@ -26,7 +26,7 @@ use yii\helpers\Url;
                         <div class="triangle"></div>
                     </li>
                     <?php } if(in_array(Yii::$app->user->identity->role_id,[User::SUPER_ADMIN,User::DISTRIBUTOR,User::SALES_PERSON,User::DEALER])) { ?>
-                    <li class="nav-item" data-item="widgets"><a class="nav-item-hold" href="<?php echo yii\helpers\Url::to(['order/index']) ?>"><i class="nav-icon i-Computer-Secure"></i><span class="nav-text">Manage Order</span></a>
+                    <li class="nav-item" data-item="widgets"><a class="nav-item-hold" href="<?php echo yii\helpers\Url::to(['order/index']) ?>"><i class="nav-icon i-Library"></i><span class="nav-text">Manage Order</span></a>
                         <div class="triangle"></div>
                     </li>
                     <?php }if(in_array(Yii::$app->user->identity->role_id,[User::SUPER_ADMIN])){ ?>
@@ -34,7 +34,7 @@ use yii\helpers\Url;
                         <div class="triangle"></div>
                     </li>
                     <?php } if(in_array(Yii::$app->user->identity->role_id,[User::SUPER_ADMIN,User::DEALER])){ ?>
-                    <li class="nav-item"><a class="nav-item-hold" href="<?php echo yii\helpers\Url::to(['karigar/index']) ?>"><i class="nav-icon i-Bar-Chart"></i><span class="nav-text">Manage Karigar</span></a>
+                    <li class="nav-item"><a class="nav-item-hold" href="<?php echo yii\helpers\Url::to(['karigar/index']) ?>"><i class="nav-icon i-Farmer"></i><span class="nav-text">Manage Karigar</span></a>
                         <div class="triangle"></div>
                     </li>
                     <?php } ?>
@@ -76,7 +76,9 @@ use yii\helpers\Url;
                     <?php if(in_array(Yii::$app->user->identity->role_id,[User::SUPER_ADMIN,User::SALES_PERSON,User::DISTRIBUTOR])) { ?>
                         <li class="nav-item"><a href="<?php echo yii\helpers\Url::to(['order/index','receieved'=>true]) ?>"><i class="nav-icon i-Clock-3"></i><span class="item-name">Received Oredrs</span></a></li>
                     <?php } ?>
+                    <?php if(in_array(Yii::$app->user->identity->role_id,[User::SALES_PERSON,User::DISTRIBUTOR,User::DEALER])) { ?>
                     <li class="nav-item"><a href="<?php echo yii\helpers\Url::to(['order/index','sent'=>true]) ?>"><i class="nav-icon i-Clock-4"></i><span class="item-name">Sent Orders</span></a></li>
+                    <?php } ?>
                 </ul>
                 
             </div>

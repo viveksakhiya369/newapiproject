@@ -107,4 +107,8 @@ class Orders extends \yii\db\ActiveRecord
         return $this->hasOne(Dealer::className(),['user_id'=>'parent_id']);
     }
 
+    public static function getDistributorId($user_id){
+        return Distributor::find()->where(['user_id'=>$user_id])->one()->dist_name;
+    }
+
 }

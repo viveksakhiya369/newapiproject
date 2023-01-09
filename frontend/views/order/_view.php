@@ -1,6 +1,8 @@
 <?php
 
 use common\models\Orders;
+// echo '<pre>';print_r($order_details);exit;
+// echo '<pre>';print_r();exit;
 
 ?>
 <div class="card"><!----><!---->
@@ -37,11 +39,11 @@ use common\models\Orders;
             <div class="row mb-5">
                 <div class="mb-3 mb-sm-0 col-md-6">
                     <h5 class="font-weight-bold">Bill From</h5>
-                    <p></p><span style="white-space: pre-line;"><?= $order_details->dealer->dealer_name ?> </span>
+                    <p></p><span style="white-space: pre-line;"><?= isset($order_details->dealer->dealer_name) ? $order_details->dealer->dealer_name : Orders::getDistributorId($order_details->parent_id)?> </span>
                 </div>
                 <div class="text-sm-right col-md-6">
                     <h5 class="font-weight-bold">Bill To</h5>
-                    <p></p><span style="white-space: pre-line;"><?= $order_details->dealer->distributor->dist_name ?> </span>
+                    <p></p><span style="white-space: pre-line;"><?= isset($order_details->dealer->distributor->dist_name) ? $order_details->dealer->distributor->dist_name : "Conwax"?> </span>
                 </div>
             </div>
             <div class="row">
