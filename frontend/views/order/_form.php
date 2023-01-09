@@ -1,6 +1,5 @@
 
 <?php
-
 use common\models\Products;
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
@@ -9,6 +8,7 @@ use yii\helpers\ArrayHelper;
 use yii\helpers\Url;
 use yii\web\View;
 
+$items=Products::find()->where(['status'=>Products::STATUS_ACTIVE])->asArray()->all();
 ?>
 
 <div class="customer-form">
@@ -20,7 +20,7 @@ use yii\web\View;
         'widgetContainer' => 'dynamicform_wrapper', // required: only alphanumeric characters plus "_" [A-Za-z0-9_]
         'widgetBody' => '.container-items', // required: css class selector
         'widgetItem' => '.item', // required: css class
-        'limit' => 10, // the maximum times, an element can be added (default 999)
+        'limit' => count($items), // the maximum times, an element can be added (default 999)
         'min' => 1, // 0 or 1 (default 1)
         'insertButton' => '.add-item', // css class
         'deleteButton' => '.remove-item', // css class
@@ -64,7 +64,7 @@ use yii\web\View;
                         ?>
                         <div class="row">
                             <div class="col-sm-4">
-                                <?= $form->field($modelAddress, "[{$i}]item_id")->dropDownList(ArrayHelper::map(Products::find()->where(['status'=>Products::STATUS_ACTIVE])->asArray()->all(),'id','item_name'),['prompt'=>"Select Products","class"=>"form-control select2"]) ?>
+                                <?= $form->field($modelAddress, "[{$i}]item_id")->dropDownList(ArrayHelper::map(Products::find()->where(['status'=>Products::STATUS_ACTIVE])->asArray()->all(),'id','item_name'),['prompt'=>"Select Products","class"=>"form-control select2 order-items"]) ?>
                             </div>
                             <div class="col-sm-4">
                                 <?= $form->field($modelAddress, "[{$i}]item_name")->textInput(['maxlength' => true,"readonly"=>true]) ?>
@@ -100,18 +100,16 @@ use yii\web\View;
 
 </div>
 <?php
-$count=0;
 $this->registerJs('
 var count=0;
+var count_items=1;
 $(".dynamicform_wrapper").on("beforeInsert", function(e, item) {
     console.log("beforeInsert");
 });
 
 $(".dynamicform_wrapper").on("afterInsert", function(e, item) {
-    '.$count++.'
-
-    console.log('.$count.')
     $(".select2").select2();
+    count_items++;
     count++;
     for (let i = 0; i <= count; i++) {
         $("#orders-"+i+"-item_id").change(function(){
@@ -125,9 +123,17 @@ $(".dynamicform_wrapper").on("afterInsert", function(e, item) {
             $("#orders-"+i+"-amount").val(amount);
         })
     }
+
+    for(let i=0;i<count_items;i++){
+        $("#orders-"+i+"-item_id").change(function(){
+            removevalue(this,$(this).val(),count_items,i);
+        });
+        if($("#orders-"+i+"-item_id").val()!=""){
+            this_times=count_items-1;
+            $("#orders-"+this_times+"-item_id option[value="+$("#orders-"+i+"-item_id").val()+"]").remove();
+        }
+    }
     
-     console.log(count);
-    console.log("afterInsert");
 });
 
 $(".dynamicform_wrapper").on("beforeDelete", function(e, item) {
@@ -156,6 +162,8 @@ $("#orders-0-qty").keyup(function(){
     $("#orders-0-amount").val(amount);
 });
 
+
+
 function getalldetails(count,product_id){
     $.post("'.Url::to(['ajax/get-product-details']).'",{
         product_id:product_id,
@@ -167,6 +175,23 @@ function getalldetails(count,product_id){
     })
 }
 
+function removevalue(currentObj,currentVal,total_object,current){
+    
+    for(i=0;i<total_object;i++){
+        console.log("removing from "+i);
+        if(i==current){
+            continue;
+        }
+        $("#orders-"+i+"-item_id option[value="+currentVal+"]").remove();
+    }
+    
+}
+
+
+
 ',View::POS_END);
 
 ?>
+<!-- <script>
+    $("#orders-0-item_id option[value='"+i+"']");
+</script> -->
