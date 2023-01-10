@@ -40,4 +40,30 @@ class CustomModel extends \yii\base\Model
 
         return $models;
     }
+
+    public static function createMultipleWithCustomArr($modelClass,$arr,$multipleModels = []){
+        $model    = new $modelClass;
+        $formName = $model->formName();
+        $post     = $arr;
+        $models   = [];
+
+        if (! empty($multipleModels)) {
+            $keys = array_keys(ArrayHelper::map($multipleModels, 'id', 'id'));
+            $multipleModels = array_combine($keys, $multipleModels);
+        }
+
+        if ($post && is_array($post)) {
+            foreach ($post as $i => $item) {
+                if (isset($item['id']) && !empty($item['id']) && isset($multipleModels[$item['id']])) {
+                    $models[] = $multipleModels[$item['id']];
+                } else {
+                    $models[] = new $modelClass;
+                }
+            }
+        }
+
+        unset($model, $formName, $post);
+
+        return $models;
+    }
 }

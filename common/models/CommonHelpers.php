@@ -2,6 +2,7 @@
 
 namespace common\models;
 
+use PHPUnit\Framework\Constraint\Count;
 use Yii;
 use Twilio\Rest\Client;
 
@@ -52,6 +53,11 @@ class CommonHelpers{
             $randomString .= $characters[rand(0, $charactersLength - 1)];
         }
         return $randomString;
+    }
+
+    public static function GenerateOrderNo(){
+        $orders=Orders::find()->all();
+        return count($orders)+1;
     }
 
     public static function sendOtp($model,$plain_password){

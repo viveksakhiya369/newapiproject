@@ -124,15 +124,15 @@ $(".dynamicform_wrapper").on("afterInsert", function(e, item) {
         })
     }
 
-    for(let i=0;i<count_items;i++){
-        $("#orders-"+i+"-item_id").change(function(){
-            removevalue(this,$(this).val(),count_items,i);
-        });
-        if($("#orders-"+i+"-item_id").val()!=""){
-            this_times=count_items-1;
-            $("#orders-"+this_times+"-item_id option[value="+$("#orders-"+i+"-item_id").val()+"]").remove();
-        }
-    }
+    // for(let i=0;i<count_items;i++){
+    //     $("#orders-"+i+"-item_id").change(function(){
+    //         removevalue(this,$(this).val(),count_items,i);
+    //     });
+    //     if($("#orders-"+i+"-item_id").val()!=""){
+    //         this_times=count_items-1;
+    //         $("#orders-"+this_times+"-item_id option[value="+$("#orders-"+i+"-item_id").val()+"]").remove();
+    //     }
+    // }
     
 });
 
@@ -144,6 +144,8 @@ $(".dynamicform_wrapper").on("beforeDelete", function(e, item) {
 });
 
 $(".dynamicform_wrapper").on("afterDelete", function(e) {
+    count_items--;
+    count--;
     console.log("Deleted item!");
 });
 
@@ -175,19 +177,17 @@ function getalldetails(count,product_id){
     })
 }
 
-function removevalue(currentObj,currentVal,total_object,current){
+// function removevalue(currentObj,currentVal,total_object,current){
     
-    for(i=0;i<total_object;i++){
-        console.log("removing from "+i);
-        if(i==current){
-            continue;
-        }
-        $("#orders-"+i+"-item_id option[value="+currentVal+"]").remove();
-    }
+//     for(i=0;i<total_object;i++){
+//         console.log("removing from "+i);
+//         if(i==current){
+//             continue;
+//         }
+//         $("#orders-"+i+"-item_id option[value="+currentVal+"]").remove();
+//     }
     
-}
-
-
+// }
 
 ',View::POS_END);
 

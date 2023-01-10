@@ -39,10 +39,25 @@ class OrderController extends Controller{
         try{
             $transaction=Yii::$app->db->beginTransaction();
             if(Yii::$app->request->isPost){
-                $model=CustomModel::createMultiple(Orders::className());
-                CustomModel::loadMultiple($model,Yii::$app->request->post());
+                $arr = Yii::$app->request->post('Orders');
+                $new_arr = array();
+                foreach($arr AS $item) {
+                  if(isset($new_arr[$item['item_id']])) {
+                    $new_arr[$item['item_id']]['qty'] += $item['qty'];
+                    $new_arr[$item['item_id']]['amount'] += $item['amount'];
+                    continue;
+                  }
+                
+                  $new_arr[$item['item_id']] = $item;
+                }
+                
+                $arr = array_values($new_arr);
+                $post_data[$model[0]->formName()]=$arr;
+                $model=CustomModel::createMultipleWithCustomArr(Orders::className(),$arr);
+                CustomModel::loadMultiple($model,$post_data);
                 if(CustomModel::validateMultiple($model)){
-                    $order_no=CommonHelpers::randomStringGenerate(6,true);
+                    $order_no=CommonHelpers::GenerateOrderNo();
+                    // echo'<pre>';print_r($order_no);exit();
                     foreach($model as $key=>$onemodel){
                         $onemodel->parent_id=Yii::$app->user->identity->id;
                         $onemodel->order_no=$order_no;
