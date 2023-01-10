@@ -25,49 +25,49 @@ use function PHPSTORM_META\type;
                                 <form>
                                     <div class="row">
                                         <div class="col-md-6 form-group mb-3">
-                                            <?= $form->field($model,'item_group')->textInput(['class' => 'form-control','placeholder'=>'Enter Your Mobile Number']) ?>
+                                            <?= $form->field($model,'item_group')->textInput(['class' => 'form-control','placeholder'=>'Enter Item Group']) ?>
                                         </div>
                                         <div class="col-md-6 form-group mb-3">
-                                            <?= $form->field($model,'item_name')->textInput(['class' => 'form-control','placeholder'=>'Enter Your Email']) ?>
+                                            <?= $form->field($model,'item_name')->textInput(['class' => 'form-control','placeholder'=>'Enter Item Name']) ?>
                                         </div>
                                         <div class="col-md-6 form-group mb-3">
-                                            <?= $form->field($model,'size')->textInput(['class' => 'form-control','placeholder'=>'Enter Your Dealer Name']) ?>
+                                            <?= $form->field($model,'size')->textInput(['class' => 'form-control','placeholder'=>'Enter Size of Item']) ?>
                                         </div>
                                         <div class="col-md-6 form-group mb-3">
-                                            <?= $form->field($model,'pack')->textInput(['class' => 'form-control','placeholder'=>'Enter Your Address']) ?>
+                                            <?= $form->field($model,'pack')->textInput(['class' => 'form-control','placeholder'=>'Enter Pack size']) ?>
                                         </div>
                                         <div class="col-md-6 form-group mb-3">
-                                            <?= $form->field($model,'unit')->textInput(['class' => 'form-control','placeholder'=>'Enter Your Address']) ?>
+                                            <?= $form->field($model,'unit')->textInput(['class' => 'form-control','placeholder'=>'Enter Unit of Item']) ?>
                                         </div>
                                         <div class="col-md-6 form-group mb-3">
-                                            <?= $form->field($model,'point')->textInput(['class' => 'form-control','placeholder'=>'Enter Your Address','type'=>'number']) ?>
+                                            <?= $form->field($model,'point')->textInput(['class' => 'form-control','placeholder'=>'Enter Points per Item','type'=>'number']) ?>
                                         </div>
                                         <div class="col-md-6 form-group mb-3">
-                                            <?= $form->field($model,'hsn')->textInput(['class' => 'form-control','placeholder'=>'Enter Your Taluka']) ?>
+                                            <?= $form->field($model,'hsn')->textInput(['class' => 'form-control','placeholder'=>'Enter HSN of Item']) ?>
                                         </div>
                                         <div class="col-md-6 form-group mb-3">
-                                            <?= $form->field($model,'barcode')->textInput(['class' => 'form-control','placeholder'=>'Enter Your GST NO']) ?>
+                                            <?= $form->field($model,'barcode')->textInput(['class' => 'form-control','placeholder'=>'Enter Barcode of Item']) ?>
                                         </div>
                                         <div class="col-md-6 form-group mb-3">
-                                            <?= $form->field($model,'tax')->textInput(['class' => 'form-control','placeholder'=>'Enter Your Pan','type'=>'number']) ?>
+                                            <?= $form->field($model,'tax')->textInput(['class' => 'form-control','placeholder'=>'Enter Tax in Percentage','type'=>'number']) ?>
                                         </div>
                                         <div class="col-md-6 form-group mb-3">
-                                            <?= $form->field($model,'purchase_rate')->textInput(['class' => 'form-control','placeholder'=>'Enter Your Owner Name','type'=>'number']) ?>
+                                            <?= $form->field($model,'purchase_rate')->textInput(['class' => 'form-control','placeholder'=>'Enter Purchase Rate','type'=>'number']) ?>
                                         </div>
                                         <div class="col-md-6 form-group mb-3">
-                                            <?= $form->field($model,'mrp')->textInput(['class' => 'form-control','placeholder'=>'Enter Your Owner Name','type'=>'number']) ?>
+                                            <?= $form->field($model,'mrp')->textInput(['class' => 'form-control','placeholder'=>'Enter MRP of Item','type'=>'number']) ?>
                                         </div>
                                         <div class="col-md-6 form-group mb-3">
-                                            <?= $form->field($model,'discount')->textInput(['class' => 'form-control','placeholder'=>'Enter Your Owner Name','type'=>'number']) ?>
+                                            <?= $form->field($model,'discount')->textInput(['class' => 'form-control','placeholder'=>'Enter Discount in Percentage','type'=>'number']) ?>
                                         </div>
                                         <div class="col-md-6 form-group mb-3">
-                                            <?= $form->field($model,'minimum_stock')->textInput(['class' => 'form-control','placeholder'=>'Enter Your Owner Name','type'=>'number']) ?>
+                                            <?= $form->field($model,'minimum_stock')->textInput(['class' => 'form-control','placeholder'=>'Enter Minimum Stock','type'=>'number']) ?>
                                         </div>
                                         <div class="col-md-6 form-group mb-3">
-                                            <?= $form->field($model,'order_level')->textInput(['class' => 'form-control','placeholder'=>'Enter Your Owner Name','type'=>'number']) ?>
+                                            <?= $form->field($model,'order_level')->textInput(['class' => 'form-control','placeholder'=>'Enter Order Level','type'=>'number']) ?>
                                         </div>
                                         <div class="col-md-6 form-group mb-3">
-                                            <?= $form->field($model,'personal_code')->textInput(['class' => 'form-control','placeholder'=>'Enter Your Owner Name']) ?>
+                                            <?= $form->field($model,'personal_code')->textInput(['class' => 'form-control','placeholder'=>'Enter Personal Code']) ?>
                                         </div>
                                         <div class="col-md-12">
                                         <?php echo Html::submitButton("Submit", ['class' => 'btn btn-primary', 'id' => 'submit-dealer']); ?>
