@@ -18,6 +18,7 @@ class AppAsset extends AssetBundle
         'css/select2.min.css',
         'https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.2.1/css/fontawesome.min.css',
         'https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css',
+        'https://code.jquery.com/ui/1.12.1/themes/smoothness/jquery-ui.css',
     ];
     public $js = [
         // 'dist-assets/js/plugins/jquery-3.3.1.min.js',
@@ -30,7 +31,8 @@ class AppAsset extends AssetBundle
         'dist-assets/js/scripts/dashboard.v1.script.min.js',
         'dist-assets/js/scripts/customizer.script.min.js',
         'dist-assets/js/select2.min.js',
-        'https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js'
+        'https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js',
+        'https://code.jquery.com/ui/1.12.1/jquery-ui.js'
     ];
     public $depends = [
         'yii\web\YiiAsset',

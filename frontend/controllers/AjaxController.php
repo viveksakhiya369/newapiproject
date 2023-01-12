@@ -37,4 +37,8 @@ class AjaxController extends Controller{
         return json_encode(Products::find()->where(['id'=>Yii::$app->request->post('product_id')])->asArray()->one());
     }
 
+    public function actionGetProductList(){
+        return json_encode(Products::find()->where(['like','item_name',Yii::$app->request->post('item_val')])->asArray()->all());
+    }
+
 }

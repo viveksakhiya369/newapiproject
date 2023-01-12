@@ -7,6 +7,7 @@ use wbraganca\dynamicform\DynamicFormWidget;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Url;
 use yii\web\View;
+use kartik\select2\Select2;
 
 $items=Products::find()->where(['status'=>Products::STATUS_ACTIVE])->asArray()->all();
 ?>
@@ -38,18 +39,11 @@ $items=Products::find()->where(['status'=>Products::STATUS_ACTIVE])->asArray()->
     ]); ?>
 
     <div class="panel panel-default">
-        <div class="panel-heading">
-            <h4>
-                <i class="glyphicon glyphicon-envelope"></i> Orders
-                <button type="button" class="add-item btn btn-success btn-sm pull-right"><i class="text-20 i-Add"></i></button>
-            </h4>
-        </div>
         <div class="panel-body">
             <div class="container-items"><!-- widgetBody -->
             <?php foreach ($model as $i => $modelAddress): ?>
                 <div class="item panel panel-default"><!-- widgetItem -->
                     <div class="panel-heading">
-                        <h3 class="panel-title float-left">Order</h3>
                         <div class="float-right">
                             <button type="button" class="remove-item btn btn-danger btn-sm"><i class="text-20 i-Remove"></i></button>
                         </div>
@@ -63,27 +57,26 @@ $items=Products::find()->where(['status'=>Products::STATUS_ACTIVE])->asArray()->
                             }
                         ?>
                         <div class="row">
-                            <div class="col-sm-4">
-                                <?= $form->field($modelAddress, "[{$i}]item_id")->dropDownList(ArrayHelper::map(Products::find()->where(['status'=>Products::STATUS_ACTIVE])->asArray()->all(),'id','item_name'),['prompt'=>"Select Products","class"=>"form-control select2 order-items"]) ?>
+                            <div class="col-sm-2">
+                                <?= $form->field($modelAddress, "[{$i}]item_new_id")->textInput(['class' => 'form-control', 'autocomplete' => "off", "onkeyup" => "getCompany(this);", "minimumInputLength" => 1]); ?>
+                                <?= $form->field($modelAddress, "[{$i}]item_id",['template' => "{input}\n{error}"])->hiddenInput(['class' => 'form-control']); ?>
                             </div>
-                            <div class="col-sm-4">
+                            <div class="col-sm-2">
                                 <?= $form->field($modelAddress, "[{$i}]item_name")->textInput(['maxlength' => true,"readonly"=>true]) ?>
                             </div>
-                            <div class="col-sm-4">
+                            <div class="col-sm-2">
                                 <?= $form->field($modelAddress, "[{$i}]qty")->textInput(['maxlength' => true,'type'=>'number']) ?>
                             </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-sm-4">
+                       
+                            <div class="col-sm-2">
                                 <?= $form->field($modelAddress, "[{$i}]pack")->textInput(['maxlength' => true,"readonly"=>true]) ?>
                             </div>
-                            <div class="col-sm-4">
+                            <div class="col-sm-2">
                                 <?= $form->field($modelAddress, "[{$i}]rate")->textInput(['maxlength' => true,"readonly"=>true]) ?>
                             </div>
-                            <div class="col-sm-4">
+                            <div class="col-sm-2">
                                 <?= $form->field($modelAddress, "[{$i}]amount")->textInput(['maxlength' => true,"readonly"=>true]) ?>
                             </div>
-                        </div><!-- .row -->
                     </div>
                 </div>
             <?php endforeach; ?>
@@ -92,8 +85,11 @@ $items=Products::find()->where(['status'=>Products::STATUS_ACTIVE])->asArray()->
     </div><!-- .panel -->
     <?php DynamicFormWidget::end(); ?>
 
-    <div class="form-group">
-        <?= Html::submitButton($modelAddress->isNewRecord ? 'Create' : 'Update', ['class' => 'btn btn-primary']) ?>
+    <div class="row">   
+        <div class="form-group">
+            <?= Html::submitButton($modelAddress->isNewRecord ? 'Create' : 'Update', ['class' => 'btn btn-primary']) ?>
+            <button type="button" class="add-item btn btn-success btn-sm pull-right"><i class="text-20 i-Add"></i></button>
+        </div>
     </div>
 
     <?php ActiveForm::end(); ?>
@@ -192,6 +188,30 @@ function getalldetails(count,product_id){
 ',View::POS_END);
 
 ?>
-<!-- <script>
-    $("#orders-0-item_id option[value='"+i+"']");
-</script> -->
+<script>
+    function getCompany(currentObj){
+        $.post('<?= Url::to(['ajax/get-product-list']) ?>',{
+            item_val:$(currentObj).val(),
+        },function(data){
+            var response=JSON.parse(data);
+            var option_value=[];
+            $(response).each(function(index,element){
+                var obj=[];
+                obj['id'] = element['id'];
+                obj['value'] = element['item_name'];
+                obj['data'] = element['item_name'];
+                obj['label'] = element['item_name'];
+                option_value.push(obj);
+            });
+            var target_id=$(currentObj).attr('id').replace("_new","");
+            console.log(target_id)
+            $(currentObj).autocomplete({
+                source : option_value,
+                select: function (event, ui) {
+                        $('#' + target_id).val(ui.item.id);
+                        getalldetails(count,ui.item.id);
+                    },
+            })
+        })
+    }
+</script>

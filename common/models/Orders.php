@@ -24,6 +24,8 @@ use Yii;
  */
 class Orders extends \yii\db\ActiveRecord
 {
+    public $item_new_id;
+
     const STATUS_QUEUED=1;
     const STATUS_INPROGRESS=2;
     const STATUS_APPROVED=3;
@@ -50,8 +52,9 @@ class Orders extends \yii\db\ActiveRecord
     {
         return [
             [['item_id', 'item_name', 'qty', 'pack', 'rate', 'amount'], 'required'],
+            [['item_new_id'],'required','message'=>'Please select Product'],
             [['parent_id', 'order_no', 'item_id', 'qty', 'rate', 'amount', 'status', 'created_by', 'updated_by'], 'integer'],
-            [['created_dt', 'updated_dt'], 'safe'],
+            [['created_dt', 'updated_dt','item_new_id'], 'safe'],
             [['item_name', 'pack'], 'string', 'max' => 255],
         ];
     }
@@ -72,6 +75,7 @@ class Orders extends \yii\db\ActiveRecord
             'rate' => 'Rate',
             'amount' => 'Amount',
             'status' => 'Status',
+            'item_new_id'=>'Item Id',
             'created_dt' => 'Created Dt',
             'created_by' => 'Created By',
             'updated_dt' => 'Updated Dt',
