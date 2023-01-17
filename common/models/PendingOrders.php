@@ -5,43 +5,34 @@ namespace common\models;
 use Yii;
 
 /**
- * This is the model class for table "orders".
+ * This is the model class for table "pending_orders".
  *
  * @property int $id
+ * @property int $old_order_id
  * @property int $parent_id
  * @property int $order_no
  * @property int $item_id
  * @property string $item_name
  * @property int $qty
+ * @property int $order_qty
  * @property string $pack
  * @property int $rate
  * @property int $amount
+ * @property int $salesman_id
  * @property int $status
  * @property string $created_dt
  * @property int $created_by
  * @property string $updated_dt
  * @property int $updated_by
  */
-class Orders extends \yii\db\ActiveRecord
+class PendingOrders extends \yii\db\ActiveRecord
 {
-
-    const STATUS_QUEUED=1;
-    const STATUS_INPROGRESS=2;
-    const STATUS_APPROVED=3;
-    const STATUS_DELIVERED=4;
-    const STATUS_REJECTED=5;
-
-    const STATUS_QUEUED_LABEL="Queued";
-    const STATUS_INPROGRESS_LABEL="Inprogress";
-    const STATUS_APPROVED_LABEL="Approved";
-    const STATUS_DELIVERED_LABEL="Delivered";
-    const STATUS_REJECTED_LABEL="Rejected";
     /**
      * {@inheritdoc}
      */
     public static function tableName()
     {
-        return 'orders';
+        return 'pending_orders';
     }
 
     /**
@@ -50,9 +41,8 @@ class Orders extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['item_id', 'qty','tax','rate', 'discount', 'amount'], 'required'],
-            // [['item_new_id'],'required','message'=>'Please select Product'],
-            [['parent_id', 'order_no', 'item_id', 'qty', 'rate', 'amount', 'status', 'created_by', 'updated_by'], 'integer'],
+            [['old_order_id', 'parent_id', 'order_no', 'item_id', 'item_name', 'qty', 'order_qty', 'pack', 'rate', 'amount', 'salesman_id', 'status', 'created_dt', 'created_by', 'updated_dt', 'updated_by'], 'required'],
+            [['old_order_id', 'parent_id', 'order_no', 'item_id', 'qty', 'order_qty', 'rate', 'amount', 'salesman_id', 'status', 'created_by', 'updated_by'], 'integer'],
             [['created_dt', 'updated_dt'], 'safe'],
             [['item_name', 'pack'], 'string', 'max' => 255],
         ];
@@ -65,16 +55,18 @@ class Orders extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
+            'old_order_id' => 'Old Order ID',
             'parent_id' => 'Parent ID',
             'order_no' => 'Order No',
             'item_id' => 'Item ID',
             'item_name' => 'Item Name',
             'qty' => 'Qty',
+            'order_qty' => 'Order Qty',
             'pack' => 'Pack',
             'rate' => 'Rate',
             'amount' => 'Amount',
+            'salesman_id' => 'Salesman ID',
             'status' => 'Status',
-            'item_new_id'=>'Item Id',
             'created_dt' => 'Created Dt',
             'created_by' => 'Created By',
             'updated_dt' => 'Updated Dt',
@@ -96,22 +88,4 @@ class Orders extends \yii\db\ActiveRecord
             return false;
         }
     }
-
-    public function getUser(){
-        return $this->hasOne(User::className(),['user_id'=>'parent_id']);
-    }
-
-
-    public function getSalesman(){
-        return $this->hasOne(Salesman::className(),['user_id'=>'parent_id']);
-    }
-
-    public function getDealer(){
-        return $this->hasOne(Dealer::className(),['user_id'=>'parent_id']);
-    }
-
-    public static function getDistributorId($user_id){
-        return Distributor::find()->where(['user_id'=>$user_id])->one()->dist_name;
-    }
-
 }

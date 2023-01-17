@@ -3,6 +3,7 @@
 use common\models\City;
 use common\models\CommonHelpers;
 use common\models\Distributor;
+use common\models\Orders;
 use common\models\States;
 use common\models\User;
 use yii\grid\GridView;
@@ -65,24 +66,32 @@ use yii\helpers\Url;
                                     'format'=>'html',
                                     'label'=>'Status',
                                     'value'=> function($data){
-                                        if($data->status==Distributor::STATUS_ACTIVE){
+                                        if($data->status==Orders::STATUS_APPROVED){
 
-                                            return '<a class="badge badge-success m-2" href="#">Active</a>';
-                                        }else if($data->status==Distributor::STATUS_INACTIVE){
-                                            return '<a class="badge badge-danger m-2" href="#">Inactive</a>';
+                                            return '<a class="badge badge-success m-2" href="#">'.Orders::STATUS_APPROVED_LABEL.'</a>';
+                                        }else if($data->status==Orders::STATUS_QUEUED){
+                                            return '<a class="badge badge-danger m-2" href="#">'.Orders::STATUS_QUEUED_LABEL.'</a>';
                                         }
                                     }
                                 ],
                                 [
                                     'class' => 'yii\grid\ActionColumn',
                                     'header' => "Action",
-                                    'template' => ' {view} ',
+                                    'template' => ' {view} {update} ',
                                     'buttons'=>[
                                         'view'=>function($url,$model,$key){
                                             return Html::a('<i class="text-20 i-Eye"></i>',Url::to(['order/view','order_no'=>$model->order_no]),[
                                                 'title'=>'view',
                                             ]);
                                         },
+                                        'update'=>function($url,$model,$key){
+                                            if((Yii::$app->request->get('receieved')) && in_array(Yii::$app->user->identity->role_id,[User::DISTRIBUTOR,User::SUPER_ADMIN])){
+
+                                                return Html::a('<i class="text-20 i-Pen-3"></i>',Url::to(['order/update','order_no'=>$model->order_no]),[
+                                                    'title'=>'update',
+                                                ]);
+                                            }
+                                        }
                                     ]
                                 ],
                             ]

@@ -5,6 +5,7 @@ namespace frontend\controllers;
 use common\models\City;
 use common\models\CommonHelpers;
 use common\models\Products;
+use common\models\User;
 use Yii;
 use yii\web\Controller;
 use yii\helpers\ArrayHelper;
@@ -34,7 +35,9 @@ class AjaxController extends Controller{
     }
 
     public function actionGetProductDetails(){
-        return json_encode(Products::find()->where(['id'=>Yii::$app->request->post('product_id')])->asArray()->one());
+        $products=Products::find()->where(['id'=>Yii::$app->request->post('product_id')])->asArray()->one();
+        $products['current_rate']=(Yii::$app->user->identity->role_id==User::DISTRIBUTOR) ? $products['wholesale_rate'] : $products['dealer_rate'];
+        return json_encode($products);
     }
 
     public function actionGetProductList(){

@@ -6,6 +6,7 @@ use common\models\CommonHelpers;
 use common\models\CustomModel;
 use common\models\Orders;
 use common\models\OrdersSearch;
+use common\models\PendingOrders;
 use common\models\User;
 use Exception;
 use Yii;
@@ -39,6 +40,7 @@ class OrderController extends Controller{
         try{
             $transaction=Yii::$app->db->beginTransaction();
             if(Yii::$app->request->isPost){
+                // echo'<pre>';print_r(Yii::$app->request->post());exit();
                 $arr = Yii::$app->request->post('Orders');
                 $new_arr = array();
                 foreach($arr AS $item) {
@@ -55,6 +57,7 @@ class OrderController extends Controller{
                 $post_data[$model[0]->formName()]=$arr;
                 $model=CustomModel::createMultipleWithCustomArr(Orders::className(),$arr);
                 CustomModel::loadMultiple($model,$post_data);
+                // echo'<pre>';print_r($model);exit();
                 if(CustomModel::validateMultiple($model)){
                     $order_no=CommonHelpers::GenerateOrderNo();
                     // echo'<pre>';print_r($order_no);exit();
@@ -105,6 +108,46 @@ class OrderController extends Controller{
             'result'=>$result,
             'order_details'=>$oneorder,
         ]);
+    }
+
+    public function actionUpdate($order_no){
+        $model=$this->findAllOrders($order_no);
+        if(Yii::$app->request->isPost){
+            $new_order=Yii::$app->request->post('Orders');
+            foreach($new_order as $new_key => $new_val){
+                if($new_val['qty']!=$model[$new_key]->qty){
+                    $new_val['qty']=$model[$new_key]->qty-$new_val['qty'];
+                    $new_val['amount']=$model[$new_key]->amount-$new_val['amount'];
+                    $pending_order=new PendingOrders();
+                    $pending_order->old_order_id=$model[$new_key]->id;
+                    $pending_order->parent_id=$model[$new_key]->id;
+                    $pending_order->order_no=$model[$new_key]->order_no;
+                    $pending_order->item_id=$model[$new_key]->item_id;
+                    $pending_order->item_name=$model[$new_key]->item_name;
+                    $pending_order->qty=$new_val['qty'];
+                    $pending_order->order_qty=$model[$new_key]->qty;
+                    $pending_order->pack=$model[$new_key]->pack;
+                    $pending_order->rate=$model[$new_key]->rate;
+                    $pending_order->amount=$new_val['amount'];
+                    $pending_order->salesman_id=$model[$new_key]->salesman_id;
+                    $pending_order->status=Orders::STATUS_REJECTED;
+                    $pending_order->save(false);
+                    $model[$new_key]->qty=$model[$new_key]->qty-$pending_order->qty;
+                    $model[$new_key]->amount=$model[$new_key]->amount-$pending_order->amount;
+                }
+                $model[$new_key]->status=Orders::STATUS_APPROVED;
+                $model[$new_key]->save(false);
+            }
+            Yii::$app->session->setFlash("success","order has been updated successfully");
+            return $this->redirect(Url::to(['order/index','receieved'=>true]));
+        }
+        return $this->render('update',[
+            'model'=>$model,
+        ]);
+    }
+
+    private function findAllOrders($order_no){
+        return Orders::find()->where(['order_no'=>$order_no])->all();
     }
 
 }

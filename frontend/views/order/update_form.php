@@ -58,11 +58,10 @@ $items=Products::find()->where(['status'=>Products::STATUS_ACTIVE])->asArray()->
                         ?>
                         <div class="row">
                             <div class="col-sm-2">
-                                <?= $form->field($modelAddress, "[{$i}]item_id")->dropDownList(ArrayHelper::map(Products::find()->where(['status'=>Products::STATUS_ACTIVE])->all(),'id','item_name'),["prompt"=>"Select Items",'class' => 'form-control select2']); ?>
-                                <?= $form->field($modelAddress, "[{$i}]item_name",['template'=>'{input}'])->hiddenInput(['maxlength' => true]) ?>
+                                <?= $form->field($modelAddress, "[{$i}]item_name")->textInput(['maxlength' => true,"readonly"=>true]) ?>
                             </div>
                             <div class="col-sm-2">
-                                <?= $form->field($modelAddress, "[{$i}]qty")->textInput(['maxlength' => true,'type'=>'number']) ?>
+                                <?= $form->field($modelAddress, "[{$i}]qty")->textInput(['maxlength' => true,'type'=>'number','min' => 1, 'max' => $modelAddress->qty]) ?>
                                 <?= $form->field($modelAddress, "[{$i}]pack",['template'=>'{input}'])->hiddenInput(['maxlength' => true]) ?>
                             </div>
                             <div class="col-sm-2">
@@ -114,14 +113,6 @@ $(".dynamicform_wrapper").on("afterInsert", function(e, item) {
         });
         
         $("#orders-"+i+"-qty").keyup(function(){
-            var rate=$("#orders-"+i+"-rate").val();
-            var quantity=$(this).val();
-            var amount=quantity * rate;
-            var tax=($("#orders-"+i+"-tax").val()*amount)/100;
-            amount=amount+tax;
-            $("#orders-"+i+"-amount").val(amount);
-        })
-        $("#orders-"+i+"-qty").change(function(){
             var rate=$("#orders-"+i+"-rate").val();
             var quantity=$(this).val();
             var amount=quantity * rate;
