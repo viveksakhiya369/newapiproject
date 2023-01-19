@@ -44,7 +44,7 @@ class KarigarSearch extends karigar
     public function search($params)
     {
 
-        $query = karigar::find()->joinWith(['user','city','state','dealer'])->where(['!=','karigar.status',Karigar::STATUS_DELETED]);
+        $query = karigar::find()->joinWith(['user','city','state','dealer'])->where(['!=','karigar.status',Karigar::STATUS_DELETED])->orderBy(['karigar.id'=>SORT_DESC]);
 
         if(Yii::$app->user->identity->role_id==User::DEALER){
             $query->where(['karigar.parent_id'=>Dealer::getDealerId(Yii::$app->user->identity->id)]);

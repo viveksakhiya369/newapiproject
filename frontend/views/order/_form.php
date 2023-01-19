@@ -151,8 +151,31 @@ $(".dynamicform_wrapper").on("beforeDelete", function(e, item) {
 });
 
 $(".dynamicform_wrapper").on("afterDelete", function(e) {
+    $(".select2").select2();
     count_items--;
     count--;
+    for (let i = 0; i <= count; i++) {
+        $("#orders-"+i+"-item_id").change(function(){
+            getalldetails(i,$(this).val());
+        });
+        
+        $("#orders-"+i+"-qty").keyup(function(){
+            var rate=$("#orders-"+i+"-rate").val();
+            var quantity=$(this).val();
+            var amount=quantity * rate;
+            var tax=($("#orders-"+i+"-tax").val()*amount)/100;
+            amount=amount+tax;
+            $("#orders-"+i+"-amount").val(amount);
+        })
+        $("#orders-"+i+"-qty").change(function(){
+            var rate=$("#orders-"+i+"-rate").val();
+            var quantity=$(this).val();
+            var amount=quantity * rate;
+            var tax=($("#orders-"+i+"-tax").val()*amount)/100;
+            amount=amount+tax;
+            $("#orders-"+i+"-amount").val(amount);
+        })
+    }
     console.log("Deleted item!");
 });
 
@@ -173,7 +196,14 @@ $("#orders-0-qty").keyup(function(){
     $("#orders-0-amount").val(amount);
 });
 
-
+$("#orders-0-qty").change(function(){
+    var rate=$("#orders-0-rate").val();
+    var quantity=$(this).val();
+    var amount=quantity * rate;
+    var tax=($("#orders-0-tax").val()*amount)/100;
+    amount=amount+tax;
+    $("#orders-0-amount").val(amount);
+});
 
 function getalldetails(count,product_id){
     $.post("'.Url::to(['ajax/get-product-details']).'",{

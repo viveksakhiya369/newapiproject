@@ -97,7 +97,7 @@ use yii\widgets\Pjax;
                 [
                     'class' => 'yii\grid\ActionColumn',
                     'header' => "Action",
-                    'template' => ' {view} {update} {transport} ',
+                    'template' => ' {view} {update} {transport} {delete} ',
                     'buttons' => [
                         'view' => function ($url, $model, $key) {
                             return Html::a('<i class="text-20 i-Eye"></i>', Url::to(['order/view', 'order_no' => $model->order_no]), [
@@ -105,9 +105,9 @@ use yii\widgets\Pjax;
                             ]);
                         },
                         'update' => function ($url, $model, $key) {
-                            if ((Yii::$app->request->get('receieved')) && in_array(Yii::$app->user->identity->role_id, [User::DISTRIBUTOR, User::SUPER_ADMIN])) {
+                            if ( in_array(Yii::$app->user->identity->role_id, [User::DISTRIBUTOR, User::SUPER_ADMIN]) && ($model->status!=Orders::STATUS_APPROVED)) {
 
-                                return Html::a('<i class="text-20 i-Pen-3"></i>', Url::to(['order/update', 'order_no' => $model->order_no]), [
+                                return Html::a('<i class="text-20 i-Pen-3"></i>', (Yii::$app->request->get('receieved')) ? Url::to(['order/update', 'order_no' => $model->order_no]) : Url::to(['order/send-update','order_no'=>$model->order_no]), [
                                     'title' => 'update',
                                 ]);
                             }
@@ -116,10 +116,21 @@ use yii\widgets\Pjax;
                             if ((Yii::$app->request->get('receieved')) && in_array(Yii::$app->user->identity->role_id, [User::DISTRIBUTOR, User::SUPER_ADMIN])) {
                                 $transport=Transport::find()->where(['order_no'=>$model->order_no])->one();
                                 if(isset($transport)){
-                                    return Html::tag('span', '<i class="text-20 i-Pen-3"></i>', ['class' => 'transport-show','value'=>Url::to(['transport/update','order_no' => $model->order_no]), 'style' => 'color : blue;']);
+                                    return Html::tag('span', '<i class="text-20 i-Jeep"></i>', ['class' => 'transport-show','value'=>Url::to(['transport/update','order_no' => $model->order_no]), 'style' => 'color : blue;']);
                                 }else{
-                                    return Html::tag('span', '<i class="text-20 i-Pen-3"></i>', ['class' => 'transport-show','value'=>Url::to(['transport/create','order_no' => $model->order_no]), 'style' => 'color : blue;']);
+                                    return Html::tag('span', '<i class="text-20 i-Jeep"></i>', ['class' => 'transport-show','value'=>Url::to(['transport/create','order_no' => $model->order_no]), 'style' => 'color : blue;']);
                                 }
+                            }
+                        },
+                        'delete' => function($url,$model,$key){
+                            if($model->status!=Orders::STATUS_APPROVED){
+                                return Html::a('<i class="text-20 i-Delete-File"></i>',Url::to(['order/delete','order_no'=>$model->order_no]),[
+                                    'title'=>'delete',
+                                    'data'=>[
+                                        'confirm'=>'Delete confirm?',
+                                        'method'=>'post',
+                                    ]
+                                ]);
                             }
                         }
                     ]

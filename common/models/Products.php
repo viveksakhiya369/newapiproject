@@ -18,6 +18,8 @@ use Yii;
  * @property string $barcode
  * @property int $tax
  * @property int $purchase_rate
+ * @property int $wholesale_rate
+ * @property int $dealer_rate
  * @property int $mrp
  * @property int $discount
  * @property int $minimum_stock
@@ -50,8 +52,8 @@ class Products extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['item_group', 'item_name', 'size', 'pack', 'unit', 'point', 'hsn', 'barcode', 'tax', 'purchase_rate', 'mrp', 'discount', 'minimum_stock', 'order_level', 'personal_code'], 'required'],
-            [['point', 'tax', 'purchase_rate', 'mrp', 'discount', 'minimum_stock', 'order_level', 'status', 'created_by', 'updated_by'], 'integer'],
+            [['item_group', 'item_name', 'size', 'pack', 'unit', 'point', 'hsn', 'barcode', 'tax', 'purchase_rate','wholesale_rate','dealer_rate', 'mrp', 'discount', 'minimum_stock', 'order_level', 'personal_code'], 'required'],
+            [['point', 'tax', 'purchase_rate','wholesale_rate','dealer_rate', 'mrp', 'discount', 'minimum_stock', 'order_level', 'status', 'created_by', 'updated_by'], 'integer'],
             [['created_dt', 'updated_dt'], 'safe'],
             [['item_group', 'item_name', 'size', 'pack', 'unit', 'hsn', 'barcode', 'personal_code'], 'string', 'max' => 255],
         ];
@@ -74,6 +76,8 @@ class Products extends \yii\db\ActiveRecord
             'barcode' => 'Barcode',
             'tax' => 'Tax%',
             'purchase_rate' => 'Purchase Rate',
+            'wholesale_rate'=> 'Distributor Rate',
+            'dealer_rate'=> 'Dealer Rate',
             'mrp' => 'Mrp',
             'discount' => 'Discount%',
             'minimum_stock' => 'Minimum Stock',
@@ -100,5 +104,9 @@ class Products extends \yii\db\ActiveRecord
         } else {
             return false;
         }
+    }
+
+    public function getTaxName(){
+        return $this->hasOne(TaxMaster::className(),['id'=>'tax']);
     }
 }

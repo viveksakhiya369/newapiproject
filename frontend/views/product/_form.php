@@ -7,6 +7,7 @@ use common\models\User;
 use yii\helpers\ArrayHelper;
 use common\models\States;
 use common\models\City;
+use common\models\TaxMaster;
 
 use function PHPSTORM_META\type;
 
@@ -49,10 +50,16 @@ use function PHPSTORM_META\type;
                                             <?= $form->field($model,'barcode')->textInput(['class' => 'form-control','placeholder'=>'Enter Barcode of Item']) ?>
                                         </div>
                                         <div class="col-md-6 form-group mb-3">
-                                            <?= $form->field($model,'tax')->textInput(['class' => 'form-control','placeholder'=>'Enter Tax in Percentage','type'=>'number']) ?>
+                                            <?= $form->field($model,'tax')->dropDownList(ArrayHelper::map(TaxMaster::find()->where(['!=','status',TaxMaster::STATUS_DELETED])->all(),'id','name'),['class'=>'select2 form-control','id'=>'tax-drop','prompt'=>'Select Tax']) ?>
                                         </div>
                                         <div class="col-md-6 form-group mb-3">
                                             <?= $form->field($model,'purchase_rate')->textInput(['class' => 'form-control','placeholder'=>'Enter Purchase Rate','type'=>'number']) ?>
+                                        </div>
+                                        <div class="col-md-6 form-group mb-3">
+                                            <?= $form->field($model,'wholesale_rate')->textInput(['class' => 'form-control','placeholder'=>'Enter Distributor Rate','type'=>'number']) ?>
+                                        </div>
+                                        <div class="col-md-6 form-group mb-3">
+                                            <?= $form->field($model,'dealer_rate')->textInput(['class' => 'form-control','placeholder'=>'Enter Dealer Rate','type'=>'number']) ?>
                                         </div>
                                         <div class="col-md-6 form-group mb-3">
                                             <?= $form->field($model,'mrp')->textInput(['class' => 'form-control','placeholder'=>'Enter MRP of Item','type'=>'number']) ?>

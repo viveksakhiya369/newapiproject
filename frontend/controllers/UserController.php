@@ -43,7 +43,7 @@ class UserController extends Controller{
 
     public function usersearch($params){
         
-        $query=User::find();
+        $query=User::find()->orderBy(['id'=>SORT_DESC]);
 
         $dataProvider= new ActiveDataProvider([
             'query'=>$query,

@@ -42,16 +42,17 @@ class OrdersSearch extends Orders
      */
     public function search($params)
     {
-        $query = Orders::find()->groupBy('order_no');
+        $query = Orders::find()->andWhere(['!=','status',Orders::STATUS_DELETED])->groupBy('order_no')->orderBy(['orders.id'=>SORT_DESC]);
         if(!in_array(Yii::$app->user->identity->role_id,[User::SUPER_ADMIN])){
             if(isset($params['receieved'])&&($params['receieved']==1)){
                 if(Yii::$app->user->identity->role_id==User::DISTRIBUTOR){
                     $query->joinWith(['dealer','dealer.distributor']);
-                    $query->where(['distributor.user_id'=>Yii::$app->user->identity->id]);
+                    $query->andWhere(['distributor.user_id'=>Yii::$app->user->identity->id]);
                 }
             }
             if(isset($params['sent'])&&($params['sent']==1)){
-                $query->where(['orders.parent_id'=>Yii::$app->user->identity->id]);
+                $query->andWhere(['orders.parent_id'=>Yii::$app->user->identity->id]);
+                        
             }
         }
 
@@ -61,7 +62,11 @@ class OrdersSearch extends Orders
             'query' => $query,
         ]);
 
-        $this->load($params);
+        // $this->load($params);
+        $this->load(Yii::$app->request->post());
+        $query->andFilterWhere(['or',['like','orders.order_no',$this->search],
+        ['like','orders.status',$this->search],
+        ]);
 
         if (!$this->validate()) {
             // uncomment the following line if you do not want to return any records when validation fails
@@ -87,7 +92,6 @@ class OrdersSearch extends Orders
         $query->andFilterWhere(['like', 'order_no', $this->order_no])
             ->andFilterWhere(['like', 'item_name', $this->item_name])
             ->andFilterWhere(['like', 'pack', $this->pack]);
-
         return $dataProvider;
     }
 }

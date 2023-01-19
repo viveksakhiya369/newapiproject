@@ -74,7 +74,7 @@ use yii\helpers\Url;
                 <!--</ul> -->
                 <ul class="childNav" data-parent="widgets">
                     <?php if(in_array(Yii::$app->user->identity->role_id,[User::SUPER_ADMIN,User::SALES_PERSON,User::DISTRIBUTOR])) { ?>
-                        <li class="nav-item"><a href="<?php echo yii\helpers\Url::to(['order/index','receieved'=>true]) ?>"><i class="nav-icon i-Clock-3"></i><span class="item-name">Received Oredrs</span></a></li>
+                        <li class="nav-item"><a href="<?php echo yii\helpers\Url::to(['order/index','receieved'=>true]) ?>"><i class="nav-icon i-Clock-3"></i><span class="item-name">Received Orders</span></a></li>
                     <?php } ?>
                     <?php if(in_array(Yii::$app->user->identity->role_id,[User::SALES_PERSON,User::DISTRIBUTOR,User::DEALER])) { ?>
                     <li class="nav-item"><a href="<?php echo yii\helpers\Url::to(['order/index','sent'=>true]) ?>"><i class="nav-icon i-Clock-4"></i><span class="item-name">Sent Orders</span></a></li>

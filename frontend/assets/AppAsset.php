@@ -22,7 +22,7 @@ class AppAsset extends AssetBundle
     ];
     public $js = [
         // 'dist-assets/js/plugins/jquery-3.3.1.min.js',
-        // 'dist-assets/js/plugins/bootstrap.bundle.min.js',
+        'dist-assets/js/plugins/bootstrap.bundle.min.js',
         'dist-assets/js/plugins/perfect-scrollbar.min.js',
         'dist-assets/js/scripts/script.min.js',
         'dist-assets/js/scripts/sidebar.large.script.min.js',

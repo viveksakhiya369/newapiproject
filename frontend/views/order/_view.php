@@ -7,7 +7,9 @@ use common\models\Orders;
 ?>
 <div class="card"><!----><!---->
     <div class="card-body"><!----><!---->
-        <div class="d-sm-flex mb-5"><span class="m-auto"></span><button type="button" class="btn btn-outline-danger mr-3 mb-3">Back To Invoices</button><button type="button" class="btn btn-outline-danger mr-3 mb-3">Edit Invoice</button><button type="button" class="btn btn-primary mr-3 mb-3">print Invoice</button></div>
+        <div class="d-sm-flex mb-5"><span class="m-auto"></span><button type="button" class="btn btn-outline-danger mr-3 mb-3">Back</button>
+        <!-- <button type="button" class="btn btn-outline-danger mr-3 mb-3">Edit Invoice</button> -->
+        <button type="button" class="btn btn-primary mr-3 mb-3">print Invoice</button></div>
         <div id="print-area" class="print-area">
             <div class="row">
                 <div class="col-md-6">
@@ -39,11 +41,13 @@ use common\models\Orders;
             <div class="row mb-5">
                 <div class="mb-3 mb-sm-0 col-md-6">
                     <h5 class="font-weight-bold">Bill From</h5>
-                    <p></p><span style="white-space: pre-line;"><?= isset($order_details->dealer->dealer_name) ? $order_details->dealer->dealer_name : Orders::getDistributorId($order_details->parent_id)?> </span>
+                    <h4 class="font-weight-bold"><span style="white-space: pre-line;"><?= isset($order_details->dealer->dealer_name) ? $order_details->dealer->dealer_name : Orders::getDistributorId($order_details->parent_id)?> </span></h4>
+                    <p>Address:<span style="white-space: pre-line;"><?= isset($order_details->dealer->address) ? $order_details->dealer->dealer_name : Orders::getDistributorAddress($order_details->parent_id)?> </span></p>
                 </div>
                 <div class="text-sm-right col-md-6">
                     <h5 class="font-weight-bold">Bill To</h5>
-                    <p></p><span style="white-space: pre-line;"><?= isset($order_details->dealer->distributor->dist_name) ? $order_details->dealer->distributor->dist_name : "Conwax"?> </span>
+                    <h4 class="font-weight-bold"><span style="white-space: pre-line;"><?= isset($order_details->dealer->distributor->dist_name) ? $order_details->dealer->distributor->dist_name : "Conwax"?> </span></h4>
+                    <p>Address:<span style="white-space: pre-line;"><?= isset($order_details->dealer->distributor->dist_name) ? $order_details->dealer->distributor->address : "Sitaram Complex,<br> Kothariya Solvent Main Road,<br> Kothariya, Rajkot"?> </span></p>
                 </div>
             </div>
             <div class="row">
@@ -67,18 +71,20 @@ use common\models\Orders;
                                     <div>Quantity</div>
                                 </th>
                                 <th role="columnheader" scope="col" aria-colindex="5" class="">
-                                    <div>Cost</div>
+                                    <div>Rate</div>
                                 </th>
                             </tr>
                         </thead>
                         <tbody role="rowgroup"><!---->
                         <?php 
                         $count=0 ;
-                        $total=0
+                        $total=0;
+                        $qty_total=0;
                         ?>
                         <?php foreach($result as $key => $value) { ?>
                              <?php 
                              $count++;
+                             $qty_total+=$value->qty;
                              $total+=$value->amount;
                               ?>
                             <tr role="row" class="">
@@ -90,7 +96,12 @@ use common\models\Orders;
                                 <td aria-colindex="5" role="cell" class=""><?= $value->amount ?></td>
                             </tr>
                             <?php } ?>
-                            
+                            <tr role="row" class="">
+                                <td role="cell" class="" colspan="3"></td>
+                                <td role="cell" class="font-weight-bold">Total:</td>
+                                <td role="cell" class="font-weight-bold"><?= $qty_total ?></td>
+                                <td role="cell" class="font-weight-bold"><?= $total ?></td>
+                            </tr>
                         </tbody><!---->
                     </table>
                 </div>
@@ -98,7 +109,7 @@ use common\models\Orders;
                     <div class="invoice-summary float-right">
                         <!-- <p> Sub total: <span>44</span></p>
                         <p> Vat: <span> 5.28 </span></p> -->
-                        <h5 class="font-weight-bold"> Grand Total: <span> <?= $total ?> </span></h5>
+                        <!-- <h5 class="font-weight-bold"> Grand Total: <span>  </span></h5> -->
                     </div>
                 </div>
             </div>

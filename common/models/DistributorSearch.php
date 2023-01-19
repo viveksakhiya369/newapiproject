@@ -43,7 +43,7 @@ class DistributorSearch extends Distributor
      */
     public function search($params)
     {
-        $query = Distributor::find()->joinWith(['user','city','state'])->where(['!=','distributor.status',Distributor::STATUS_DELETED]);
+        $query = Distributor::find()->joinWith(['user','city','state'])->where(['!=','distributor.status',Distributor::STATUS_DELETED])->orderBy(['distributor.id'=>SORT_DESC]);
 
         // add conditions that should always apply here
 

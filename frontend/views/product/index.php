@@ -101,7 +101,7 @@ use yii\helpers\Url;
                                     'format'=>'html',
                                     'label'=>'Tax',
                                     'value'=> function($data){
-                                        return $data->tax;
+                                        return $data->taxName->name;
                                     }
                                 ],
                                 [
@@ -110,6 +110,22 @@ use yii\helpers\Url;
                                     'label'=>'Purchase Rate',
                                     'value'=> function($data){
                                         return $data->purchase_rate;
+                                    }
+                                ],
+                                [
+                                    'attribute'=>'wholesale_rate',
+                                    'format'=>'html',
+                                    'label'=>'Distributor Rate',
+                                    'value'=> function($data){
+                                        return $data->wholesale_rate;
+                                    }
+                                ],
+                                [
+                                    'attribute'=>'dealer_rate',
+                                    'format'=>'html',
+                                    'label'=>'Dealer Rate',
+                                    'value'=> function($data){
+                                        return $data->dealer_rate;
                                     }
                                 ],
                                 [

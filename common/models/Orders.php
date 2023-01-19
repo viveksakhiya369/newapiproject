@@ -30,6 +30,7 @@ class Orders extends \yii\db\ActiveRecord
     const STATUS_APPROVED=3;
     const STATUS_DELIVERED=4;
     const STATUS_REJECTED=5;
+    const STATUS_DELETED=9;
 
     const STATUS_QUEUED_LABEL="Queued";
     const STATUS_INPROGRESS_LABEL="Inprogress";
@@ -112,6 +113,9 @@ class Orders extends \yii\db\ActiveRecord
 
     public static function getDistributorId($user_id){
         return Distributor::find()->where(['user_id'=>$user_id])->one()->dist_name;
+    }
+    public static function getDistributorAddress($user_id){
+        return Distributor::find()->where(['user_id'=>$user_id])->one()->address;
     }
 
 }

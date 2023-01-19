@@ -41,7 +41,7 @@ class ProductSearch extends Products
      */
     public function search($params)
     {
-        $query = Products::find()->where(['!=','products.status',Products::STATUS_DELETED]);
+        $query = Products::find()->joinWith('taxName')->where(['!=','products.status',Products::STATUS_DELETED])->orderBy(['products.id'=>SORT_DESC]);
 
         // add conditions that should always apply here
 
@@ -62,13 +62,13 @@ class ProductSearch extends Products
             ['like','barcode',$this->search],
             ['like','personal_code',$this->search],
             ['like','point',$this->search],
-            ['like','tax',$this->search],
+            ['like',TaxMaster::tableName().'.name',$this->search],
             ['like','purchase_rate',$this->search],
             ['like','mrp',$this->search],
             ['like','discount',$this->search],
             ['like','minimum_stock',$this->search],
             ['like','order_level',$this->search],
-            ['like','status',$this->search],
+            ['like',$this::tableName().'.status',$this->search],
         ]);
         }
 

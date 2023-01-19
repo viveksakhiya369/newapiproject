@@ -75,7 +75,7 @@ $items=Products::find()->where(['status'=>Products::STATUS_ACTIVE])->asArray()->
                                 <?= $form->field($modelAddress, "[{$i}]amount")->textInput(['maxlength' => true,"readonly"=>true]) ?>
                             </div>
                             <div class="col-sm-2">
-                                <?= $form->field($modelAddress, "[{$i}]discount")->textInput(['maxlength' => true,"readonly"=>true]) ?>
+                                <?= $form->field($modelAddress, "[{$i}]discount")->textInput(['maxlength' => true]) ?>
                             </div>
                     </div>
                 </div>
@@ -87,7 +87,7 @@ $items=Products::find()->where(['status'=>Products::STATUS_ACTIVE])->asArray()->
 
     <div class="row">   
         <div class="form-group">
-            <?= Html::submitButton($modelAddress->isNewRecord ? 'Create' : 'Update', ['class' => 'btn btn-primary']) ?>
+            <?= Html::submitButton($modelAddress->isNewRecord ? 'Create' : 'Confirm Order', ['class' => 'btn btn-primary']) ?>
             <button type="button" class="add-item btn btn-success btn-sm pull-right"><i class="text-20 i-Add"></i></button>
         </div>
     </div>
