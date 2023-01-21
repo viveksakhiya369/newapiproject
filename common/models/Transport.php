@@ -37,7 +37,7 @@ class Transport extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['driver_name', 'vehicle_number'], 'required'],
+            [['driver_name', 'vehicle_number','transpotation_id'], 'required'],
             [['order_no', 'status', 'created_by', 'updated_by'], 'integer'],
             [['driver_name', 'vehicle_number','order_no','transpotation_id','status','created_dt', 'updated_dt'], 'safe'],
             [['transpotation_id', 'driver_name', 'vehicle_number'], 'string', 'max' => 255],

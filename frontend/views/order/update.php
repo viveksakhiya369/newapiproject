@@ -19,13 +19,16 @@ use yii\web\View;
 
 foreach($model as $i => $val){
     $this->registerJs('
+        var old_discount'.$i.'='.$val->discount.';
+        var old_amount'.$i.'='.$val->amount.';
         $("#orders-'.$i.'-qty").keyup(function(){
             var rate=$("#orders-'.$i.'-rate").val();
             var quantity=$(this).val();
             var amount=quantity * rate;
             var tax=($("#orders-'.$i.'-tax").val()*amount)/100;
             amount=amount+tax;
-            $("#orders-'.$i.'-amount").val(amount);
+            amount=amount-($("#orders-'.$i.'-discount").val()*amount)/100;
+            $("#orders-'.$i.'-amount").val(parseInt(amount));
         });
         $("#orders-'.$i.'-qty").change(function(){
             var rate=$("#orders-'.$i.'-rate").val();
@@ -33,7 +36,46 @@ foreach($model as $i => $val){
             var amount=quantity * rate;
             var tax=($("#orders-'.$i.'-tax").val()*amount)/100;
             amount=amount+tax;
-            $("#orders-'.$i.'-amount").val(amount);
+            amount=amount-($("#orders-'.$i.'-discount").val()*amount)/100;
+            $("#orders-'.$i.'-amount").val(parseInt(amount));
+        })
+        $("#over_dis").keyup(function(){
+            if($(this).val()!=""){
+
+                $("#orders-'.$i.'-overall_discount").val($(this).val());
+                var rate=$("#orders-'.$i.'-rate").val();
+                var quantity=$("#orders-'.$i.'-qty").val();
+                var amount=quantity * rate;
+                var tax=($("#orders-'.$i.'-tax").val()*amount)/100;
+                amount=amount+tax;
+                amount=amount-($(this).val()*amount)/100;
+                $("#orders-'.$i.'-amount").val(parseInt(amount));
+                $("#orders-'.$i.'-discount").val($(this).val())
+            }else{
+                $("#orders-'.$i.'-amount").val('.$val->amount.');
+                $("#orders-'.$i.'-discount").val('.$val->discount.');
+                $("#orders-'.$i.'-qty").val('.$val->qty.');
+            }
+
+        })
+        $("#over_dis").change(function(){
+            if($(this).val()!=""){
+
+                $("#orders-'.$i.'-overall_discount").val($(this).val());
+                var rate=$("#orders-'.$i.'-rate").val();
+                var quantity=$("#orders-'.$i.'-qty").val();
+                var amount=quantity * rate;
+                var tax=($("#orders-'.$i.'-tax").val()*amount)/100;
+                amount=amount+tax;
+                amount=amount-($(this).val()*amount)/100;
+                $("#orders-'.$i.'-amount").val(parseInt(amount));
+                $("#orders-'.$i.'-discount").val($(this).val())
+            }else{
+                $("#orders-'.$i.'-amount").val('.$val->amount.');
+                $("#orders-'.$i.'-discount").val('.$val->discount.');
+                $("#orders-'.$i.'-qty").val('.$val->qty.');
+            }
+
         })
     ',View::POS_END);
 }

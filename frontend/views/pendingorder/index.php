@@ -78,7 +78,7 @@ use yii\widgets\Pjax;
                     //     return (User::findOne( $data->orders->parent_id)->role_id==User::DEALER);
                     // },
                     'value' => function ($data) {
-                        return isset($data->dealer->dealer_name) ? $data->dealer->dealer_name : "-";
+                        return isset($data->order->dealer->dealer_name) ? $data->order->dealer->dealer_name : "-";
                     }
                 ],
                 [

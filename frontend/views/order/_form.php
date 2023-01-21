@@ -125,8 +125,8 @@ $(".dynamicform_wrapper").on("afterInsert", function(e, item) {
             getTotalQtyAmt();
         })
         $("#orders-"+i+"-qty").change(function(){
-            getTotalQtyAmt();
             getCalculate(i);
+            getTotalQtyAmt();
         })
     }
 
@@ -172,13 +172,13 @@ $("#orders-0-item_id").change(function(){
 });
 
 $("#orders-0-qty").keyup(function(){
-    getTotalQtyAmt();
     getCalculate(0)
+    getTotalQtyAmt();
 });
 
 $("#orders-0-qty").change(function(){
-    getTotalQtyAmt();
     getCalculate(0)
+    getTotalQtyAmt();
 });
 
 function getCalculate(i){

@@ -88,4 +88,8 @@ class PendingOrders extends \yii\db\ActiveRecord
             return false;
         }
     }
+
+    public function getOrder(){
+        return $this->hasOne(Orders::className(),['id'=>'parent_id']);
+    }
 }

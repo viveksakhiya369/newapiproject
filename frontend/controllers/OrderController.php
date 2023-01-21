@@ -150,6 +150,11 @@ class OrderController extends Controller
                     $model[$new_key]->qty = $model[$new_key]->qty - $pending_order->qty;
                     $model[$new_key]->amount = $model[$new_key]->amount - $pending_order->amount;
                 }
+                else if($new_val['amount'] != $model[$new_key]->amount){
+                    $model[$new_key]->amount=isset($new_val['amount']) ? $new_val['amount'] : 0;
+                    $model[$new_key]->overall_discount=isset($new_val['overall_discount']) ? $new_val['overall_discount'] : 0;
+                    $model[$new_key]->discount=isset($new_val['discount']) ? $new_val['discount'] : 0;
+                }
                 $model[$new_key]->status = Orders::STATUS_APPROVED;
                 $model[$new_key]->save(false);
             }

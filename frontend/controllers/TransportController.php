@@ -70,8 +70,9 @@ class TransportController extends Controller{
         $model= new Transport();
             if(Yii::$app->request->isPost){
                 if($model->load(Yii::$app->request->post()) && $model->validate()){
+                    // echo'<pre>';print_r($model);exit();
                     $model->order_no=$order_no;
-                    $model->transpotation_id=$order_no;
+                    //$model->transpotation_id=$order_no;
                     $model->status=Transport::STATUS_ACTIVE;
                     if($model->save()){
                         Yii::$app->session->setFlash('success','Transportation details are saved!');
