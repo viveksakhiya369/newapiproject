@@ -35,7 +35,7 @@ class AjaxController extends Controller{
     }
 
     public function actionGetProductDetails(){
-        $products=Products::find()->where(['id'=>Yii::$app->request->post('product_id')])->asArray()->one();
+        $products=Products::find()->joinWith('taxName')->where([Products::tableName().'.id'=>Yii::$app->request->post('product_id')])->asArray()->one();
         $products['current_rate']=(Yii::$app->user->identity->role_id==User::DISTRIBUTOR) ? $products['wholesale_rate'] : $products['dealer_rate'];
         return json_encode($products);
     }

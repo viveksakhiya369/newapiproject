@@ -101,7 +101,7 @@ use yii\helpers\Url;
                                     'format'=>'html',
                                     'label'=>'Tax',
                                     'value'=> function($data){
-                                        return $data->taxName->name;
+                                        return $data->taxName->name.'-'.$data->taxName->percentage.'%';
                                     }
                                 ],
                                 [

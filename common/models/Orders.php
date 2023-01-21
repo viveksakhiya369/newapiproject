@@ -53,7 +53,7 @@ class Orders extends \yii\db\ActiveRecord
         return [
             [['item_id', 'qty','tax','rate', 'discount', 'amount'], 'required'],
             // [['item_new_id'],'required','message'=>'Please select Product'],
-            [['parent_id', 'order_no', 'item_id', 'qty', 'rate', 'amount', 'status', 'created_by', 'updated_by'], 'integer'],
+            [['parent_id', 'order_no', 'item_id', 'qty', 'rate', 'status', 'created_by', 'updated_by'], 'integer'],
             [['created_dt', 'updated_dt'], 'safe'],
             [['item_name', 'pack'], 'string', 'max' => 255],
         ];
@@ -73,6 +73,8 @@ class Orders extends \yii\db\ActiveRecord
             'qty' => 'Qty',
             'pack' => 'Pack',
             'rate' => 'Rate',
+            'tax'=>'Tax%',
+            'discount'=>'Discount%',
             'amount' => 'Amount',
             'status' => 'Status',
             'item_new_id'=>'Item Id',

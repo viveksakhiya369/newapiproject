@@ -21,7 +21,7 @@ $items=Products::find()->where(['status'=>Products::STATUS_ACTIVE])->asArray()->
         'widgetContainer' => 'dynamicform_wrapper', // required: only alphanumeric characters plus "_" [A-Za-z0-9_]
         'widgetBody' => '.container-items', // required: css class selector
         'widgetItem' => '.item', // required: css class
-        'limit' => count($items), // the maximum times, an element can be added (default 999)
+        'limit' => max(count($items),100), // the maximum times, an element can be added (default 999)
         'min' => 1, // 0 or 1 (default 1)
         'insertButton' => '.add-item', // css class
         'deleteButton' => '.remove-item', // css class
@@ -62,7 +62,7 @@ $items=Products::find()->where(['status'=>Products::STATUS_ACTIVE])->asArray()->
                                 <?= $form->field($modelAddress, "[{$i}]item_name",['template'=>'{input}'])->hiddenInput(['maxlength' => true]) ?>
                             </div>
                             <div class="col-sm-2">
-                                <?= $form->field($modelAddress, "[{$i}]qty")->textInput(['maxlength' => true,'type'=>'number']) ?>
+                                <?= $form->field($modelAddress, "[{$i}]qty")->textInput(['maxlength' => true,'type'=>'number','class'=>'item-qty form-control']) ?>
                                 <?= $form->field($modelAddress, "[{$i}]pack",['template'=>'{input}'])->hiddenInput(['maxlength' => true]) ?>
                             </div>
                             <div class="col-sm-2">
@@ -73,7 +73,7 @@ $items=Products::find()->where(['status'=>Products::STATUS_ACTIVE])->asArray()->
                                 <?= $form->field($modelAddress, "[{$i}]rate")->textInput(['maxlength' => true,"readonly"=>true]) ?>
                             </div>
                             <div class="col-sm-2">
-                                <?= $form->field($modelAddress, "[{$i}]amount")->textInput(['maxlength' => true,"readonly"=>true]) ?>
+                                <?= $form->field($modelAddress, "[{$i}]amount")->textInput(['maxlength' => true,"readonly"=>true,'class'=>'item-amt form-control']) ?>
                             </div>
                             <div class="col-sm-2">
                                 <?= $form->field($modelAddress, "[{$i}]discount")->textInput(['maxlength' => true,"readonly"=>true]) ?>
@@ -90,6 +90,8 @@ $items=Products::find()->where(['status'=>Products::STATUS_ACTIVE])->asArray()->
         <div class="form-group">
             <?= Html::submitButton($modelAddress->isNewRecord ? 'Create' : 'Update', ['class' => 'btn btn-primary']) ?>
             <button type="button" class="add-item btn btn-success btn-sm pull-right"><i class="text-20 i-Add"></i></button>
+            <div class="float-right col-md-2">Total Quantity:<input type="number" id="total_qty" class="form-control"></div>
+            <div class="float-right col-md-2">Total Amount:<input type="number" id="total_amt" class="form-control"></div>
         </div>
     </div>
 
@@ -98,6 +100,8 @@ $items=Products::find()->where(['status'=>Products::STATUS_ACTIVE])->asArray()->
 </div>
 <?php
 $this->registerJs('
+var total_amt=0;
+var total_qty=0;
 var count=0;
 var count_items=1;
 $(".dynamicform_wrapper").on("beforeInsert", function(e, item) {
@@ -108,38 +112,24 @@ $(".dynamicform_wrapper").on("afterInsert", function(e, item) {
     $(".select2").select2();
     count_items++;
     count++;
+    $("#orders-"+count+"-qty").blur(function(){
+        getTotalQtyAmt()
+    })
     for (let i = 0; i <= count; i++) {
         $("#orders-"+i+"-item_id").change(function(){
             getalldetails(i,$(this).val());
         });
         
         $("#orders-"+i+"-qty").keyup(function(){
-            var rate=$("#orders-"+i+"-rate").val();
-            var quantity=$(this).val();
-            var amount=quantity * rate;
-            var tax=($("#orders-"+i+"-tax").val()*amount)/100;
-            amount=amount+tax;
-            $("#orders-"+i+"-amount").val(amount);
+            getCalculate(i);
+            getTotalQtyAmt();
         })
         $("#orders-"+i+"-qty").change(function(){
-            var rate=$("#orders-"+i+"-rate").val();
-            var quantity=$(this).val();
-            var amount=quantity * rate;
-            var tax=($("#orders-"+i+"-tax").val()*amount)/100;
-            amount=amount+tax;
-            $("#orders-"+i+"-amount").val(amount);
+            getTotalQtyAmt();
+            getCalculate(i);
         })
     }
 
-    // for(let i=0;i<count_items;i++){
-    //     $("#orders-"+i+"-item_id").change(function(){
-    //         removevalue(this,$(this).val(),count_items,i);
-    //     });
-    //     if($("#orders-"+i+"-item_id").val()!=""){
-    //         this_times=count_items-1;
-    //         $("#orders-"+this_times+"-item_id option[value="+$("#orders-"+i+"-item_id").val()+"]").remove();
-    //     }
-    // }
     
 });
 
@@ -154,26 +144,20 @@ $(".dynamicform_wrapper").on("afterDelete", function(e) {
     $(".select2").select2();
     count_items--;
     count--;
+    getTotalQtyAmt();
     for (let i = 0; i <= count; i++) {
         $("#orders-"+i+"-item_id").change(function(){
             getalldetails(i,$(this).val());
+            getTotalQtyAmt();
         });
         
         $("#orders-"+i+"-qty").keyup(function(){
-            var rate=$("#orders-"+i+"-rate").val();
-            var quantity=$(this).val();
-            var amount=quantity * rate;
-            var tax=($("#orders-"+i+"-tax").val()*amount)/100;
-            amount=amount+tax;
-            $("#orders-"+i+"-amount").val(amount);
+            getCalculate(i);
+            getTotalQtyAmt();
         })
         $("#orders-"+i+"-qty").change(function(){
-            var rate=$("#orders-"+i+"-rate").val();
-            var quantity=$(this).val();
-            var amount=quantity * rate;
-            var tax=($("#orders-"+i+"-tax").val()*amount)/100;
-            amount=amount+tax;
-            $("#orders-"+i+"-amount").val(amount);
+            getCalculate(i);
+            getTotalQtyAmt();
         })
     }
     console.log("Deleted item!");
@@ -188,75 +172,62 @@ $("#orders-0-item_id").change(function(){
 });
 
 $("#orders-0-qty").keyup(function(){
-    var rate=$("#orders-0-rate").val();
-    var quantity=$(this).val();
-    var amount=quantity * rate;
-    var tax=($("#orders-0-tax").val()*amount)/100;
-    amount=amount+tax;
-    $("#orders-0-amount").val(amount);
+    getTotalQtyAmt();
+    getCalculate(0)
 });
 
 $("#orders-0-qty").change(function(){
-    var rate=$("#orders-0-rate").val();
-    var quantity=$(this).val();
-    var amount=quantity * rate;
-    var tax=($("#orders-0-tax").val()*amount)/100;
-    amount=amount+tax;
-    $("#orders-0-amount").val(amount);
+    getTotalQtyAmt();
+    getCalculate(0)
 });
+
+function getCalculate(i){
+    var rate=$("#orders-"+i+"-rate").val();
+    var quantity=$("#orders-"+i+"-qty").val();
+    var amount=quantity * rate;
+    var tax=($("#orders-"+i+"-tax").val()*amount)/100;
+    amount=amount+tax;
+    amount=amount-($("#orders-"+i+"-discount").val()*amount)/100;
+    $("#orders-"+i+"-amount").val(amount);
+}
 
 function getalldetails(count,product_id){
     $.post("'.Url::to(['ajax/get-product-details']).'",{
         product_id:product_id,
     },function(data){
         var response=JSON.parse(data);
+        console.log(response);
         $("#orders-"+count+"-item_name").val(response.item_name);
         $("#orders-"+count+"-pack").val(response.pack);
         $("#orders-"+count+"-rate").val(response.current_rate);
-        $("#orders-"+count+"-tax").val(response.tax);
+        $("#orders-"+count+"-tax").val(response.taxName.percentage);
         $("#orders-"+count+"-discount").val(response.discount);
     })
 }
 
-// function removevalue(currentObj,currentVal,total_object,current){
-    
-//     for(i=0;i<total_object;i++){
-//         console.log("removing from "+i);
-//         if(i==current){
-//             continue;
-//         }
-//         $("#orders-"+i+"-item_id option[value="+currentVal+"]").remove();
-//     }
-    
-// }
-
+$("#orders-"+count+"-qty").blur(function(){
+    getTotalQtyAmt();
+});
+function getTotalQtyAmt(){
+    total_qty=0;
+    total_amt=0;
+    $(".item-qty").each(function(index,element){
+        if($(element).val()==""){
+            total_qty=parseInt(total_qty)+0;   
+        }else{
+            total_qty=parseInt(total_qty)+parseInt($(element).val());   
+        }
+    })
+    $(".item-amt").each(function(index,element){
+        if($(element).val()==""){
+            total_amt=parseInt(total_amt)+0;   
+        }else{
+            total_amt=parseInt(total_amt)+parseInt($(element).val());   
+        }
+    })
+    $("#total_qty").val(total_qty);
+    $("#total_amt").val(total_amt);
+}
 ',View::POS_END);
 
 ?>
-<script>
-    function getCompany(currentObj){
-        $.post('<?= Url::to(['ajax/get-product-list']) ?>',{
-            item_val:$(currentObj).val(),
-        },function(data){
-            var response=JSON.parse(data);
-            var option_value=[];
-            $(response).each(function(index,element){
-                var obj=[];
-                obj['id'] = element['id'];
-                obj['value'] = element['item_name'];
-                obj['data'] = element['item_name'];
-                obj['label'] = element['item_name'];
-                option_value.push(obj);
-            });
-            var target_id=$(currentObj).attr('id').replace("_new","");
-            console.log(target_id)
-            $(currentObj).autocomplete({
-                source : option_value,
-                select: function (event, ui) {
-                        $('#' + target_id).val(ui.item.id);
-                        getalldetails(count,ui.item.id);
-                    },
-            })
-        })
-    }
-</script>

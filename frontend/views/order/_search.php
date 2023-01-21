@@ -20,7 +20,7 @@ use yii\helpers\Url;
     <div class="col-lg-3 col-md-6 col-sm-6">
     <?php echo Html::submitButton("Search", ['class' => 'btn btn-primary', 'id' => 'submit-dealer']); ?>
     </div>
-    <?php if(in_array(Yii::$app->user->identity->role_id,[User::DISTRIBUTOR,User::DEALER,User::SALES_PERSON])) { ?>
+    <?php if(in_array(Yii::$app->user->identity->role_id,[User::DISTRIBUTOR,User::DEALER,User::SALES_PERSON]) && Yii::$app->request->get('sent')) { ?>
         <div class="col-lg-3 col-md-6 col-sm-6 ml-0">
         <?php echo Html::a("Create",['order/create'], ['class' => 'btn btn-primary', 'id' => 'submit-dealer']); ?>
         </div>

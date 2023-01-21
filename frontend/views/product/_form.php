@@ -50,7 +50,7 @@ use function PHPSTORM_META\type;
                                             <?= $form->field($model,'barcode')->textInput(['class' => 'form-control','placeholder'=>'Enter Barcode of Item']) ?>
                                         </div>
                                         <div class="col-md-6 form-group mb-3">
-                                            <?= $form->field($model,'tax')->dropDownList(ArrayHelper::map(TaxMaster::find()->where(['!=','status',TaxMaster::STATUS_DELETED])->all(),'id','name'),['class'=>'select2 form-control','id'=>'tax-drop','prompt'=>'Select Tax']) ?>
+                                            <?= $form->field($model,'tax')->dropDownList(ArrayHelper::map(TaxMaster::find()->select(['id','concat(name,"-",percentage,"%") as percent_with_name'])->where(['!=','status',TaxMaster::STATUS_DELETED])->asArray()->all(),'id','percent_with_name'),['class'=>'select2 form-control','id'=>'tax-drop','prompt'=>'Select Tax']) ?>
                                         </div>
                                         <div class="col-md-6 form-group mb-3">
                                             <?= $form->field($model,'purchase_rate')->textInput(['class' => 'form-control','placeholder'=>'Enter Purchase Rate','type'=>'number']) ?>
