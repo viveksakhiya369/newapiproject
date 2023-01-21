@@ -33,6 +33,10 @@ use yii\helpers\Url;
                     <li class="nav-item"><a class="nav-item-hold" href="<?php echo yii\helpers\Url::to(['salesman/index']) ?>"><i class="nav-icon i-Bar-Chart"></i><span class="nav-text">Manage Salesman</span></a>
                         <div class="triangle"></div>
                     </li>
+                    <?php }if(in_array(Yii::$app->user->identity->role_id,[User::SUPER_ADMIN])){ ?>
+                    <li class="nav-item"><a class="nav-item-hold" href="<?php echo yii\helpers\Url::to(['tax-master/index']) ?>"><i class="nav-icon i-Cube-Molecule"></i><span class="nav-text">Tax Master</span></a>
+                        <div class="triangle"></div>
+                    </li>
                     <?php } if(in_array(Yii::$app->user->identity->role_id,[User::SUPER_ADMIN,User::DEALER])){ ?>
                     <li class="nav-item"><a class="nav-item-hold" href="<?php echo yii\helpers\Url::to(['karigar/index']) ?>"><i class="nav-icon i-Farmer"></i><span class="nav-text">Manage Karigar</span></a>
                         <div class="triangle"></div>
