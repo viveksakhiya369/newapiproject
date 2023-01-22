@@ -42,15 +42,15 @@ class PendingOrdersSearch extends PendingOrders
      */
     public function search($params)
     {
-        $query = PendingOrders::find();
+        $query = PendingOrders::find()->andWhere(['!=',PendingOrders::tableName().'.status',Orders::STATUS_DELETED])->orderBy([PendingOrders::tableName().".id"=>SORT_DESC])->groupBy(PendingOrders::tableName().'.order_no');
 
         if(!in_array(Yii::$app->user->identity->role_id,[User::SUPER_ADMIN])){
-                if(Yii::$app->user->identity->role_id==User::DISTRIBUTOR){
+                //if(Yii::$app->user->identity->role_id==User::DISTRIBUTOR){
                     $query->joinWith(['order','order.dealer','order.dealer.distributor']);
-                    $query->andWhere(['distributor.user_id'=>Yii::$app->user->identity->id]);
-                }
+                    //$query->andWhere(['distributor.user_id'=>Yii::$app->user->identity->id]);
+                //}
             // if(isset($params['sent'])&&($params['sent']==1)){
-            //     $query->andWhere(['orders.parent_id'=>Yii::$app->user->identity->id]);
+                 $query->andWhere(['orders.parent_id'=>Yii::$app->user->identity->id]);
                         
             // }
         }

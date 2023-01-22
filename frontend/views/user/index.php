@@ -1,7 +1,8 @@
 <?php
 
 use common\models\CommonHelpers;
-use yii\grid\GridView;
+// use yii\grid\GridView;
+use kartik\grid\GridView;
 // echo'<pre>';print_r($dataProvider->getModels());exit();
 // echo'<pre>';print_r($this->context->action->id);exit();
 // echo'<pre>';print_r($this->context->id);exit();
@@ -58,7 +59,7 @@ use yii\grid\GridView;
                     <?php
                         echo GridView::widget([
                             'dataProvider'=>$dataProvider,
-                            'layout' => "{items}\n{summary}\n{pager}",
+                            'layout' => "{items}\n<div class='float-left'>{summary}</div>\n<div class='float-right'>{pager}</div>",
                             'columns'=>[
                                 [
                                     'class'=>'yii\grid\SerialColumn',
