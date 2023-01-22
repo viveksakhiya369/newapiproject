@@ -41,13 +41,13 @@ use common\models\Orders;
             <div class="row mb-5">
                 <div class="mb-3 mb-sm-0 col-md-6">
                     <h5 class="font-weight-bold">Bill From</h5>
-                    <h4 class="font-weight-bold"><span style="white-space: pre-line;"><?= isset($order_details->dealer->dealer_name) ? $order_details->dealer->dealer_name : Orders::getDistributorId($order_details->order->parent_id)?> </span></h4>
-                    <p>Address:<span style="white-space: pre-line;"><?= isset($order_details->dealer->address) ? $order_details->dealer->dealer_name : Orders::getDistributorAddress($order_details->order->parent_id)?> </span></p>
+                    <h4 class="font-weight-bold"><span style="white-space: pre-line;"><?= isset($order_details->order->dealer->dealer_name) ? $order_details->order->dealer->dealer_name : Orders::getDistributorId($order_details->order->parent_id)?> </span></h4>
+                    <p>Address:<span style="white-space: pre-line;"><?= isset($order_details->order->dealer->address) ? $order_details->order->dealer->dealer_name : Orders::getDistributorAddress($order_details->order->parent_id)?> </span></p>
                 </div>
                 <div class="text-sm-right col-md-6">
                     <h5 class="font-weight-bold">Bill To</h5>
-                    <h4 class="font-weight-bold"><span style="white-space: pre-line;"><?= isset($order_details->dealer->distributor->dist_name) ? $order_details->dealer->distributor->dist_name : "Conwax"?> </span></h4>
-                    <p>Address:<span style="white-space: pre-line;"><?= isset($order_details->dealer->distributor->dist_name) ? $order_details->dealer->distributor->address : "Sitaram Complex,<br> Kothariya Solvent Main Road,<br> Kothariya, Rajkot"?> </span></p>
+                    <h4 class="font-weight-bold"><span style="white-space: pre-line;"><?= isset($order_details->order->dealer->distributor->dist_name) ? $order_details->order->dealer->distributor->dist_name : "Conwax"?> </span></h4>
+                    <p>Address:<span style="white-space: pre-line;"><?= isset($order_details->order->dealer->distributor->dist_name) ? $order_details->order->dealer->distributor->address : "Sitaram Complex,<br> Kothariya Solvent Main Road,<br> Kothariya, Rajkot"?> </span></p>
                 </div>
             </div>
             <div class="row">

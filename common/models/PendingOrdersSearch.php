@@ -53,6 +53,8 @@ class PendingOrdersSearch extends PendingOrders
                  $query->andWhere(['orders.parent_id'=>Yii::$app->user->identity->id]);
                         
             // }
+        }else{
+            $query->joinWith(['order','order.dealer','order.dealer.distributor','order.distributor']);
         }
 
         // add conditions that should always apply here
