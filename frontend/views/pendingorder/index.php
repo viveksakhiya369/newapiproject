@@ -20,7 +20,8 @@ use yii\widgets\Pjax;
 ?>
 <div class="main-content">
     <div class="breadcrumb">
-        <h1 class="mr-2"><?= CommonHelpers::getTitle($this->context->id, $this->context->action->id) ?></h1>
+        <!-- <h1 class="mr-2"><?php // CommonHelpers::getTitle($this->context->id, $this->context->action->id) ?></h1> -->
+        <h1 class="mr-2">Manage Pending Orders</h1>
     </div>
     <div class="separator-breadcrumb border-top"></div>
     <!-- ICON BG-->
@@ -86,12 +87,13 @@ use yii\widgets\Pjax;
                     'format' => 'html',
                     'label' => 'Status',
                     'value' => function ($data) {
-                        if ($data->status == Orders::STATUS_APPROVED) {
+                        // if ($data->status == Orders::STATUS_APPROVED) {
 
-                            return '<a class="badge badge-success m-2" href="#">' . Orders::STATUS_APPROVED_LABEL . '</a>';
-                        } else if ($data->status == Orders::STATUS_QUEUED) {
-                            return '<a class="badge badge-danger m-2" href="#">' . Orders::STATUS_QUEUED_LABEL . '</a>';
-                        }
+                        //     return '<a class="badge badge-success m-2" href="#">' . Orders::STATUS_APPROVED_LABEL . '</a>';
+                        // } else if ($data->status == Orders::STATUS_QUEUED) {
+                        //     return '<a class="badge badge-danger m-2" href="#">' . Orders::STATUS_QUEUED_LABEL . '</a>';
+                        // }
+                        return '<a class="badge badge-warning m-2" href="#">Pending</a>';
                     }
                 ],
                 [
