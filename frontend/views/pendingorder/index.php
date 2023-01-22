@@ -70,17 +70,6 @@ use kartik\grid\GridView;
                     }
                 ],
                 [
-                    'attribute' => 'dealer_name',
-                    'format' => 'html',
-                    'label' => 'Dealer Name',
-                    // 'visible'=>function($data){
-                    //     return (User::findOne( $data->orders->parent_id)->role_id==User::DEALER);
-                    // },
-                    'value' => function ($data) {
-                        return isset($data->order->dealer->dealer_name) ? $data->order->dealer->dealer_name : "-";
-                    }
-                ],
-                [
                     'attribute' => 'status',
                     'format' => 'html',
                     'label' => 'Status',

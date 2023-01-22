@@ -54,6 +54,8 @@ class OrdersSearch extends Orders
                 $query->andWhere(['orders.parent_id'=>Yii::$app->user->identity->id]);
                         
             }
+        }else{
+            $query->joinWith(['dealer','dealer.distributor','distributor']);
         }
 
         // add conditions that should always apply here

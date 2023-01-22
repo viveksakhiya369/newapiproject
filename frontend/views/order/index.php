@@ -45,37 +45,36 @@ use kartik\grid\GridViewAsset;
         ?>
         <?php
         Pjax::begin();
-        echo GridView::widget([
-            'dataProvider' => $searchdata,
-            'options' => [
-                'class' => 'card-body table table-striped table-bordered table-responsive'
-            ],
-            'layout' => "{items}\n{summary}\n{pager}",
-            'columns' => [
-                [
-                    'class' => 'yii\grid\SerialColumn',
-                    'header' => 'sr.no'
-                ],
-                [
-                    'attribute' => 'order_no',
-                    'format' => 'html',
-                    'label' => 'Order No',
-                    'value' => function ($data) {
-                        return $data->order_no;
-                    }
-                ],
-                [
-                    'attribute' => 'created_dt',
-                    'format' => 'html',
-                    'label' => 'Created Date',
-                    'value' => function ($data) {
-                        return date('d-m-Y', strtotime($data->created_dt));
-                    }
-                ],
-                [
-                    'attribute' => 'dealer_name',
-                    'format' => 'html',
-                    'label' => 'Dealer Name',
+        if((Yii::$app->user->identity->role_id==User::DISTRIBUTOR) && (Yii::$app->request->get('receieved'))){
+
+            echo GridView::widget([
+                'dataProvider' => $searchdata,
+                'layout' => "{items}\n<div class='float-left'>{summary}</div>\n<div class='float-right'>{pager}</div>",
+                'columns' => [
+                    [
+                        'class' => 'kartik\grid\SerialColumn',
+                        'header' => 'sr.no'
+                    ],
+                    [
+                        'attribute' => 'order_no',
+                        'format' => 'html',
+                        'label' => 'Order No',
+                        'value' => function ($data) {
+                            return $data->order_no;
+                        }
+                    ],
+                    [
+                        'attribute' => 'created_dt',
+                        'format' => 'html',
+                        'label' => 'Created Date',
+                        'value' => function ($data) {
+                            return date('d-m-Y', strtotime($data->created_dt));
+                        }
+                    ],
+                    [
+                        'attribute' => 'dealer_name',
+                        'format' => 'html',
+                        'label' => 'Dealer Name',
                     // 'visible'=>function($data){
                     //     return (User::findOne( $data->orders->parent_id)->role_id==User::DEALER);
                     // },
@@ -89,7 +88,7 @@ use kartik\grid\GridViewAsset;
                     'label' => 'Status',
                     'value' => function ($data) {
                         if ($data->status == Orders::STATUS_APPROVED) {
-
+                            
                             return '<a class="badge badge-success m-2" href="#">' . Orders::STATUS_APPROVED_LABEL . '</a>';
                         } else if ($data->status == Orders::STATUS_QUEUED) {
                             return '<a class="badge badge-danger m-2" href="#">' . Orders::STATUS_QUEUED_LABEL . '</a>';
@@ -97,7 +96,7 @@ use kartik\grid\GridViewAsset;
                     }
                 ],
                 [
-                    'class' => 'yii\grid\ActionColumn',
+                    'class' => 'kartik\grid\ActionColumn',
                     'header' => "Action",
                     'template' => ' {view} {update} {transport} {delete} ',
                     'buttons' => [
@@ -108,7 +107,7 @@ use kartik\grid\GridViewAsset;
                         },
                         'update' => function ($url, $model, $key) {
                             if (Yii::$app->request->get('receieved') && in_array(Yii::$app->user->identity->role_id, [User::DISTRIBUTOR, User::SUPER_ADMIN]) && ($model->status!=Orders::STATUS_APPROVED)) {
-
+                                
                                 return Html::a('<i class="text-20 i-Pen-3"></i>', (Yii::$app->request->get('receieved')) ? Url::to(['order/update', 'order_no' => $model->order_no]) : Url::to(['order/send-update','order_no'=>$model->order_no]), [
                                     'title' => 'update',
                                 ]);
@@ -136,18 +135,202 @@ use kartik\grid\GridViewAsset;
                                     'data'=>[
                                         'confirm'=>'Delete confirm?',
                                         'method'=>'post',
-                                    ]
-                                ]);
+                                        ]
+                                    ]);
+                                }
                             }
-                        }
-                    ]
-                ],
-            ]
-        ]);
-        Pjax::end();
-        ?>
+                            ]
+                        ],
+                        ]
+                    ]);
+                }else if((Yii::$app->user->identity->role_id==User::SUPER_ADMIN) && (Yii::$app->request->get('receieved'))){
+                    echo GridView::widget([
+                        'dataProvider' => $searchdata,
+                        'layout' => "{items}\n<div class='float-left'>{summary}</div>\n<div class='float-right'>{pager}</div>",
+                        'columns' => [
+                            [
+                                'class' => 'kartik\grid\SerialColumn',
+                                'header' => 'sr.no'
+                            ],
+                            [
+                                'attribute' => 'order_no',
+                                'format' => 'html',
+                                'label' => 'Order No',
+                                'value' => function ($data) {
+                                    return $data->order_no;
+                                }
+                            ],
+                            [
+                                'attribute' => 'created_dt',
+                                'format' => 'html',
+                                'label' => 'Created Date',
+                                'value' => function ($data) {
+                                    return date('d-m-Y', strtotime($data->created_dt));
+                                }
+                            ],
+                            [
+                                'attribute' => 'distributor_name',
+                                'format' => 'html',
+                                'label' => 'Distributor Name',
+                            // 'visible'=>function($data){
+                            //     return (User::findOne( $data->orders->parent_id)->role_id==User::DEALER);
+                            // },
+                            'value' => function ($data) {
+                                return isset($data->dealer->distributor->dist_name) ? $data->dealer->distributor->dist_name : (isset($data->distributor->dist_name) ? $data->distributor->dist_name : "-");
+                            }
+                        ],
+                        [
+                            'attribute' => 'status',
+                            'format' => 'html',
+                            'label' => 'Status',
+                            'value' => function ($data) {
+                                if ($data->status == Orders::STATUS_APPROVED) {
+                                    
+                                    return '<a class="badge badge-success m-2" href="#">' . Orders::STATUS_APPROVED_LABEL . '</a>';
+                                } else if ($data->status == Orders::STATUS_QUEUED) {
+                                    return '<a class="badge badge-danger m-2" href="#">' . Orders::STATUS_QUEUED_LABEL . '</a>';
+                                }
+                            }
+                        ],
+                        [
+                            'class' => 'kartik\grid\ActionColumn',
+                            'header' => "Action",
+                            'template' => ' {view} {update} {transport} {delete} ',
+                            'buttons' => [
+                                'view' => function ($url, $model, $key) {
+                                    return Html::a('<i class="text-20 i-Eye"></i>', Url::to(['order/view', 'order_no' => $model->order_no]), [
+                                        'title' => 'view',
+                                    ]);
+                                },
+                                'update' => function ($url, $model, $key) {
+                                    if (Yii::$app->request->get('receieved') && in_array(Yii::$app->user->identity->role_id, [User::DISTRIBUTOR, User::SUPER_ADMIN]) && ($model->status!=Orders::STATUS_APPROVED)) {
+                                        
+                                        return Html::a('<i class="text-20 i-Pen-3"></i>', (Yii::$app->request->get('receieved')) ? Url::to(['order/update', 'order_no' => $model->order_no]) : Url::to(['order/send-update','order_no'=>$model->order_no]), [
+                                            'title' => 'update',
+                                        ]);
+                                    }
+                                },
+                                'transport' => function ($url, $model, $key) {
+                                    if ( in_array(Yii::$app->user->identity->role_id, [User::DISTRIBUTOR, User::SUPER_ADMIN])) {
+                                        $transport=Transport::find()->where(['order_no'=>$model->order_no])->one();
+                                        // echo'<pre>';print_r();exit();
+                                        if(isset($transport) && (Yii::$app->request->get('sent')) && (!empty($transport))){
+                                            return Html::tag('span', '<i class="text-20 i-Jeep"></i>', ['class' => 'transport-show','value'=>Url::to(['transport/update','order_no' => $model->order_no]), 'style' => 'color : blue;']);
+                                        }
+                                        if(isset($transport) && (Yii::$app->request->get('receieved'))){
+                                            return Html::tag('span', '<i class="text-20 i-Jeep"></i>', ['class' => 'transport-show','value'=>Url::to(['transport/update','order_no' => $model->order_no,'receieved'=>true]), 'style' => 'color : blue;']);
+                                        }
+                                        if(Yii::$app->request->get('receieved')){
+                                            return Html::tag('span', '<i class="text-20 i-Jeep"></i>', ['class' => 'transport-show','value'=>Url::to(['transport/create','order_no' => $model->order_no,'receieved'=>true]), 'style' => 'color : blue;']);
+                                        }
+                                    }
+                                },
+                                'delete' => function($url,$model,$key){
+                                    if($model->status!=Orders::STATUS_APPROVED){
+                                        return Html::a('<i class="text-20 i-Delete-File"></i>',Url::to(['order/delete','order_no'=>$model->order_no]),[
+                                            'title'=>'delete',
+                                            'data'=>[
+                                                'confirm'=>'Delete confirm?',
+                                                'method'=>'post',
+                                                ]
+                                            ]);
+                                        }
+                                    }
+                                    ]
+                                ],
+                                ]
+                            ]);
+                }else{
+                    echo GridView::widget([
+                        'dataProvider' => $searchdata,
+                        'layout' => "{items}\n<div class='float-left'>{summary}</div>\n<div class='float-right'>{pager}</div>",
+                        'columns' => [
+                            [
+                                'class' => 'kartik\grid\SerialColumn',
+                                'header' => 'sr.no'
+                            ],
+                            [
+                                'attribute' => 'order_no',
+                                'format' => 'html',
+                                'label' => 'Order No',
+                                'value' => function ($data) {
+                                    return $data->order_no;
+                                }
+                            ],
+                            [
+                                'attribute' => 'created_dt',
+                                'format' => 'html',
+                                'label' => 'Created Date',
+                                'value' => function ($data) {
+                                    return date('d-m-Y', strtotime($data->created_dt));
+                                }
+                            ],
+                        [
+                            'attribute' => 'status',
+                            'format' => 'html',
+                            'label' => 'Status',
+                            'value' => function ($data) {
+                                if ($data->status == Orders::STATUS_APPROVED) {
+                                    
+                                    return '<a class="badge badge-success m-2" href="#">' . Orders::STATUS_APPROVED_LABEL . '</a>';
+                                } else if ($data->status == Orders::STATUS_QUEUED) {
+                                    return '<a class="badge badge-danger m-2" href="#">' . Orders::STATUS_QUEUED_LABEL . '</a>';
+                                }
+                            }
+                        ],
+                        [
+                            'class' => 'kartik\grid\ActionColumn',
+                            'header' => "Action",
+                            'template' => ' {view} {update} {transport} {delete} ',
+                            'buttons' => [
+                                'view' => function ($url, $model, $key) {
+                                    return Html::a('<i class="text-20 i-Eye"></i>', Url::to(['order/view', 'order_no' => $model->order_no]), [
+                                        'title' => 'view',
+                                    ]);
+                                },
+                                'update' => function ($url, $model, $key) {
+                                    if (Yii::$app->request->get('receieved') && in_array(Yii::$app->user->identity->role_id, [User::DISTRIBUTOR, User::SUPER_ADMIN]) && ($model->status!=Orders::STATUS_APPROVED)) {
+                                        
+                                        return Html::a('<i class="text-20 i-Pen-3"></i>', (Yii::$app->request->get('receieved')) ? Url::to(['order/update', 'order_no' => $model->order_no]) : Url::to(['order/send-update','order_no'=>$model->order_no]), [
+                                            'title' => 'update',
+                                        ]);
+                                    }
+                                },
+                                'transport' => function ($url, $model, $key) {
+                                    if ( in_array(Yii::$app->user->identity->role_id, [User::DISTRIBUTOR, User::SUPER_ADMIN])) {
+                                        $transport=Transport::find()->where(['order_no'=>$model->order_no])->one();
+                                        // echo'<pre>';print_r();exit();
+                                        if(isset($transport) && (Yii::$app->request->get('sent')) && (!empty($transport))){
+                                            return Html::tag('span', '<i class="text-20 i-Jeep"></i>', ['class' => 'transport-show','value'=>Url::to(['transport/update','order_no' => $model->order_no]), 'style' => 'color : blue;']);
+                                        }
+                                        if(isset($transport) && (Yii::$app->request->get('receieved'))){
+                                            return Html::tag('span', '<i class="text-20 i-Jeep"></i>', ['class' => 'transport-show','value'=>Url::to(['transport/update','order_no' => $model->order_no,'receieved'=>true]), 'style' => 'color : blue;']);
+                                        }
+                                        if(Yii::$app->request->get('receieved')){
+                                            return Html::tag('span', '<i class="text-20 i-Jeep"></i>', ['class' => 'transport-show','value'=>Url::to(['transport/create','order_no' => $model->order_no,'receieved'=>true]), 'style' => 'color : blue;']);
+                                        }
+                                    }
+                                },
+                                'delete' => function($url,$model,$key){
+                                    if($model->status!=Orders::STATUS_APPROVED){
+                                        return Html::a('<i class="text-20 i-Delete-File"></i>',Url::to(['order/delete','order_no'=>$model->order_no]),[
+                                            'title'=>'delete',
+                                            'data'=>[
+                                                'confirm'=>'Delete confirm?',
+                                                'method'=>'post',
+                                                ]
+                                            ]);
+                                        }
+                                    }
+                                    ]
+                                ],
+                                ]
+                            ]);
+                }
+                    Pjax::end();
+                    ?>
     </div>
-
+    
 </div>
 <?php
 

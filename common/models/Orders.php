@@ -113,11 +113,15 @@ class Orders extends \yii\db\ActiveRecord
         return $this->hasOne(Dealer::className(),['user_id'=>'parent_id']);
     }
 
+    public function getDistributor(){
+        return $this->hasOne(Distributor::className(),['user_id'=>'parent_id']);
+    }
+
     public static function getDistributorId($user_id){
-        return Distributor::find()->where(['user_id'=>$user_id])->one()->dist_name;
+        return isset(Distributor::find()->where(['user_id'=>$user_id])->one()->dist_name) ? Distributor::find()->where(['user_id'=>$user_id])->one()->dist_name : "-";
     }
     public static function getDistributorAddress($user_id){
-        return Distributor::find()->where(['user_id'=>$user_id])->one()->address;
+        return isset(Distributor::find()->where(['user_id'=>$user_id])->one()->address) ? Distributor::find()->where(['user_id'=>$user_id])->one()->address : "-" ;
     }
 
 }

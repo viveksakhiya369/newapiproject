@@ -104,24 +104,20 @@ class PendingorderController extends Controller
     //     return $this->redirect($_SERVER['HTTP_REFERER']);
     // }
 
-    // public function actionView($order_no)
-    // {
-    //     $orders = Orders::find();
-    //     if (in_array(Yii::$app->user->identity->role_id, [User::DISTRIBUTOR, User::DEALER])) {
-    //         $orders->joinWith(['dealer', 'dealer.distributor']);
-    //     }
-    //     $result = $orders->where(['orders.order_no' => $order_no])->all();
-    //     $oneorder = Orders::find()->joinWith(['dealer', 'dealer.distributor'])->where(['order_no' => $order_no])->groupBy('order_no')->one();
-    //     // echo'<pre>';print_r($oneorder);exit();
-    //     return $this->render('_view', [
-    //         'result' => $result,
-    //         'order_details' => $oneorder,
-    //     ]);
-    // }
-
-
-    private function findAllOrders($order_no)
+    public function actionView($order_no)
     {
-        return Orders::find()->where(['order_no' => $order_no])->andWhere(['!=','status',Orders::STATUS_DELETED])->all();
+        $orders = PendingOrders::find();
+        if (in_array(Yii::$app->user->identity->role_id, [User::DISTRIBUTOR, User::DEALER])) {
+            // echo'<pre>';print_r("hello");exit();
+            $orders->joinWith(['order.dealer', 'order.dealer.distributor']);
+        }
+        $result = $orders->where([PendingOrders::tableName().'.order_no' => $order_no])->all();
+        $oneorder = PendingOrders::find()->joinWith(['order.dealer', 'order.dealer.distributor'])->where([PendingOrders::tableName().'.order_no' => $order_no])->groupBy('order_no')->one();
+        return $this->render('_view', [
+            'result' => $result,
+            'order_details' => $oneorder,
+        ]);
     }
+
+
 }
