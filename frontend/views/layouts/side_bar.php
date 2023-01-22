@@ -10,38 +10,47 @@ use yii\helpers\Url;
                         <div class="triangle"></div>
                     </li>
                     <?php if(in_array(Yii::$app->user->identity->role_id,[User::SUPER_ADMIN])){ ?>
-                    <li class="nav-item"><a class="nav-item-hold" href="<?php echo yii\helpers\Url::to(['user/index']) ?>"><i class="nav-icon i-Administrator"></i><span class="nav-text">Manage Users</span></a>
+                    <li class="nav-item" data-item="users"><a class="nav-item-hold" href="<?php echo yii\helpers\Url::to(['user/index']) ?>"><i class="nav-icon i-Administrator"></i><span class="nav-text">Manage Users</span></a>
                         <div class="triangle"></div>
                     </li>
-                    <?php } if(in_array(Yii::$app->user->identity->role_id,[User::SUPER_ADMIN])){ ?>
-                    <li class="nav-item"><a class="nav-item-hold" href="<?php echo yii\helpers\Url::to(['distributor/index']) ?>"><i class="nav-icon i-Bar-Chart"></i><span class="nav-text">Manage Distributer</span></a>
+                    <!-- <?php //} if(in_array(Yii::$app->user->identity->role_id,[User::SUPER_ADMIN])){ ?>
+                    <li class="nav-item"><a class="nav-item-hold" href="<?php //echo yii\helpers\Url::to(['distributor/index']) ?>"><i class="nav-icon i-Add-UserStar"></i><span class="nav-text">Manage Distributer</span></a>
+                        <div class="triangle"></div>
+                    </li> -->
+                    <!-- <?php //} if(in_array(Yii::$app->user->identity->role_id,[User::SUPER_ADMIN,User::DISTRIBUTOR])) { ?>
+                     <li class="nav-item"><a class="nav-item-hold" href="<?php // echo yii\helpers\Url::to(['dealer/index']) ?>"><i class="nav-icon i-Affiliate"></i><span class="nav-text">Manage Dealers</span></a>
+                        <div class="triangle"></div>
+                    </li> -->
+                    <?php } if(in_array(Yii::$app->user->identity->role_id,[User::SUPER_ADMIN,User::DISTRIBUTOR,User::SALES_PERSON,User::DEALER])) { ?>
+                    <li class="nav-item" data-item="widgets"><a class="nav-item-hold" href="<?php echo yii\helpers\Url::to(['order/index']) ?>"><i class="nav-icon i-Library"></i><span class="nav-text">Manage Order</span></a>
                         <div class="triangle"></div>
                     </li>
-                    <?php } if(in_array(Yii::$app->user->identity->role_id,[User::SUPER_ADMIN,User::DISTRIBUTOR])) { ?>
-                     <li class="nav-item"><a class="nav-item-hold" href="<?php echo yii\helpers\Url::to(['dealer/index']) ?>"><i class="nav-icon i-Affiliate"></i><span class="nav-text">Manage Dealers</span></a>
+                    <?php } if(in_array(Yii::$app->user->identity->role_id,[User::SUPER_ADMIN,User::DISTRIBUTOR,User::DEALER])){  ?>
+                    <li class="nav-item" data-item="stock"><a class="nav-item-hold" href="<?php echo yii\helpers\Url::to(['stock/index']) ?>"><i class="nav-icon i-Big-Data"></i><span class="nav-text">Manage Stock</span></a>
+                        <div class="triangle"></div>
+                    </li>
+                    <?php } if(in_array(Yii::$app->user->identity->role_id,[User::SUPER_ADMIN,User::DISTRIBUTOR,User::DEALER])){  ?>
+                    <li class="nav-item"><a class="nav-item-hold" href="<?php echo yii\helpers\Url::to(['points/index']) ?>"><i class="nav-icon i-Coins"></i><span class="nav-text">Manage Points</span></a>
                         <div class="triangle"></div>
                     </li>
                     <?php } if(in_array(Yii::$app->user->identity->role_id,[User::SUPER_ADMIN])){  ?>
                     <li class="nav-item" ><a class="nav-item-hold" href="<?php echo yii\helpers\Url::to(['product/index']) ?>"><i class="nav-icon i-Suitcase"></i><span class="nav-text">Manage Products</span></a>
                         <div class="triangle"></div>
                     </li>
-                    <?php } if(in_array(Yii::$app->user->identity->role_id,[User::SUPER_ADMIN,User::DISTRIBUTOR,User::SALES_PERSON,User::DEALER])) { ?>
-                    <li class="nav-item" data-item="widgets"><a class="nav-item-hold" href="<?php echo yii\helpers\Url::to(['order/index']) ?>"><i class="nav-icon i-Library"></i><span class="nav-text">Manage Order</span></a>
+                    <!-- <?php //}if(in_array(Yii::$app->user->identity->role_id,[User::SUPER_ADMIN])){ ?>
+                    <li class="nav-item"><a class="nav-item-hold" href="<?php //echo yii\helpers\Url::to(['salesman/index']) ?>"><i class="nav-icon i-Address-Book"></i><span class="nav-text">Manage Salesman</span></a>
                         <div class="triangle"></div>
-                    </li>
-                    <?php }if(in_array(Yii::$app->user->identity->role_id,[User::SUPER_ADMIN])){ ?>
-                    <li class="nav-item"><a class="nav-item-hold" href="<?php echo yii\helpers\Url::to(['salesman/index']) ?>"><i class="nav-icon i-Bar-Chart"></i><span class="nav-text">Manage Salesman</span></a>
-                        <div class="triangle"></div>
-                    </li>
+                    </li> -->
                     <?php }if(in_array(Yii::$app->user->identity->role_id,[User::SUPER_ADMIN])){ ?>
                     <li class="nav-item"><a class="nav-item-hold" href="<?php echo yii\helpers\Url::to(['tax-master/index']) ?>"><i class="nav-icon i-Cube-Molecule"></i><span class="nav-text">Tax Master</span></a>
                         <div class="triangle"></div>
                     </li>
-                    <?php } if(in_array(Yii::$app->user->identity->role_id,[User::SUPER_ADMIN,User::DEALER])){ ?>
-                    <li class="nav-item"><a class="nav-item-hold" href="<?php echo yii\helpers\Url::to(['karigar/index']) ?>"><i class="nav-icon i-Farmer"></i><span class="nav-text">Manage Karigar</span></a>
+                    <?php } ?>
+                    <!-- <?php // } if(in_array(Yii::$app->user->identity->role_id,[User::SUPER_ADMIN,User::DEALER])){ ?>
+                    <li class="nav-item"><a class="nav-item-hold" href="<?php //echo yii\helpers\Url::to(['karigar/index']) ?>"><i class="nav-icon i-Farmer"></i><span class="nav-text">Manage Karigar</span></a>
                         <div class="triangle"></div>
                     </li>
-                    <?php } ?>
+                    <?php //} ?> -->
                     <!--<li class="nav-item" data-item="widgets"><a class="nav-item-hold" href="#"><i class="nav-icon i-Computer-Secure"></i><span class="nav-text">Widgets</span></a>
                         <div class="triangle"></div>
                     </li>
@@ -76,6 +85,39 @@ use yii\helpers\Url;
                     <li class="nav-item"><a href="tour.html"><i class="nav-icon i-Plane"></i><span class="item-name">User Tour</span></a></li>
                     <li class="nav-item"><a href="upload.html"><i class="nav-icon i-Data-Upload"></i><span class="item-name">Upload</span></a></li> -->
                 <!--</ul> -->
+                <ul class="childNav" data-parent="users">
+                    <?php if(in_array(Yii::$app->user->identity->role_id,[User::SUPER_ADMIN])){ ?>
+                        <li class="nav-item"><a class="nav-item-hold" href="<?php echo yii\helpers\Url::to(['user/index']) ?>"><i class="nav-icon i-Administrator"></i><span class="item-name">Manage Users</span></a></li>
+                    <?php } ?>
+                    <?php if(in_array(Yii::$app->user->identity->role_id,[User::SUPER_ADMIN])){ ?>
+                        <li class="nav-item"><a class="nav-item-hold" href="<?php echo yii\helpers\Url::to(['distributor/index']) ?>"><i class="nav-icon i-Add-UserStar"></i><span class="item-name">Manage Distributer</span></a></li>
+                    <?php } ?>
+                    <?php if(in_array(Yii::$app->user->identity->role_id,[User::SUPER_ADMIN,User::DISTRIBUTOR])) { ?>
+                        <li class="nav-item"><a class="nav-item-hold" href="<?php echo yii\helpers\Url::to(['dealer/index']) ?>"><i class="nav-icon i-Affiliate"></i><span class="item-name">Manage Dealers</span></a></li>
+                    <?php } ?>
+                    <?php if(in_array(Yii::$app->user->identity->role_id,[User::SUPER_ADMIN])){ ?>
+                        <li class="nav-item"><a class="nav-item-hold" href="<?php echo yii\helpers\Url::to(['salesman/index']) ?>"><i class="nav-icon i-Address-Book"></i><span class="item-name">Manage Salesman</span></a></li>
+                    <?php } ?>
+                    <?php if(in_array(Yii::$app->user->identity->role_id,[User::SUPER_ADMIN,User::DEALER])){ ?>
+                        <li class="nav-item"><a class="nav-item-hold" href="<?php echo yii\helpers\Url::to(['karigar/index']) ?>"><i class="nav-icon i-Farmer"></i><span class="item-name">Manage Karigar</span></a></li>
+                    <?php } ?>
+                </ul>
+                <ul class="childNav" data-parent="stock">
+                    <?php if(in_array(Yii::$app->user->identity->role_id,[User::SUPER_ADMIN,User::DEALER,User::DISTRIBUTOR])) { ?>
+                        <li class="nav-item"><a href="<?php echo yii\helpers\Url::to(['godown/index']) ?>"><i class="nav-icon i-Monitor-Analytics"></i><span class="item-name">Godown Stock</span></a></li>
+                    <?php } ?>
+                    <?php if(in_array(Yii::$app->user->identity->role_id,[User::DEALER,User::DISTRIBUTOR])) { ?>
+                        <li class="nav-item"><a href="<?php echo yii\helpers\Url::to(['shop/index']) ?>"><i class="nav-icon i-Network-Window"></i><span class="item-name">Shop Stock</span></a></li>
+                    <?php } ?>
+                </ul>
+                <!-- <ul class="childNav" data-parent="point">
+                    <?php //if(in_array(Yii::$app->user->identity->role_id,[User::SUPER_ADMIN,User::DEALER,User::DISTRIBUTOR])) { ?>
+                        <li class="nav-item"><a href="<?php //echo yii\helpers\Url::to(['sendpoints/index']) ?>"><i class="nav-icon i-Sharethis"></i><span class="item-name">Send Points</span></a></li>
+                    <?php //} ?>
+                    <?php //if(in_array(Yii::$app->user->identity->role_id,[User::SUPER_ADMIN,User::DEALER,User::DISTRIBUTOR])) { ?>
+                        <li class="nav-item"><a href="<?php //echo yii\helpers\Url::to(['sendpoints/index']) ?>"><i class="nav-icon i-Sharethis"></i><span class="item-name">Send Points</span></a></li>
+                    <?php //} ?>
+                </ul>  -->
                 <ul class="childNav" data-parent="widgets">
                     <?php if(in_array(Yii::$app->user->identity->role_id,[User::SUPER_ADMIN,User::SALES_PERSON,User::DISTRIBUTOR])) { ?>
                         <li class="nav-item"><a href="<?php echo yii\helpers\Url::to(['order/index','receieved'=>true]) ?>"><i class="nav-icon i-Clock-3"></i><span class="item-name">Received Orders</span></a></li>
