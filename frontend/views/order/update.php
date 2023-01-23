@@ -21,6 +21,18 @@ foreach($model as $i => $val){
     $this->registerJs('
         var old_discount'.$i.'='.$val->discount.';
         var old_amount'.$i.'='.$val->amount.';
+        $("#orders-'.$i.'-item_name").prop("disabled",true);
+        
+        $("#orders-'.$i.'-qty").keyup(function(){
+            getCalculate('.$i.')
+            getTotalQtyAmt();
+        });
+        
+        $("#orders-'.$i.'-qty").change(function(){
+            getCalculate('.$i.')
+            getTotalQtyAmt();
+        });
+        $("#orders-'.$i.'-item_name").val('.$val->item_id.').trigger("change");
         $("#orders-'.$i.'-qty").keyup(function(){
             var rate=$("#orders-'.$i.'-rate").val();
             var quantity=$(this).val();
@@ -80,9 +92,5 @@ foreach($model as $i => $val){
     ',View::POS_END);
 }
 
-$this->registerJs('
-   $(".add-item").hide();
-   $(".remove-item").hide();
-',View::POS_END);
 
 ?>
