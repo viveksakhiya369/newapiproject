@@ -228,6 +228,8 @@ function getTotalQtyAmt(){
     $("#total_qty").val(total_qty);
     $("#total_amt").val(total_amt);
 }
+$("#total_qty").prop("disabled",true);
+$("#total_amt").prop("disabled",true);
 ',View::POS_END);
 
 ?>
