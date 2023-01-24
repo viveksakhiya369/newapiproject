@@ -90,6 +90,8 @@ foreach($model as $i => $val){
 
         })
     ',View::POS_END);
+
+
 }
 
 
