@@ -94,5 +94,8 @@ foreach($model as $i => $val){
 
 }
 
-
+$this->registerJs('
+    $(".remove-item").hide();
+    $(".add-item").hide();
+')
 ?>

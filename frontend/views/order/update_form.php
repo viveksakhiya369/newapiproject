@@ -103,14 +103,17 @@ var total_amt=0;
 var total_qty=0;
 var count='.(count($model)-1).';
 var count_items='.count($model).';
+var initial_count='.(count($model)).'
 $(".dynamicform_wrapper").on("beforeInsert", function(e, item) {
     console.log("beforeInsert");
 });
 
 $(".dynamicform_wrapper").on("afterInsert", function(e, item) {
     $(".select2").select2();
+    initial_count++;
     count_items=count_items+'.count($model).';
     count=count+'.count($model).';
+    
     $("#orders-"+count+"-qty").blur(function(){
         getTotalQtyAmt()
     })
@@ -129,9 +132,14 @@ $(".dynamicform_wrapper").on("afterInsert", function(e, item) {
         })
     }
     $(".remove-item").each(function(index,element){
-        if(index==count){
+        
+        var test=count_items-(initial_count-1);
+        console.log(test);
+
+        if(index>=(test)){
             $(element).click();
         }
+        
         $(element).val(index+"-remove")
     })
 
