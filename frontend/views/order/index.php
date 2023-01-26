@@ -3,6 +3,7 @@
 use common\models\City;
 use common\models\CommonHelpers;
 use common\models\Distributor;
+use common\models\GodownStock;
 use common\models\Orders;
 use common\models\States;
 use common\models\Transport;
@@ -31,7 +32,7 @@ use kartik\grid\GridViewAsset;
         <?php
         
         Modal::begin([
-            'title' => '<h3>Transport Information</h3>',
+            // 'title' => '<h3>Transport Information</h3>',
             'id' => 'modal-transport',
             'size' => 'modal-lg',
 
@@ -98,7 +99,7 @@ use kartik\grid\GridViewAsset;
                 [
                     'class' => 'kartik\grid\ActionColumn',
                     'header' => "Action",
-                    'template' => ' {view} {update} {transport} {delete} ',
+                    'template' => ' {view} {update} {transport} {delete}',
                     'buttons' => [
                         'view' => function ($url, $model, $key) {
                             return Html::a('<i class="text-20 i-Eye"></i>', Url::to(['order/view', 'order_no' => $model->order_no]), [
@@ -137,6 +138,11 @@ use kartik\grid\GridViewAsset;
                                         'method'=>'post',
                                         ]
                                     ]);
+                                }
+                            },
+                            'stockinward' => function ($url, $model, $key) {
+                                if ($model->status == Orders::STATUS_APPROVED) {
+                                    return Html::tag('span', '<i class="text-20 i-Jeep"></i>', ['class' => 'transport-show', 'value' => Url::to(['godown/create', 'order_no' => $model->order_no]), 'style' => 'color : blue;']);
                                 }
                             }
                             ]
@@ -235,6 +241,11 @@ use kartik\grid\GridViewAsset;
                                                 ]
                                             ]);
                                         }
+                            },
+                            'stockinward' => function ($url, $model, $key) {
+                                if ($model->status == Orders::STATUS_APPROVED) {
+                                    return Html::tag('span', '<i class="text-20 i-Jeep"></i>', ['class' => 'transport-show', 'value' => Url::to(['godown/create', 'order_no' => $model->order_no]), 'style' => 'color : blue;']);
+                                }
                                     }
                                     ]
                                 ],
@@ -281,7 +292,7 @@ use kartik\grid\GridViewAsset;
                         [
                             'class' => 'kartik\grid\ActionColumn',
                             'header' => "Action",
-                            'template' => ' {view} {update} {transport} {delete} ',
+                            'template' => ' {view} {update} {transport} {delete} {stockinward}',
                             'buttons' => [
                                 'view' => function ($url, $model, $key) {
                                     return Html::a('<i class="text-20 i-Eye"></i>', Url::to(['order/view', 'order_no' => $model->order_no]), [
@@ -321,6 +332,14 @@ use kartik\grid\GridViewAsset;
                                                 ]
                                             ]);
                                         }
+                            },
+                            'stockinward' => function ($url, $model, $key) {
+                                if ($model->status == Orders::STATUS_APPROVED) {
+                                    if(CommonHelpers::StockInwardCheck($model->order_no)){
+                                    
+                                        return Html::tag('span', '<i class="text-20 i-Shop-2"></i>', ['class' => 'transport-show', 'value' => Url::to(['godown/create', 'order_no' => $model->order_no]), 'style' => 'color : blue;']);
+                                    }
+                                }
                                     }
                                     ]
                                 ],

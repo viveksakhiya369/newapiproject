@@ -95,6 +95,12 @@ class CommonHelpers{
             return false;
         }
     }
+
+    public static function StockInwardCheck($order_no){
+        $stock=GodownStock::find()->where(['order_no'=>$order_no])->asArray()->one();
+        $stock=ShopStock::find()->where(['order_no'=>$order_no])->asArray()->one();
+        return (isset($stock) && !empty($stock)) ? false : true;
+    }
 }
 
 

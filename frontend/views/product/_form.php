@@ -23,7 +23,6 @@ use function PHPSTORM_META\type;
                         <div class="card mb-4">
                             <div class="card-body">
                                 <!-- <div class="card-title mb-3">Form Inputs</div> -->
-                                <form>
                                     <div class="row">
                                         <div class="col-md-6 form-group mb-3">
                                             <?= $form->field($model,'item_group')->textInput(['class' => 'form-control','placeholder'=>'Enter Item Group']) ?>
@@ -81,7 +80,6 @@ use function PHPSTORM_META\type;
 
                                         </div>
                                     </div>
-                                </form>
                             </div>
                         </div>
                     </div>

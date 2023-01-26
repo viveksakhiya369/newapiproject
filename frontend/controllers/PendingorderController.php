@@ -93,16 +93,16 @@ class PendingorderController extends Controller
         }
     }
 
-    // public function actionDelete($order_no)
-    // {
-    //     $models = Orders::find()->where(['order_no' => $order_no])->all();
-    //     foreach ($models as $key => $model) {
-    //         $model->status = Orders::STATUS_DELETED;
-    //         $model->save(false);
-    //     }
-    //     Yii::$app->session->setFlash('success', 'your order has been deleted successfully');
-    //     return $this->redirect($_SERVER['HTTP_REFERER']);
-    // }
+    public function actionDelete($order_no)
+    {
+        $models = PendingOrders::find()->where(['order_no' => $order_no])->all();
+        foreach ($models as $key => $model) {
+            $model->status = Orders::STATUS_DELETED;
+            $model->save(false);
+        }
+        Yii::$app->session->setFlash('success', 'your order has been deleted successfully');
+        return $this->redirect($_SERVER['HTTP_REFERER']);
+    }
 
     public function actionView($order_no)
     {

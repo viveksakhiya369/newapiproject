@@ -20,7 +20,6 @@ use common\models\City;
                         <div class="card mb-4">
                             <div class="card-body">
                                 <!-- <div class="card-title mb-3">Form Inputs</div> -->
-                                <form>
                                     <div class="row">
                                         <div class="col-md-6 form-group mb-3">
                                             <?= $form->field($usermodel,'mobile_num')->textInput(['class' => 'form-control','placeholder'=>'Enter Mobile Number']) ?>
@@ -45,7 +44,6 @@ use common\models\City;
 
                                         </div>
                                     </div>
-                                </form>
                             </div>
                         </div>
                     </div>

@@ -13,47 +13,45 @@ use yii\web\View;
                 <div class="separator-breadcrumb border-top"></div>
                     <!-- ICON BG-->
                 
-                <?=   $this->render('update_form',['model'=>$model]) ?>
+                <?=   $this->render('_up_form',['model'=>$model]) ?>
 </div>
 <?php
-
+$total_qty=0;
+$total_amount=0;
+foreach($model as $i => $val){
+    $total_qty=$total_qty+$val->qty;
+    $total_amount=$total_amount+$val->amount;
+}
 foreach($model as $i => $val){
     $this->registerJs('
         var old_discount'.$i.'='.$val->discount.';
         var old_amount'.$i.'='.$val->amount.';
-        $("#orders-'.$i.'-item_name").prop("disabled",true);
-        
+        $("#total_qty").val('.$total_qty.');
+        $("#total_amt").val('.$total_amount.');
         $("#orders-'.$i.'-qty").keyup(function(){
             getCalculate('.$i.')
             getTotalQtyAmt();
         });
         
-        $("#orders-'.$i.'-qty").change(function(){
-            getCalculate('.$i.')
+        $("#orders-'.$i.'-item_id").change(function(){
+            getalldetails('.$i.',$(this).val());
+            setTimeout(function(){
+                getCalculate('.$i.');
+                getTotalQtyAmt();
+            }, 500);
+
+        });
+        $("#orders-'.$i.'-qty").keyup(function(){
+            getCalculate('.$i.');
             getTotalQtyAmt();
         });
-        $("#orders-'.$i.'-item_name").val('.$val->item_id.').trigger("change");
-        $("#orders-'.$i.'-qty").keyup(function(){
-            var rate=$("#orders-'.$i.'-rate").val();
-            var quantity=$(this).val();
-            var amount=quantity * rate;
-            var tax=($("#orders-'.$i.'-tax").val()*amount)/100;
-            amount=amount+tax;
-            amount=amount-($("#orders-'.$i.'-discount").val()*amount)/100;
-            $("#orders-'.$i.'-amount").val(parseInt(amount));
-        });
         $("#orders-'.$i.'-qty").change(function(){
-            var rate=$("#orders-'.$i.'-rate").val();
-            var quantity=$(this).val();
-            var amount=quantity * rate;
-            var tax=($("#orders-'.$i.'-tax").val()*amount)/100;
-            amount=amount+tax;
-            amount=amount-($("#orders-'.$i.'-discount").val()*amount)/100;
-            $("#orders-'.$i.'-amount").val(parseInt(amount));
+            getCalculate('.$i.');
+            getTotalQtyAmt();
         })
         $("#over_dis").keyup(function(){
             if($(this).val()!=""){
-
+                
                 $("#orders-'.$i.'-overall_discount").val($(this).val());
                 var rate=$("#orders-'.$i.'-rate").val();
                 var quantity=$("#orders-'.$i.'-qty").val();
@@ -68,11 +66,12 @@ foreach($model as $i => $val){
                 $("#orders-'.$i.'-discount").val('.$val->discount.');
                 $("#orders-'.$i.'-qty").val('.$val->qty.');
             }
+            getTotalQtyAmt()
 
         })
         $("#over_dis").change(function(){
             if($(this).val()!=""){
-
+                
                 $("#orders-'.$i.'-overall_discount").val($(this).val());
                 var rate=$("#orders-'.$i.'-rate").val();
                 var quantity=$("#orders-'.$i.'-qty").val();
@@ -87,6 +86,7 @@ foreach($model as $i => $val){
                 $("#orders-'.$i.'-discount").val('.$val->discount.');
                 $("#orders-'.$i.'-qty").val('.$val->qty.');
             }
+            getTotalQtyAmt()
 
         })
     ',View::POS_END);
@@ -95,7 +95,7 @@ foreach($model as $i => $val){
 }
 
 $this->registerJs('
-    $(".remove-item").hide();
-    $(".add-item").hide();
+    // $(".remove-item").hide();
+    // $(".add-item").hide();
 ')
 ?>

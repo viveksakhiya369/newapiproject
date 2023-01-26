@@ -22,7 +22,6 @@ $form = ActiveForm::begin();
         <div class="card mb-4">
             <div class="card-body">
                 <!-- <div class="card-title mb-3">Form Inputs</div> -->
-                <form>
                     <div class="row">
                         <div class="col-md-4 form-group mb-3">
                             <?= $form->field($model, 'driver_name')->textInput(['class' => 'form-control', 'placeholder' => 'Enter Mobile Number']) ?>
@@ -40,7 +39,6 @@ $form = ActiveForm::begin();
                         </div>
                         <?php } ?>
                     </div>
-                </form>
             </div>
         </div>
     </div>
