@@ -16,6 +16,7 @@ use frontend\models\ResetPasswordForm;
 use frontend\models\SignupForm;
 use frontend\models\ContactForm;
 use common\models\CommonHelpers;
+use common\models\ChangePassword;
 
 /**
  * Site controller
@@ -207,18 +208,19 @@ class SiteController extends Controller
      * @return mixed
      * @throws BadRequestHttpException
      */
-    public function actionResetPassword($token)
+    public function actionResetPassword()
     {
         try {
-            $model = new ResetPasswordForm($token);
+            $model = new ChangePassword();
+            $model->scenario ='changePwd';
         } catch (InvalidArgumentException $e) {
             throw new BadRequestHttpException($e->getMessage());
         }
 
         if ($model->load(Yii::$app->request->post()) && $model->validate() && $model->resetPassword()) {
             Yii::$app->session->setFlash('success', 'New password saved.');
-
-            return $this->goHome();
+            Yii::$app->user->logout();
+            return $this->redirect(Yii::$app->getUrlManager()->createUrl('site/login'));
         }
 
         return $this->render('resetPassword', [
