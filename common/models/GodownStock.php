@@ -28,7 +28,12 @@ class GodownStock extends \yii\db\ActiveRecord
     const STATUS_ACTIVE=1;
     const STATUS_DELETED=2;
     const STATUS_INACTIVE=3;
-
+    public $tax;
+    public $pack;
+    public $discount;
+    public $total_qty;
+    public $inward_type;
+    public $total_amount;
     /**
      * {@inheritdoc}
      */
@@ -43,9 +48,9 @@ class GodownStock extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['id', 'parent_id', 'item_id', 'item_name', 'barcode', 'stock', 'rate', 'amount', 'status', 'created_dt', 'created_by', 'updated_dt', 'updated_by'], 'required'],
-            [['id', 'parent_id', 'item_id', 'barcode', 'stock', 'rate', 'amount', 'status', 'created_by', 'updated_by'], 'integer'],
-            [['created_dt', 'updated_dt'], 'safe'],
+            [['item_id', 'item_name', 'qty','inward_type'], 'required'],
+            [['id', 'parent_id', 'item_id', 'stock', 'rate', 'amount', 'status', 'created_by', 'updated_by'], 'integer'],
+            [['created_dt', 'updated_dt','tax','pack','discount','barcode','total_qty','inward_type','total_amount'], 'safe'],
             [['item_name'], 'string', 'max' => 255],
         ];
     }
@@ -58,7 +63,7 @@ class GodownStock extends \yii\db\ActiveRecord
         return [
             'id' => 'ID',
             'parent_id' => 'Parent ID',
-            'item_id' => 'Item ID',
+            'item_id' => 'Item Name',
             'item_name' => 'Item Name',
             'barcode' => 'Barcode',
             'stock' => 'Stock',

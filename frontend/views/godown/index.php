@@ -31,7 +31,7 @@ use kartik\grid\GridView;
         <?php
         
         Modal::begin([
-            'title' => '<h3>Transport Information</h3>',
+            'title' => '<h3>Add items in shop</h3>',
             'id' => 'modal-transport',
             'size' => 'modal-lg',
 
@@ -66,7 +66,7 @@ use kartik\grid\GridView;
                     'format' => 'html',
                     'label' => 'Quantity',
                     'value' => function ($data) {
-                        return $data->qty;
+                        return $data->total_qty;
                     }
                 ],
                 [
@@ -114,13 +114,16 @@ use kartik\grid\GridView;
                         },
                         'reorder' => function($url,$model,$key){
                             if(!in_array(Yii::$app->user->identity->role_id,[User::SUPER_ADMIN])){
-                                return Html::a('<i class="text-20 i-Restore-Window"></i>',Url::to(['pendingorder/resubmit','order_no'=>$model->order_no]),[
-                                    'title'=>'resubmit order',
-                                    'data'=>[
-                                        'confirm'=>'Resubmit this order confirm?',
-                                        'method'=>'post',
-                                    ]
-                                ]);
+                                // return Html::a('<i class="text-20 i-Restore-Window"></i>',Url::to(['godown/submit-to-shop','item_id'=>$model->item_id]),[
+                                //     'title'=>'move to shop',
+                                //     'data'=>[
+                                //         //'confirm'=>'Resubmit this order confirm?',
+                                //         'method'=>'post',
+                                //     ],
+                                //     'class'=>'transport-show',
+                                //     'disabled',
+                                // ]);
+                                return Html::tag('span', '<i class="text-20 i-Restore-Window"></i>', ['class' => 'transport-show', 'value' => Url::to(['godown/submit-to-shop','item_id'=>$model->item_id]), 'style' => 'color : blue;']);
                             }
                         }
                     ]

@@ -3,6 +3,7 @@
 namespace frontend\controllers;
 
 use common\models\CommonHelpers;
+use common\models\CustomModel;
 use common\models\GodownStock;
 use common\models\GodownStockSearch;
 use common\models\Orders;
@@ -104,6 +105,111 @@ class GodownController extends Controller{
         // $model=new GodownStock();
         return $this->renderAjax('create',[
             'model'=>$model
+        ]);
+    }
+
+    public function actionCreateStock(){
+        $model=[new GodownStock()];
+        if(Yii::$app->request->isPost){
+            try{
+                $transaction=Yii::$app->db->beginTransaction();
+                $arr=Yii::$app->request->post('GodownStock');
+                $new_arr = array();
+                foreach ($arr as $item) {
+                    if (isset($new_arr[$item['item_id']])) {
+                        $new_arr[$item['item_id']]['qty'] += $item['qty'];
+                        $new_arr[$item['item_id']]['amount'] += $item['amount'];
+                        continue;
+                    }
+                    
+                    $new_arr[$item['item_id']] = $item;
+                }
+                $arr = array_values($new_arr);
+                $post_data[$model[0]->formName()] = $arr;
+                $model = CustomModel::createMultipleWithCustomArr(GodownStock::className(), $arr);
+                CustomModel::loadMultiple($model, $post_data);
+                foreach($model as $onemodel){
+                    $onemodel->status=GodownStock::STATUS_ACTIVE;
+                    if(!($onemodel->save(false))){
+                        $transaction->rollBack();
+                        break;
+                    }
+                }
+                $transaction->commit();
+                Yii::$app->session->setFlash('success','Items has been added in Godown');
+                return $this->redirect(Url::to(['godown/index']));
+            }catch(Exception $e){
+                $transaction->rollBack();
+                Yii::$app->session->setFlash('error',$e->getMessage());
+                return $this->redirect(Url::to(['godown/index']));
+            }
+            echo'<pre>';print_r($model);exit();
+        }
+        return $this->render('create_stock',[
+            'model'=>$model,
+        ]);
+    }
+
+    public function actionSubmitToShop(){
+        $searchmodel= new GodownStockSearch();
+        $model=$searchmodel->search(Yii::$app->request->queryParams)->getModels();
+        if(Yii::$app->request->isPost){
+            try{
+                $transaction=Yii::$app->db->beginTransaction();
+                $new_post_arr=Yii::$app->request->post('GodownStock');
+                $old_god_stocks=GodownStock::find()->andWhere(['created_by'=>Yii::$app->user->identity->id,'item_id'=>Yii::$app->request->get('item_id')])->andWhere(['!=','status',GodownStock::STATUS_DELETED])->all();
+                $old_total_qty=0;
+                $old_total_amt=0;
+                foreach($old_god_stocks as $i => $value){
+                    $old_total_qty=$old_total_qty+$value->qty;
+                    $old_total_amt=$old_total_amt+$value->amount;
+                    $value->status=GodownStock::STATUS_DELETED;
+                    $value->save(false);
+                }
+                foreach($new_post_arr as $key => $val){
+                        if($val['total_qty']==$old_total_qty){
+                            $shop_model=new ShopStock();
+                            $shop_model->parent_id=isset($old_god_stocks[$key]->parent_id) ? $old_god_stocks[$key]->parent_id : "";
+                            $shop_model->order_no=isset($old_god_stocks[$key]->order_no) ? $old_god_stocks[$key]->order_no : "";
+                            $shop_model->item_id=$val['item_id'];
+                            $shop_model->item_name=$val['item_name'];
+                            $shop_model->barcode=$val['barcode'];
+                            $shop_model->rate=$val['rate'];
+                            $shop_model->status=ShopStock::STATUS_ACTIVE;
+                            $shop_model->qty=$old_total_qty;
+                            $shop_model->amount=$old_total_amt;
+                            $shop_model->save(false);
+                        }else{
+                            $new_god_model=new GodownStock();
+                            $new_shop_model= new ShopStock();
+                            $new_god_model->parent_id=$new_shop_model->parent_id=isset($old_god_stocks[$key]->parent_id) ? $old_god_stocks[$key]->parent_id : "";
+                            $new_god_model->order_no=$new_shop_model->order_no=isset($old_god_stocks[$key]->order_no) ? $old_god_stocks[$key]->order_no : "";
+                            $new_god_model->item_id=$new_shop_model->item_id=$val['item_id'];
+                            $new_god_model->item_name=$new_shop_model->item_name=$val['item_name'];
+                            $new_god_model->barcode=$new_shop_model->barcode=$val['barcode'];
+                            $new_god_model->rate=$new_shop_model->rate=$val['rate'];
+                            $new_shop_model->status=ShopStock::STATUS_ACTIVE;
+                            $new_god_model->status=GodownStock::STATUS_ACTIVE;
+                            $new_shop_model->qty=$val['total_qty'];
+                            $new_shop_model->amount=$val['total_amount'];
+                            $new_god_model->qty=$old_total_qty-$val['total_qty'];
+                            $new_god_model->amount=$old_total_amt-$val['total_amount'];
+                            $new_god_model->save(false);
+                            $new_shop_model->save(false);
+                        }
+                    $transaction->commit();
+                    Yii::$app->session->setFlash('success','Your stock are moved in shop');
+                    return $this->redirect(Url::to(['godown/index']));
+                }
+            }catch(Exception $e){
+                $transaction->rollBack();
+                Yii::$app->session->setFlash('error',$e->getMessage());
+                return $this->redirect(Url::to(['godown/index']));
+            }
+           
+        }
+        return $this->renderAjax('_submit_to_shop_from',[
+            'model'=>$model,
         ]);
     }
 }

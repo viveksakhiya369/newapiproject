@@ -42,7 +42,7 @@ class GodownStockSearch extends GodownStock
      */
     public function search($params)
     {
-        $query = GodownStock::find()->andWhere(['!=',GodownStock::tableName().'.status',GodownStock::STATUS_DELETED])->orderBy([GodownStock::tableName().'.id'=>SORT_DESC]);
+        $query = GodownStock::find()->select([GodownStock::tableName().'.*','SUM('.GodownStock::tableName().'.qty) as total_qty','SUM('.GodownStock::tableName().'.amount) as total_amount'])->andWhere(['!=',GodownStock::tableName().'.status',GodownStock::STATUS_DELETED])->groupBy('item_id')->orderBy([GodownStock::tableName().'.id'=>SORT_DESC]);
 
         // if(!in_array(Yii::$app->user->identity->role_id,[User::SUPER_ADMIN])){
             //if(Yii::$app->user->identity->role_id==User::DISTRIBUTOR){
@@ -50,7 +50,11 @@ class GodownStockSearch extends GodownStock
                 //$query->andWhere(['distributor.user_id'=>Yii::$app->user->identity->id]);
             //}
         // if(isset($params['sent'])&&($params['sent']==1)){
-             $query->andWhere(['orders.parent_id'=>Yii::$app->user->identity->id]);
+             $query->andWhere(['or',
+             [GodownStock::tableName().'.created_by'=>Yii::$app->user->identity->id],
+             ['orders.parent_id'=>Yii::$app->user->identity->id],
+            ]);
+            //  echo'<pre>';print_r($query->all());exit();
                     
         // }
     // }
@@ -62,9 +66,11 @@ class GodownStockSearch extends GodownStock
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
         ]);
-
+        if(isset($params['item_id']) && !empty($params['item_id'])){
+            $query->andFilterWhere(['=',GodownStock::tableName().'.item_id',$params['item_id']]);
+        }
         $this->load($params);
-
+        
         if (!$this->validate()) {
             // uncomment the following line if you do not want to return any records when validation fails
             // $query->where('0=1');
@@ -89,7 +95,6 @@ class GodownStockSearch extends GodownStock
         $query->andFilterWhere(['like', 'order_no', $this->order_no])
             ->andFilterWhere(['like', 'item_name', $this->item_name])
             ->andFilterWhere(['like', 'barcode', $this->barcode]);
-
         return $dataProvider;
     }
 }

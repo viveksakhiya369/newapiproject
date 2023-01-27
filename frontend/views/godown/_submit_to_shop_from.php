@@ -11,12 +11,12 @@ use yii\widgets\ActiveForm;
 <div class="customer-form">
 
     <?php
+    // echo'<pre>';print_r($model);exit();
     $type_inward=[
-        "Godown",
         "Store"
     ];
     $form = ActiveForm::begin(['id' => 'dynamic-form']); ?>
-
+    
     <div class="panel panel-default">
         <div class="panel-heading">
         </div>
@@ -66,14 +66,14 @@ use yii\widgets\ActiveForm;
                                     <?= $form->field($modelAddress, "[{$i}]item_name")->textInput(['maxlength' => true, 'class' => 'item-qty form-control','readonly'=>true]) ?>                          
                                 </div>
                                 <div class="col-sm-4">
-                                    <?= $form->field($modelAddress, "[{$i}]qty")->textInput(['maxlength' => true, 'type' => 'number', 'class' => 'item-qty form-control','min'=>1,'max'=>$modelAddress->qty]) ?>
+                                    <?= $form->field($modelAddress, "[{$i}]total_qty")->textInput(['maxlength' => true, 'type' => 'number', 'class' => 'item-qty form-control','min'=>1,'max'=>$modelAddress->total_qty]) ?>
                                 </div>
                                 <div class="col-sm-4">
                                     <?= $form->field($modelAddress, "[{$i}]inward_type")->dropDownList($type_inward, ["prompt" => "Select Items", 'class' => 'select2 form-control']) ?>
                                     <?= $form->field($modelAddress, "[{$i}]item_id",['template'=>'{input}'])->hiddenInput(['maxlength' => true,'class'=>'test']); ?>
                                     <?php echo $form->field($modelAddress, "[{$i}]barcode",['template'=>'{input}'])->hiddenInput(['maxlength' => true]); ?>
                                     <?= $form->field($modelAddress, "[{$i}]rate",['template'=>'{input}'])->hiddenInput(['maxlength' => true,'class'=>'test']); ?>
-                                    <?= $form->field($modelAddress, "[{$i}]amount",['template'=>'{input}'])->hiddenInput(['maxlength' => true,'class'=>'test']); ?>
+                                    <?= $form->field($modelAddress, "[{$i}]total_amount",['template'=>'{input}'])->hiddenInput(['maxlength' => true,'class'=>'test']); ?>
                                     <?= $form->field($modelAddress, "[{$i}]tax",['template'=>'{input}'])->hiddenInput(['maxlength' => true,'class'=>'test']); ?>
                                     <?= $form->field($modelAddress, "[{$i}]discount",['template'=>'{input}'])->hiddenInput(['maxlength' => true,'class'=>'test']); ?>
                                 </div>
@@ -101,20 +101,50 @@ function getalldetails(count,product_id){
     $.post("'.Url::to(['ajax/get-product-details']).'",{
         product_id:product_id,
     },function(data){
-        console.log(data);
         var response=JSON.parse(data);
-        $("#orders-"+count+"-barcode").val(response.barcode);
+        console.log(response);
+        $("#godownstock-"+count+"-item_name").val(response.item_name);
+        $("#godownstock-"+count+"-pack").val(response.pack);
+        $("#godownstock-"+count+"-rate").val(response.current_rate);
+        $("#godownstock-"+count+"-tax").val(response.taxName.percentage);
+        $("#godownstock-"+count+"-discount").val(response.discount);
+        $("#godownstock-"+count+"-barcode").val(response.barcode);
     })
 }
 function getCalculate(i){
-    var rate=$("#orders-"+i+"-rate").val();
-    var quantity=$("#orders-"+i+"-qty").val();
+    var rate=$("#godownstock-"+i+"-rate").val();
+    var quantity=$("#godownstock-"+i+"-total_qty").val();
     var amount=quantity * rate;
-    var tax=($("#orders-"+i+"-tax").val()*amount)/100;
+    var tax=($("#godownstock-"+i+"-tax").val()*amount)/100;
     amount=amount+tax;
-    amount=amount-($("#orders-"+i+"-discount").val()*amount)/100;
-    $("#orders-"+i+"-amount").val(parseInt(amount));
+    amount=amount-($("#godownstock-"+i+"-discount").val()*amount)/100;
+    $("#godownstock-"+i+"-total_amount").val(parseInt(amount));
 }
 ',View::POS_END);
 
+?>
+<?php
+$this->registerJs('
+    $(".add-item").hide();
+    $(".remove-item").hide();
+    setTimeout(function(){
+        $(".select2").select2(
+            {
+                dropdownParent:document.getElementById("modal-transport")
+            }
+        );
+    }, 100);
+',View::POS_END);
+
+foreach($model as $i => $val){
+    $this->registerJs('
+        getalldetails('.$i.','.$val->item_id.');
+        $("#godownstock-'.$i.'-total_qty").keyup(function(){
+            getCalculate('.$i.');
+        });
+        $("#godownstock-'.$i.'-total_qty").change(function(){
+            getCalculate('.$i.');
+        })
+    ',View::POS_END);
+}
 ?>
