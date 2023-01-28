@@ -26,6 +26,7 @@ class Orders extends \yii\db\ActiveRecord
 {
     public $inward_type;
     public $barcode;
+    // public $total_pack;
 
     const STATUS_QUEUED=1;
     const STATUS_INPROGRESS=2;
@@ -55,8 +56,8 @@ class Orders extends \yii\db\ActiveRecord
         return [
             [['item_id', 'qty','tax','rate', 'discount', 'amount'], 'required'],
             [['inward_type'],'required','on'=>'Inward'],
-            [['parent_id', 'order_no', 'item_id', 'qty', 'rate', 'status', 'created_by', 'updated_by'], 'integer'],
-            [['created_dt','overall_discount', 'updated_dt','inward_type','barcode'], 'safe'],
+            [['parent_id', 'order_no', 'item_id', 'qty', 'rate', 'status', 'created_by', 'updated_by','total_pack'], 'integer'],
+            [['created_dt','overall_discount', 'updated_dt','inward_type','barcode','total_items'], 'safe'],
             [['item_name', 'pack'], 'string', 'max' => 255],
         ];
     }
@@ -72,8 +73,8 @@ class Orders extends \yii\db\ActiveRecord
             'order_no' => 'Order No',
             'item_id' => 'Item ID',
             'item_name' => 'Item Name',
-            'qty' => 'Qty',
-            'pack' => 'Pack',
+            'qty' => 'Quantity',
+            'pack' => 'Items Per Pack',
             'rate' => 'Rate',
             'tax'=>'Tax%',
             'discount'=>'Discount%',

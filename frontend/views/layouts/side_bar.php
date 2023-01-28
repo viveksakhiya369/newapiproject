@@ -106,9 +106,9 @@ use yii\helpers\Url;
                     <?php if(in_array(Yii::$app->user->identity->role_id,[User::SUPER_ADMIN,User::DEALER,User::DISTRIBUTOR])) { ?>
                         <li class="nav-item"><a href="<?php echo yii\helpers\Url::to(['godown/index']) ?>"><i class="nav-icon i-Monitor-Analytics"></i><span class="item-name">Godown Stock</span></a></li>
                     <?php } ?>
-                    <?php if(in_array(Yii::$app->user->identity->role_id,[User::DEALER,User::DISTRIBUTOR])) { ?>
-                        <li class="nav-item"><a href="<?php echo yii\helpers\Url::to(['shop/index']) ?>"><i class="nav-icon i-Network-Window"></i><span class="item-name">Shop Stock</span></a></li>
-                    <?php } ?>
+                    <?php //if(in_array(Yii::$app->user->identity->role_id,[User::DEALER,User::DISTRIBUTOR])) { ?>
+                        <!-- <li class="nav-item"><a href="<?php //echo yii\helpers\Url::to(['shop/index']) ?>"><i class="nav-icon i-Network-Window"></i><span class="item-name">Shop Stock</span></a></li> -->
+                    <?php //} ?>
                 </ul>
                 <!-- <ul class="childNav" data-parent="point">
                     <?php //if(in_array(Yii::$app->user->identity->role_id,[User::SUPER_ADMIN,User::DEALER,User::DISTRIBUTOR])) { ?>

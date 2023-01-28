@@ -44,9 +44,11 @@ class OrderController extends Controller
             if (Yii::$app->request->isPost) {
                 // echo'<pre>';print_r(Yii::$app->request->post());exit();
                 $arr = Yii::$app->request->post('Orders');
+                // echo'<pre>';print_r($arr);exit();
                 $new_arr = array();
                 foreach ($arr as $item) {
                     if (isset($new_arr[$item['item_id']])) {
+                        $new_arr[$item['item_id']]['total_pack'] += $item['total_pack'];
                         $new_arr[$item['item_id']]['qty'] += $item['qty'];
                         $new_arr[$item['item_id']]['amount'] += $item['amount'];
                         continue;
@@ -111,12 +113,12 @@ class OrderController extends Controller
 
     public function actionView($order_no)
     {
-        $orders = Orders::find();
+        $orders = Orders::find()->andWhere(['!=',Orders::tableName().'.status',Orders::STATUS_DELETED]);
         if (in_array(Yii::$app->user->identity->role_id, [User::DISTRIBUTOR, User::DEALER])) {
             $orders->joinWith(['dealer', 'dealer.distributor']);
         }
-        $result = $orders->where(['orders.order_no' => $order_no])->all();
-        $oneorder = Orders::find()->joinWith(['dealer', 'dealer.distributor'])->where(['order_no' => $order_no])->groupBy('order_no')->one();
+        $result = $orders->andWhere([Orders::tableName().'.order_no' => $order_no])->all();
+        $oneorder = Orders::find()->joinWith(['dealer', 'dealer.distributor'])->andWhere(['order_no' => $order_no])->andWhere(['!=',Orders::tableName().'.status',Orders::STATUS_DELETED])->groupBy('order_no')->one();
         // echo'<pre>';print_r($oneorder);exit();
         return $this->render('_view', [
             'result' => $result,
@@ -127,39 +129,108 @@ class OrderController extends Controller
     public function actionUpdate($order_no)
     {
         $model = $this->findAllOrders($order_no);
+        if(empty($model)){
+            Yii::$app->session->setFlash("error","Order does not exist!");
+            return $this->redirect(Url::to(Url::to(['order/index', 'receieved' => true])));
+        }
         if (Yii::$app->request->isPost) {
-            $new_order = Yii::$app->request->post('Orders');
-            foreach ($new_order as $new_key => $new_val) {
-                if ($new_val['qty'] != $model[$new_key]->qty) {
-                    $new_val['qty'] = $model[$new_key]->qty - $new_val['qty'];
-                    $new_val['amount'] = $model[$new_key]->amount - $new_val['amount'];
-                    $pending_order = new PendingOrders();
-                    $pending_order->old_order_id = $model[$new_key]->id;
-                    $pending_order->parent_id = $model[$new_key]->id;
-                    $pending_order->order_no = $model[$new_key]->order_no;
-                    $pending_order->item_id = $model[$new_key]->item_id;
-                    $pending_order->item_name = $model[$new_key]->item_name;
-                    $pending_order->qty = $new_val['qty'];
-                    $pending_order->order_qty = $model[$new_key]->qty;
-                    $pending_order->pack = $model[$new_key]->pack;
-                    $pending_order->rate = $model[$new_key]->rate;
-                    $pending_order->amount = $new_val['amount'];
-                    $pending_order->salesman_id = $model[$new_key]->salesman_id;
-                    $pending_order->status = Orders::STATUS_REJECTED;
-                    $pending_order->save(false);
-                    $model[$new_key]->qty = $model[$new_key]->qty - $pending_order->qty;
-                    $model[$new_key]->amount = $model[$new_key]->amount - $pending_order->amount;
+            try{
+                $transaction=Yii::$app->db->beginTransaction();
+                $new_order = Yii::$app->request->post('Orders');
+                // echo'<pre>';var_dump(isset($new_order));exit();
+                if((isset($new_order)) && (count($new_order)>=count($model))){
+                    foreach ($new_order as $new_key => $new_val) {
+                        if(isset($model[$new_key]) && !empty($model[$new_key])){
+                            if ($new_val['qty'] < $model[$new_key]->qty) {
+                                $pending_order=CommonHelpers::SavePendingOrders($model[$new_key],$new_val);
+                                if($pending_order==false){
+                                    $transaction->rollBack();
+                                    break;
+                                }
+                                $model[$new_key]->qty = $model[$new_key]->qty - $pending_order->qty;
+                                $model[$new_key]->amount = $model[$new_key]->amount - $pending_order->amount;
+                                $model[$new_key]->total_pack = $model[$new_key]->total_pack - $pending_order->total_pack;
+                            }
+                            else if($new_val['amount'] != $model[$new_key]->amount){
+                                $model[$new_key]->qty=isset($new_val['qty']) ? $new_val['qty'] : 0;
+                                $model[$new_key]->total_pack=isset($new_val['total_pack']) ? $new_val['total_pack'] : 0;
+                                $model[$new_key]->amount=isset($new_val['amount']) ? $new_val['amount'] : 0;
+                                $model[$new_key]->overall_discount=isset($new_val['overall_discount']) ? $new_val['overall_discount'] : 0;
+                                $model[$new_key]->discount=isset($new_val['discount']) ? $new_val['discount'] : 0;
+                            }
+                                $model[$new_key]->status =(Yii::$app->user->identity->role_id==User::SUPER_ADMIN) ? Orders::STATUS_APPROVED : Orders::STATUS_INPROGRESS;
+            
+                            // echo'<pre>';print_r($model);exit();
+                            if(!($model[$new_key]->save(false))){
+                                $transaction->rollBack();
+                                break;
+                            }
+                        }else{
+                            $new_val['order_no']=$order_no;
+                            $new_val['status']=(Yii::$app->user->identity->role_id==User::SUPER_ADMIN) ? Orders::STATUS_APPROVED : Orders::STATUS_INPROGRESS;
+                            $new_val['parent_id']=$model[0]->parent_id;
+                            $post_data[$model[0]->formName()] = $new_val;
+                            $order_model=new Orders();
+                            if($order_model->load($post_data)){
+                                if(!($order_model->save(false))){
+                                    $transaction->rollBack();
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }else{
+                    // echo'<pre>';print_r($model);exit();
+                    foreach($model as $i => $val){
+                        if(isset($new_order[$i]) && !empty($new_order[$i])){
+                            if($new_order[$i]['qty']<$model[$i]->qty){
+                                $pending_order=CommonHelpers::SavePendingOrders($model[$i],$new_order[$i]);
+                                // echo'<pre>';print_r($pending_order);exit();
+                                if($pending_order==false){
+                                    $transaction->rollBack();
+                                    break;
+                                }
+                                $model[$i]->qty = $model[$i]->qty - $pending_order->qty;
+                                $model[$i]->total_pack = $model[$i]->total_pack - $pending_order->total_pack;
+                                $model[$i]->amount = $model[$i]->amount - $pending_order->amount;
+                            }else if($model[$i]->amount != $new_order[$i]['amount']){
+                                $model[$i]->total_pack=isset($new_order[$i]['total_pack']) ? $new_order[$i]['total_pack'] : 0;
+                                $model[$i]->qty=isset($new_order[$i]['qty']) ? $new_order[$i]['qty'] : 0;
+                                $model[$i]->amount=isset($new_order[$i]['amount']) ? $new_order[$i]['amount'] : 0;
+                                $model[$i]->overall_discount=isset($new_order[$i]['overall_discount']) ? $new_order[$i]['overall_discount'] : 0;
+                                $model[$i]->discount=isset($new_order[$i]['discount']) ? $new_order[$i]['discount'] : 0;
+                            }
+                            $model[$i]->status =(Yii::$app->user->identity->role_id==User::SUPER_ADMIN) ? Orders::STATUS_APPROVED : Orders::STATUS_INPROGRESS;
+                            // echo'<pre>';print_r($model);exit();
+                            if(!($model[$i]->save(false))){
+                                $transaction->rollBack();
+                                break;
+                            }
+                        }else{
+                            $pending_order=CommonHelpers::SavePendingOrders($model[$i]);
+                            if($pending_order==false){
+                                $transaction->rollBack();
+                                break;
+                            }
+                            $model[$i]->status=Orders::STATUS_DELETED;
+                            if(!($model[$i]->save(false))){
+                                $transaction->rollBack();
+                                break;
+                            }
+                        }
+                    }
+                    // echo'<pre>';print_r($new_order);exit();
                 }
-                else if($new_val['amount'] != $model[$new_key]->amount){
-                    $model[$new_key]->amount=isset($new_val['amount']) ? $new_val['amount'] : 0;
-                    $model[$new_key]->overall_discount=isset($new_val['overall_discount']) ? $new_val['overall_discount'] : 0;
-                    $model[$new_key]->discount=isset($new_val['discount']) ? $new_val['discount'] : 0;
-                }
-                $model[$new_key]->status = Orders::STATUS_APPROVED;
-                $model[$new_key]->save(false);
+                $transaction->commit();
+                Yii::$app->session->setFlash("success", "order has been updated successfully");
+                return $this->redirect(Url::to(['order/index', 'receieved' => true]));
+            }catch(Exception $e){
+                echo'<pre>';print_r($e->getMessage());exit();
+                $transaction->rollBack();
+
+                Yii::$app->session->setFlash("error", $e->getMessage());
+                return $this->redirect(Url::to(['order/index', 'receieved' => true]));
             }
-            Yii::$app->session->setFlash("success", "order has been updated successfully");
-            return $this->redirect(Url::to(['order/index', 'receieved' => true]));
         }
         return $this->render('update', [
             'model' => $model,

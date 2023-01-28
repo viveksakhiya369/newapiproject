@@ -15,7 +15,7 @@ use yii\widgets\ActiveForm;
 
         <div class="panel panel-default">
             <div class="panel-heading">
-                <h4><i class="glyphicon glyphicon-envelope"></i> Addresses</h4>
+                <!-- <h4><i class="glyphicon glyphicon-envelope"></i> Addresses</h4> -->
             </div>
             <div class="panel-body">
                 <?php DynamicFormWidget::begin([
@@ -23,7 +23,7 @@ use yii\widgets\ActiveForm;
                     'widgetBody' => '.container-items', // required: css class selector
                     'widgetItem' => '.item', // required: css class
                     'limit' => 100, // the maximum times, an element can be cloned (default 999)
-                    'min' => 1, // 0 or 1 (default 1)
+                    'min' => 0, // 0 or 1 (default 1)
                     'insertButton' => '.add-item', // css class
                     'deleteButton' => '.remove-item', // css class
                     'model' => $model[0],
@@ -60,10 +60,11 @@ use yii\widgets\ActiveForm;
                                     <div class="col-sm-2">
                                         <?= $form->field($modelAddress, "[{$i}]item_id")->dropDownList(ArrayHelper::map(Products::find()->where(['status' => Products::STATUS_ACTIVE])->all(), 'id', 'item_name'), ["prompt" => "Select Items", 'class' => 'form-control select2']); ?>
                                         <?= $form->field($modelAddress, "[{$i}]item_name", ['template' => '{input}'])->hiddenInput(['maxlength' => true]) ?>
+                                        <?= $form->field($modelAddress, "[{$i}]pack")->textInput(['maxlength' => true,'readonly'=>true]) ?>
                                     </div>
                                     <div class="col-sm-2">
-                                        <?= $form->field($modelAddress, "[{$i}]qty")->textInput(['maxlength' => true, 'type' => 'number', 'class' => 'item-qty form-control']) ?>
-                                        <?= $form->field($modelAddress, "[{$i}]pack", ['template' => '{input}'])->hiddenInput(['maxlength' => true]) ?>
+                                        <?= $form->field($modelAddress, "[{$i}]total_pack")->textInput(['maxlength' => true,'type' => 'number','min'=>1]) ?>
+                                        <?= $form->field($modelAddress, "[{$i}]qty")->textInput(['maxlength' => true, 'type' => 'number', 'class' => 'item-qty form-control' ,'min'=>1]) ?>
                                     </div>
                                     <div class="col-sm-2">
                                         <?= $form->field($modelAddress, "[{$i}]tax")->textInput(['maxlength' => true, "readonly" => true]) ?>
@@ -83,7 +84,7 @@ use yii\widgets\ActiveForm;
                     <?php endforeach; ?>
                 </div>
                 <div class="form-group">
-                    <?= Html::submitButton($modelAddress->isNewRecord ? 'Create' : 'Update', ['class' => 'btn btn-primary']) ?>
+                    <?= Html::submitButton($modelAddress->isNewRecord ? 'Create' : 'Approve Order', ['class' => 'btn btn-primary']) ?>
                     <button type="button" class="add-item btn btn-success btn-sm pull-right"><i class="text-20 i-Add"></i></button>
                     <div class="float-right col-md-2">Overall Discount:<input type="number" id="over_dis" class="form-control"></div>
                     <div class="float-right col-md-2">Total Quantity:<input type="number" id="total_qty" class="form-control"></div>
@@ -109,7 +110,9 @@ $(".dynamicform_wrapper").on("beforeInsert", function(e, item) {
 });
 
 $(".dynamicform_wrapper").on("afterInsert", function(e, item) {
-    $(".select2").select2();
+    $(".select2").select2({
+        width: "100%"
+    });
     initial_count++;
     count_items++;
     count++;
@@ -126,10 +129,22 @@ $(".dynamicform_wrapper").on("afterInsert", function(e, item) {
         });
         
         $("#orders-"+i+"-qty").keyup(function(){
+            getTotalFromQty(i);
             getCalculate(i);
             getTotalQtyAmt();
         })
         $("#orders-"+i+"-qty").change(function(){
+            getTotalFromQty(i);
+            getCalculate(i);
+            getTotalQtyAmt();
+        });
+        $("#orders-"+i+"-total_pack").keyup(function(){
+            getQtyfromTotalItems(i);
+            getCalculate(i);
+            getTotalQtyAmt();
+        })
+        $("#orders-"+i+"-total_pack").change(function(){
+            getQtyfromTotalItems(i);
             getCalculate(i);
             getTotalQtyAmt();
         })
@@ -174,7 +189,9 @@ $(".dynamicform_wrapper").on("beforeDelete", function(e, item) {
 });
 
 $(".dynamicform_wrapper").on("afterDelete", function(e) {
-    $(".select2").select2();
+    $(".select2").select2({
+        width: "100%"
+    });
     count_items--;
     count--;
     getTotalQtyAmt();
@@ -185,13 +202,27 @@ $(".dynamicform_wrapper").on("afterDelete", function(e) {
         });
         
         $("#orders-"+i+"-qty").keyup(function(){
+            getTotalFromQty(i);
             getCalculate(i);
             getTotalQtyAmt();
         })
         $("#orders-"+i+"-qty").change(function(){
+            getTotalFromQty(i);
             getCalculate(i);
             getTotalQtyAmt();
         })
+
+        $("#orders-"+i+"-total_pack").keyup(function(){
+            getQtyfromTotalItems(i);
+            getCalculate(i);
+            getTotalQtyAmt();
+        })
+        $("#orders-"+i+"-total_pack").change(function(){
+            getQtyfromTotalItems(i);
+            getCalculate(i);
+            getTotalQtyAmt();
+        })
+
     }
     console.log("Deleted item!");
 });
@@ -229,6 +260,14 @@ function getalldetails(count,product_id){
     })
 }
 
+function getTotalFromQty(n){
+    $("#orders-"+n+"-total_pack").val(($("#orders-"+n+"-qty").val())/($("#orders-"+n+"-pack").val()));
+}
+
+function getQtyfromTotalItems(n){
+    $("#orders-"+n+"-qty").val($("#orders-"+n+"-total_pack").val()*$("#orders-"+n+"-pack").val());
+}
+
 $("#orders-"+count+"-qty").blur(function(){
     getTotalQtyAmt();
 });
@@ -249,6 +288,7 @@ function getTotalQtyAmt(){
             total_amt=parseInt(total_amt)+parseInt($(element).val());   
         }
     })
+    // new Intl.NumberFormat("en-IN").format(total_qty)
     $("#total_qty").val(total_qty);
     $("#total_amt").val(total_amt);
 }

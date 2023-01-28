@@ -42,13 +42,26 @@ foreach($model as $i => $val){
 
         });
         $("#orders-'.$i.'-qty").keyup(function(){
+            getTotalFromQty('.$i.');
             getCalculate('.$i.');
             getTotalQtyAmt();
         });
         $("#orders-'.$i.'-qty").change(function(){
+            getTotalFromQty('.$i.');
             getCalculate('.$i.');
             getTotalQtyAmt();
-        })
+        });
+        $("#orders-'.$i.'-total_pack").keyup(function(){
+            getQtyfromTotalItems('.$i.');
+            getCalculate('.$i.')
+            getTotalQtyAmt();
+        });
+        
+        $("#orders-'.$i.'-total_pack").change(function(){
+            getQtyfromTotalItems('.$i.');
+            getCalculate('.$i.')
+            getTotalQtyAmt();
+        });
         $("#over_dis").keyup(function(){
             if($(this).val()!=""){
                 

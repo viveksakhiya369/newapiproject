@@ -130,7 +130,7 @@ $this->registerJs('
     setTimeout(function(){
         $(".select2").select2(
             {
-                dropdownParent:document.getElementById("modal-transport")
+                dropdownParent:document.getElementById("modal-transport");
             }
         );
     }, 100);

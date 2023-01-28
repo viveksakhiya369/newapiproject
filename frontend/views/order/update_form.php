@@ -109,7 +109,9 @@ $(".dynamicform_wrapper").on("beforeInsert", function(e, item) {
 });
 
 $(".dynamicform_wrapper").on("afterInsert", function(e, item) {
-    $(".select2").select2();
+    $(".select2").select2({
+        width: "100%"
+    });
     initial_count++;
     count_items=count_items+'.count($model).';
     count=count+'.count($model).';
@@ -151,7 +153,9 @@ $(".dynamicform_wrapper").on("beforeDelete", function(e, item) {
 });
 
 $(".dynamicform_wrapper").on("afterDelete", function(e) {
-    $(".select2").select2();
+    $(".select2").select2({
+        width: "100%"
+    });
     count_items--;
     count--;
     getTotalQtyAmt();

@@ -88,11 +88,12 @@ use kartik\grid\GridViewAsset;
                     'format' => 'html',
                     'label' => 'Status',
                     'value' => function ($data) {
-                        if ($data->status == Orders::STATUS_APPROVED) {
-                            
+                        if ($data->status == Orders::STATUS_APPROVED) {  
                             return '<a class="badge badge-success m-2" href="#">' . Orders::STATUS_APPROVED_LABEL . '</a>';
                         } else if ($data->status == Orders::STATUS_QUEUED) {
                             return '<a class="badge badge-danger m-2" href="#">' . Orders::STATUS_QUEUED_LABEL . '</a>';
+                        }else if( $data->status == Orders::STATUS_INPROGRESS){
+                            return '<a class="badge badge-danger m-2" href="#">' . Orders::STATUS_INPROGRESS_LABEL . '</a>';
                         }
                     }
                 ],
@@ -195,6 +196,8 @@ use kartik\grid\GridViewAsset;
                                     return '<a class="badge badge-success m-2" href="#">' . Orders::STATUS_APPROVED_LABEL . '</a>';
                                 } else if ($data->status == Orders::STATUS_QUEUED) {
                                     return '<a class="badge badge-danger m-2" href="#">' . Orders::STATUS_QUEUED_LABEL . '</a>';
+                                }else if( $data->status == Orders::STATUS_INPROGRESS){
+                                    return '<a class="badge badge-danger m-2" href="#">' . Orders::STATUS_INPROGRESS_LABEL . '</a>';
                                 }
                             }
                         ],
@@ -286,13 +289,15 @@ use kartik\grid\GridViewAsset;
                                     return '<a class="badge badge-success m-2" href="#">' . Orders::STATUS_APPROVED_LABEL . '</a>';
                                 } else if ($data->status == Orders::STATUS_QUEUED) {
                                     return '<a class="badge badge-danger m-2" href="#">' . Orders::STATUS_QUEUED_LABEL . '</a>';
+                                }else if( $data->status == Orders::STATUS_INPROGRESS){
+                                    return '<a class="badge badge-danger m-2" href="#">' . Orders::STATUS_INPROGRESS_LABEL . '</a>';
                                 }
                             }
                         ],
                         [
                             'class' => 'kartik\grid\ActionColumn',
                             'header' => "Action",
-                            'template' => ' {view} {update} {transport} {delete} {stockinward}',
+                            'template' => ' {view} {update} {transport} {delete}',
                             'buttons' => [
                                 'view' => function ($url, $model, $key) {
                                     return Html::a('<i class="text-20 i-Eye"></i>', Url::to(['order/view', 'order_no' => $model->order_no]), [

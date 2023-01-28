@@ -61,6 +61,7 @@ class PendingorderController extends Controller
                     $new_order->item_id=$value->item_id;
                     $new_order->item_name=$value->item_name;
                     $new_order->qty=$value->qty;
+                    $new_order->total_pack=$value->total_pack;
                     $new_order->order_qty=$value->order_qty;
                     $new_order->pack=$value->pack;
                     $new_order->rate=$value->rate;

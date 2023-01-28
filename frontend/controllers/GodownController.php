@@ -23,6 +23,11 @@ class GodownController extends Controller{
                 $this->redirect(Yii::$app->getUrlManager()->createUrl('site/login'));
                 return false;
             }
+            if($action->id=='create-stock' && !in_array(Yii::$app->user->identity->role_id,[User::SUPER_ADMIN])){
+                Yii::$app->session->setFlash('error','permission denied');
+                $this->redirect(Url::to(['site/get-index']));
+                return false;
+            }
                 $this->enableCsrfValidation = false;
                 return true;
         }
@@ -143,7 +148,6 @@ class GodownController extends Controller{
                 Yii::$app->session->setFlash('error',$e->getMessage());
                 return $this->redirect(Url::to(['godown/index']));
             }
-            echo'<pre>';print_r($model);exit();
         }
         return $this->render('create_stock',[
             'model'=>$model,

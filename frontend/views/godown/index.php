@@ -74,7 +74,7 @@ use kartik\grid\GridView;
                     'format' => 'html',
                     'label' => 'Created Date',
                     'value' => function ($data) {
-                        return date('d-m-Y', strtotime($data->created_dt));
+                        return date('d-m-Y', strtotime($data->latest_created_dt));
                     }
                 ],
                 // [
@@ -94,7 +94,7 @@ use kartik\grid\GridView;
                 [
                     'class' => 'kartik\grid\ActionColumn',
                     'header' => "Action",
-                    'template' => ' {view} {delete} {reorder}',
+                    'template' => '{delete} ',
                     'buttons' => [
                         'view' => function ($url, $model, $key) {
                             return Html::a('<i class="text-20 i-Eye"></i>', Url::to(['pendingorder/view', 'order_no' => $model->order_no]), [

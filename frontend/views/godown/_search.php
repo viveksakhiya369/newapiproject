@@ -20,8 +20,10 @@ use yii\helpers\Url;
     <div class="col-lg-3 col-md-6 col-sm-6">
     <?php echo Html::submitButton("Search", ['class' => 'btn btn-primary', 'id' => 'submit-dealer']); ?>
     </div>
-    <div class="col-lg-3 col-md-6 col-sm-6 ml-0">
-        <?php echo Html::a("Create",['godown/create-stock'], ['class' => 'btn btn-primary', 'id' => 'submit-dealer']); ?>
+    <?php if(in_array(Yii::$app->user->identity->role_id,[User::SUPER_ADMIN])) { ?>
+        <div class="col-lg-3 col-md-6 col-sm-6 ml-0">
+            <?php echo Html::a("Create",['godown/create-stock'], ['class' => 'btn btn-primary', 'id' => 'submit-dealer']); ?>
         </div>
+    <?php } ?>
 </div>
     <?php ActiveForm::end(); ?>

@@ -58,12 +58,13 @@ $items=Products::find()->where(['status'=>Products::STATUS_ACTIVE])->asArray()->
                         ?>
                         <div class="row">
                             <div class="col-sm-2">
-                                <?= $form->field($modelAddress, "[{$i}]item_id")->dropDownList(ArrayHelper::map(Products::find()->where(['status'=>Products::STATUS_ACTIVE])->all(),'id','item_name'),["prompt"=>"Select Items",'class' => 'form-control select2']); ?>
+                                <?= $form->field($modelAddress, "[{$i}]item_id")->dropDownList(ArrayHelper::map(Products::find()->where(['status'=>Products::STATUS_ACTIVE])->all(),'id','item_name'),["prompt"=>"Select Items",'class' => 'select2 form-control']); ?>
                                 <?= $form->field($modelAddress, "[{$i}]item_name",['template'=>'{input}'])->hiddenInput(['maxlength' => true]) ?>
+                                <?= $form->field($modelAddress, "[{$i}]pack")->textInput(['maxlength' => true,'readonly'=>true]) ?>
                             </div>
                             <div class="col-sm-2">
+                                <?= $form->field($modelAddress, "[{$i}]total_pack")->textInput(['maxlength' => true]) ?>
                                 <?= $form->field($modelAddress, "[{$i}]qty")->textInput(['maxlength' => true,'type'=>'number','class'=>'item-qty form-control']) ?>
-                                <?= $form->field($modelAddress, "[{$i}]pack",['template'=>'{input}'])->hiddenInput(['maxlength' => true]) ?>
                             </div>
                             <div class="col-sm-2">
                                 <?= $form->field($modelAddress, "[{$i}]tax")->textInput(['maxlength' => true,"readonly"=>true]) ?>
@@ -109,22 +110,40 @@ $(".dynamicform_wrapper").on("beforeInsert", function(e, item) {
 });
 
 $(".dynamicform_wrapper").on("afterInsert", function(e, item) {
-    $(".select2").select2();
+    $(".select2").select2({
+        width: "100%"
+    });
     count_items++;
     count++;
     $("#orders-"+count+"-qty").blur(function(){
+        getCalculate(i);
         getTotalQtyAmt()
     })
     for (let i = 0; i <= count; i++) {
         $("#orders-"+i+"-item_id").change(function(){
             getalldetails(i,$(this).val());
+            getCalculate(i);
+            getTotalQtyAmt();
         });
         
         $("#orders-"+i+"-qty").keyup(function(){
+            getTotalFromQty(i)
             getCalculate(i);
             getTotalQtyAmt();
         })
         $("#orders-"+i+"-qty").change(function(){
+            getTotalFromQty(i)
+            getCalculate(i);
+            getTotalQtyAmt();
+        })
+
+        $("#orders-"+i+"-total_pack").keyup(function(){
+            getQtyfromTotalItems(i);
+            getCalculate(i);
+            getTotalQtyAmt();
+        })
+        $("#orders-"+i+"-total_pack").change(function(){
+            getQtyfromTotalItems(i);
             getCalculate(i);
             getTotalQtyAmt();
         })
@@ -141,20 +160,36 @@ $(".dynamicform_wrapper").on("beforeDelete", function(e, item) {
 });
 
 $(".dynamicform_wrapper").on("afterDelete", function(e) {
-    $(".select2").select2();
+    $(".select2").select2({
+        width: "100%"
+    });
     count_items--;
     count--;
     getTotalQtyAmt();
     for (let i = 0; i <= count; i++) {
         $("#orders-"+i+"-item_id").change(function(){
             getalldetails(i,$(this).val());
+            getTotalQtyAmt();
         });
         
         $("#orders-"+i+"-qty").keyup(function(){
+            getTotalFromQty(i)
             getCalculate(i);
             getTotalQtyAmt();
         })
         $("#orders-"+i+"-qty").change(function(){
+            getTotalFromQty(i)
+            getCalculate(i);
+            getTotalQtyAmt();
+        })
+
+        $("#orders-"+i+"-total_pack").keyup(function(){
+            getQtyfromTotalItems(i);
+            getCalculate(i);
+            getTotalQtyAmt();
+        })
+        $("#orders-"+i+"-total_pack").change(function(){
+            getQtyfromTotalItems(i);
             getCalculate(i);
             getTotalQtyAmt();
         })
@@ -171,11 +206,25 @@ $("#orders-0-item_id").change(function(){
 });
 
 $("#orders-0-qty").keyup(function(){
+    getTotalFromQty(0)
     getCalculate(0)
     getTotalQtyAmt();
 });
 
 $("#orders-0-qty").change(function(){
+    getTotalFromQty(0)
+    getCalculate(0)
+    getTotalQtyAmt();
+});
+
+$("#orders-0-total_pack").keyup(function(){
+    getQtyfromTotalItems(0);
+    getCalculate(0)
+    getTotalQtyAmt();
+});
+
+$("#orders-0-total_pack").change(function(){
+    getQtyfromTotalItems(0);
     getCalculate(0)
     getTotalQtyAmt();
 });
@@ -187,9 +236,11 @@ function getCalculate(i){
     var tax=($("#orders-"+i+"-tax").val()*amount)/100;
     amount=amount+tax;
     amount=amount-($("#orders-"+i+"-discount").val()*amount)/100;
-    $("#orders-"+i+"-amount").val(amount);
+    $("#orders-"+i+"-amount").val(parseInt(amount));
 }
-
+function getTotalFromQty(n){
+    $("#orders-"+n+"-total_pack").val(($("#orders-"+n+"-qty").val())/($("#orders-"+n+"-pack").val()));
+}
 function getalldetails(count,product_id){
     $.post("'.Url::to(['ajax/get-product-details']).'",{
         product_id:product_id,
@@ -204,6 +255,10 @@ function getalldetails(count,product_id){
         getCalculate(count)
         getTotalQtyAmt();
     })
+}
+
+function getQtyfromTotalItems(n){
+    $("#orders-"+n+"-qty").val($("#orders-"+n+"-total_pack").val()*$("#orders-"+n+"-pack").val());
 }
 
 $("#orders-"+count+"-qty").blur(function(){

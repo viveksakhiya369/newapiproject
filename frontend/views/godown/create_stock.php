@@ -21,13 +21,13 @@ use yii\web\View;
 $this->registerJs('
     // $(".add-item").hide();
     // $(".remove-item").hide();
-    setTimeout(function(){
-        $(".select2").select2(
-            {
-                dropdownParent:document.getElementById("modal-transport")
-            }
-        );
-    }, 100);
+    // setTimeout(function(){
+    //     $(".select2").select2(
+    //         {
+    //             dropdownParent:document.getElementById("modal-transport")
+    //         }
+    //     );
+    // }, 100);
 ',View::POS_END);
 
 // foreach($model as $i => $val){

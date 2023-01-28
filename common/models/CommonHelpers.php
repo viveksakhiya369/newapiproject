@@ -101,6 +101,38 @@ class CommonHelpers{
         $stock=ShopStock::find()->where(['order_no'=>$order_no])->asArray()->one();
         return (isset($stock) && !empty($stock)) ? false : true;
     }
+
+    public static function SavePendingOrders($model,$value=[]){
+        // echo'<pre>';print_r("hello");exit();
+        $value['qty'] = $model->qty - (isset($value['qty']) ? $value['qty'] : 0);
+        $value['total_pack'] = $model->total_pack - (isset($value['total_pack']) ? $value['total_pack'] :0) ;
+        $value['amount'] = $model->amount - (isset($value['amount']) ? $value['amount'] : 0 );
+        $pending_order = new PendingOrders();
+        $pending_order->old_order_id = $model->id;
+        $pending_order->parent_id = $model->id;
+        $pending_order->order_no = $model->order_no;
+        $pending_order->item_id = $model->item_id;
+        $pending_order->item_name = $model->item_name;
+        $pending_order->qty = $value['qty'];
+        $pending_order->total_pack = $value['total_pack'];
+        $pending_order->order_qty = $model->qty;
+        $pending_order->pack = $model->pack;
+        $pending_order->rate = $model->rate;
+        $pending_order->tax = $model->tax;
+        $pending_order->discount = $model->discount;
+        $pending_order->amount = $value['amount'];
+        $pending_order->salesman_id = $model->salesman_id;
+        $pending_order->status = Orders::STATUS_REJECTED;
+        if($pending_order->save(false)){
+            return $pending_order;
+        }else{
+            return false;
+        }
+    }
+
+    public static function AddGodownStock($order_model){
+
+    }
 }
 
 

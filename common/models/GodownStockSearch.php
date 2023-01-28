@@ -42,7 +42,7 @@ class GodownStockSearch extends GodownStock
      */
     public function search($params)
     {
-        $query = GodownStock::find()->select([GodownStock::tableName().'.*','SUM('.GodownStock::tableName().'.qty) as total_qty','SUM('.GodownStock::tableName().'.amount) as total_amount'])->andWhere(['!=',GodownStock::tableName().'.status',GodownStock::STATUS_DELETED])->groupBy('item_id')->orderBy([GodownStock::tableName().'.id'=>SORT_DESC]);
+        $query = GodownStock::find()->select([GodownStock::tableName().'.*','SUM('.GodownStock::tableName().'.qty) as total_qty','SUM('.GodownStock::tableName().'.amount) as total_amount','MAX('.GodownStock::tableName().'.created_dt) as latest_created_dt'])->andWhere(['!=',GodownStock::tableName().'.status',GodownStock::STATUS_DELETED])->groupBy('item_id')->orderBy([GodownStock::tableName().'.id'=>SORT_DESC]);
 
         // if(!in_array(Yii::$app->user->identity->role_id,[User::SUPER_ADMIN])){
             //if(Yii::$app->user->identity->role_id==User::DISTRIBUTOR){

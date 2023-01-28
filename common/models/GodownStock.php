@@ -34,6 +34,8 @@ class GodownStock extends \yii\db\ActiveRecord
     public $total_qty;
     public $inward_type;
     public $total_amount;
+    public $latest_created_dt;
+    public $total_pack;
     /**
      * {@inheritdoc}
      */
@@ -50,7 +52,7 @@ class GodownStock extends \yii\db\ActiveRecord
         return [
             [['item_id', 'item_name', 'qty','inward_type'], 'required'],
             [['id', 'parent_id', 'item_id', 'stock', 'rate', 'amount', 'status', 'created_by', 'updated_by'], 'integer'],
-            [['created_dt', 'updated_dt','tax','pack','discount','barcode','total_qty','inward_type','total_amount'], 'safe'],
+            [['created_dt', 'updated_dt','tax','pack','discount','barcode','total_qty','inward_type','total_amount','latest_created_dt','total_pack'], 'safe'],
             [['item_name'], 'string', 'max' => 255],
         ];
     }
