@@ -5,12 +5,14 @@ namespace common\models;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
 use common\models\Points;
+use Yii;
 
 /**
  * PointsSearch represents the model behind the search form of `common\models\Points`.
  */
 class PointsSearch extends Points
 {
+    public $search;
     /**
      * {@inheritdoc}
      */
@@ -18,7 +20,7 @@ class PointsSearch extends Points
     {
         return [
             [['id', 'sender_id', 'receiver_id', 'item_id', 'quantity', 'points', 'status', 'created_by', 'updated_by'], 'integer'],
-            [['created_dt', 'updated_dt'], 'safe'],
+            [['created_dt', 'updated_dt','search'], 'safe'],
         ];
     }
 
@@ -40,9 +42,12 @@ class PointsSearch extends Points
      */
     public function search($params)
     {
-        $query = Points::find();
+        $query = Points::find()->andWhere(['=','status',Points::STATUS_ACTIVE]);
 
         // add conditions that should always apply here
+        if(!in_array(Yii::$app->user->identity->role_id,[User::SUPER_ADMIN])){
+            $query->andWhere(['receiver_id'=>Yii::$app->user->identity->id]);
+        }
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,

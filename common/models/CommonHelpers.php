@@ -205,29 +205,46 @@ class CommonHelpers
         $product=Products::find()->andWhere(['!=','status',Products::STATUS_DELETED])->andWhere(['id'=>$order_model->item_id])->one();
         // echo'<pre>';print_r($product);exit();
         if(Yii::$app->user->identity->role_id==User::SUPER_ADMIN){
-            // $existing_points=Points::find()->andWhere(['receiver_id'=>$order_model->parent_id])->
-            $point=new Points();
-            $point->sender_id=Yii::$app->user->identity->id;
-            $point->receiver_id=$order_model->parent_id;
-            $point->item_id=$order_model->item_id;
-            $point->quantity=$order_model->qty;
-            $point->points=($product->point)*($order_model->qty);
-            $point->status=Points::STATUS_ACTIVE;
-            if(!($point->save(false))){
-                return false;
+            $existing_points=Points::find()->andWhere(['receiver_id'=>$order_model->parent_id])->andWhere(['item_id'=>$order_model->item_id])->andWhere(['=','status',Points::STATUS_ACTIVE])->one();
+            if(isset($existing_points)){
+                $existing_points->quantity=$existing_points->quantity+$order_model->qty;
+                $existing_points->points=$existing_points->points+($product->point)*($order_model->qty);
+                $existing_points->save(false);
+            }else{
+                $point=new Points();
+                $point->sender_id=Yii::$app->user->identity->id;
+                $point->receiver_id=$order_model->parent_id;
+                $point->item_id=$order_model->item_id;
+                $point->quantity=$order_model->qty;
+                $point->points=($product->point)*($order_model->qty);
+                $point->status=Points::STATUS_ACTIVE;
+                if(!($point->save(false))){
+                    return false;
+                }
             }
             return true;
         }else if(Yii::$app->user->identity->role_id==User::DISTRIBUTOR){
-            $existing_points=Points::find()->andWhere(['item_id'=>$order_model->item_id]);
-            $point=new Points();
-            $point->sender_id=Yii::$app->user->identity->id;
-            $point->receiver_id=$order_model->parent_id;
-            $point->item_id=$order_model->item_id;
-            $point->quantity=$order_model->qty;
-            $point->points=($product->point)*($order_model->qty);
-            $point->status=Points::STATUS_ACTIVE;
-            if(!($point->save(false))){
-                return false;
+            $existing_points=Points::find()->andWhere(['receiver_id'=>$order_model->parent_id])->andWhere(['item_id'=>$order_model->item_id])->andWhere(['=','status',Points::STATUS_ACTIVE])->one();
+            if(isset($existing_points)){
+                if(($order_model->qty > $existing_points->quantity)||(($product->point)*($order_model->qty) > $existing_points->points)){
+                    Yii::$app->session->setFlash('error',"You don't have enough quantity");
+                    return false;
+                }else{
+                    $existing_points->quantity=$existing_points->quantity-$order_model->qty;
+                    $existing_points->points=$existing_points->points-($product->point)*($order_model->qty);
+                    $existing_points->save(false);
+                }
+            }else{
+                $point=new Points();
+                $point->sender_id=Yii::$app->user->identity->id;
+                $point->receiver_id=$order_model->parent_id;
+                $point->item_id=$order_model->item_id;
+                $point->quantity=$order_model->qty;
+                $point->points=($product->point)*($order_model->qty);
+                $point->status=Points::STATUS_ACTIVE;
+                if(!($point->save(false))){
+                    return false;
+                }
             }
             return true;
         }

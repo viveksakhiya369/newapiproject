@@ -78,4 +78,8 @@ class Points extends \yii\db\ActiveRecord
             return false;
         }
     }
+
+    public function getProduct(){
+        return $this->hasOne(Products::className(),['id'=>'item_id']);
+    }
 }
