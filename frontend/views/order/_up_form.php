@@ -60,23 +60,33 @@ use yii\widgets\ActiveForm;
                                     <div class="col-sm-2">
                                         <?= $form->field($modelAddress, "[{$i}]item_id")->dropDownList(ArrayHelper::map(Products::find()->where(['status' => Products::STATUS_ACTIVE])->all(), 'id', 'item_name'), ["prompt" => "Select Items", 'class' => 'form-control select2']); ?>
                                         <?= $form->field($modelAddress, "[{$i}]item_name", ['template' => '{input}'])->hiddenInput(['maxlength' => true]) ?>
+                                        <?= $form->field($modelAddress, "[{$i}]barcode", ['template' => '{input}'])->hiddenInput(['maxlength' => true]) ?>
+                                    </div>
+                                    <div class="col-sm-1">
                                         <?= $form->field($modelAddress, "[{$i}]pack")->textInput(['maxlength' => true,'readonly'=>true]) ?>
                                     </div>
-                                    <div class="col-sm-2">
+                                    <div class="col-sm-1">
                                         <?= $form->field($modelAddress, "[{$i}]total_pack")->textInput(['maxlength' => true,'type' => 'number','min'=>1]) ?>
-                                        <?= $form->field($modelAddress, "[{$i}]qty")->textInput(['maxlength' => true, 'type' => 'number', 'class' => 'item-qty form-control' ,'min'=>1]) ?>
                                     </div>
                                     <div class="col-sm-2">
+                                        <?= $form->field($modelAddress, "[{$i}]qty")->textInput(['maxlength' => true, 'type' => 'number', 'class' => 'item-qty form-control' ,'min'=>1]) ?>
+
+                                    </div>
+                                    <div class="col-sm-1">
                                         <?= $form->field($modelAddress, "[{$i}]tax")->textInput(['maxlength' => true, "readonly" => true]) ?>
                                     </div>
-                                    <div class="col-sm-2">
+                                    <div class="col-sm-1">
                                         <?= $form->field($modelAddress, "[{$i}]rate")->textInput(['maxlength' => true, "readonly" => true]) ?>
                                     </div>
                                     <div class="col-sm-2">
                                         <?= $form->field($modelAddress, "[{$i}]amount")->textInput(['maxlength' => true, "readonly" => true, 'class' => 'item-amt form-control']) ?>
                                     </div>
-                                    <div class="col-sm-2">
+                                    <div class="col-sm-1">
                                         <?= $form->field($modelAddress, "[{$i}]discount")->textInput(['maxlength' => true, "readonly" => true]) ?>
+                                    </div>
+                                    <div class="col-sm-1">
+                                        <?= $form->field($modelAddress, "[{$i}]total_points")->textInput(['maxlength' => true,"readonly"=>true,'class'=>'item-point form-control']) ?>
+                                        <?= $form->field($modelAddress, "[{$i}]point",['template'=>'{input}'])->hiddenInput(['maxlength' => true,"readonly"=>true]) ?>
                                     </div>
                                 </div><!-- .row -->
                             </div>
@@ -89,6 +99,7 @@ use yii\widgets\ActiveForm;
                     <div class="float-right col-md-2">Overall Discount:<input type="number" id="over_dis" class="form-control"></div>
                     <div class="float-right col-md-2">Total Quantity:<input type="number" id="total_qty" class="form-control"></div>
                     <div class="float-right col-md-2">Total Amount:<input type="number" id="total_amt" class="form-control"></div>
+            <!-- <div class="float-right col-md-2">Total Point:<input type="number" id="total_point" class="form-control"></div> -->
                 </div>
                 <?php DynamicFormWidget::end(); ?>
             </div>
@@ -102,6 +113,7 @@ use yii\widgets\ActiveForm;
 $this->registerJs('
 var total_amt=0;
 var total_qty=0;
+var total_point=0;
 var count='.(count($model)-1).';
 var count_items='.count($model).';
 var initial_count='.(count($model)).'
@@ -244,6 +256,7 @@ function getCalculate(i){
         amount=amount-($("#orders-"+i+"-discount").val()*amount)/100;
     }
     $("#orders-"+i+"-amount").val(parseInt(amount));
+    $("#orders-"+i+"-total_points").val(($("#orders-"+i+"-point").val())*quantity);
 }
 
 function getalldetails(count,product_id){
@@ -257,6 +270,10 @@ function getalldetails(count,product_id){
         $("#orders-"+count+"-rate").val(response.current_rate);
         $("#orders-"+count+"-tax").val(response.taxName.percentage);
         $("#orders-"+count+"-discount").val(response.discount);
+        $("#orders-"+count+"-barcode").val(response.barcode);
+        $("#orders-"+count+"-point").val(response.point);
+        getCalculate(count)
+        getTotalQtyAmt();
     })
 }
 
@@ -274,6 +291,7 @@ $("#orders-"+count+"-qty").blur(function(){
 function getTotalQtyAmt(){
     total_qty=0;
     total_amt=0;
+    total_point=0;
     $(".item-qty").each(function(index,element){
         if($(element).val()==""){
             total_qty=parseInt(total_qty)+0;   
@@ -288,12 +306,21 @@ function getTotalQtyAmt(){
             total_amt=parseInt(total_amt)+parseInt($(element).val());   
         }
     })
+    $(".item-point").each(function(index,element){
+        if($(element).val()==""){
+            total_point=parseInt(total_point)+0;   
+        }else{
+            total_point=parseInt(total_point)+parseInt($(element).val());   
+        }
+    })
     // new Intl.NumberFormat("en-IN").format(total_qty)
     $("#total_qty").val(total_qty);
     $("#total_amt").val(total_amt);
+    $("#total_point").val(total_point);
 }
 $("#total_qty").prop("disabled",true);
 $("#total_amt").prop("disabled",true);
+$("#total_point").prop("disabled",true);
 
 ',View::POS_END);
 

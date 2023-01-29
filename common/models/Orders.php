@@ -26,6 +26,8 @@ class Orders extends \yii\db\ActiveRecord
 {
     public $inward_type;
     public $barcode;
+    public $point;
+    public $total_points;
     // public $total_pack;
 
     const STATUS_QUEUED=1;
@@ -57,7 +59,7 @@ class Orders extends \yii\db\ActiveRecord
             [['item_id', 'qty','tax','rate', 'discount', 'amount'], 'required'],
             [['inward_type'],'required','on'=>'Inward'],
             [['parent_id', 'order_no', 'item_id', 'qty', 'rate', 'status', 'created_by', 'updated_by','total_pack'], 'integer'],
-            [['created_dt','overall_discount', 'updated_dt','inward_type','barcode','total_items'], 'safe'],
+            [['created_dt','overall_discount', 'updated_dt','inward_type','barcode','total_items','point','total_points'], 'safe'],
             [['item_name', 'pack'], 'string', 'max' => 255],
         ];
     }
@@ -74,7 +76,7 @@ class Orders extends \yii\db\ActiveRecord
             'item_id' => 'Item ID',
             'item_name' => 'Item Name',
             'qty' => 'Quantity',
-            'pack' => 'Items Per Pack',
+            'pack' => 'Items / Pack',
             'rate' => 'Rate',
             'tax'=>'Tax%',
             'discount'=>'Discount%',
@@ -104,7 +106,7 @@ class Orders extends \yii\db\ActiveRecord
     }
 
     public function getUser(){
-        return $this->hasOne(User::className(),['user_id'=>'parent_id']);
+        return $this->hasOne(User::className(),['id'=>'parent_id']);
     }
 
 

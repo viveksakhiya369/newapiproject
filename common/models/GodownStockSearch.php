@@ -20,7 +20,7 @@ class GodownStockSearch extends GodownStock
     {
         return [
             [['id', 'parent_id', 'item_id', 'qty', 'rate', 'amount', 'status', 'created_by', 'updated_by'], 'integer'],
-            [['order_no', 'item_name', 'barcode', 'created_dt', 'updated_dt','search'], 'safe'],
+            [['order_no', 'item_name', 'barcode', 'created_dt', 'updated_dt','search','all_ids'], 'safe'],
         ];
     }
 
@@ -42,7 +42,7 @@ class GodownStockSearch extends GodownStock
      */
     public function search($params)
     {
-        $query = GodownStock::find()->select([GodownStock::tableName().'.*','SUM('.GodownStock::tableName().'.qty) as total_qty','SUM('.GodownStock::tableName().'.amount) as total_amount','MAX('.GodownStock::tableName().'.created_dt) as latest_created_dt'])->andWhere(['!=',GodownStock::tableName().'.status',GodownStock::STATUS_DELETED])->groupBy('item_id')->orderBy([GodownStock::tableName().'.id'=>SORT_DESC]);
+        $query = GodownStock::find()->select([GodownStock::tableName().'.*','SUM('.GodownStock::tableName().'.qty) as total_qty','SUM('.GodownStock::tableName().'.amount) as total_amount','MAX('.GodownStock::tableName().'.created_dt) as latest_created_dt','GROUP_CONCAT('.GodownStock::tableName().'.id) as all_ids'])->andWhere(['!=',GodownStock::tableName().'.status',GodownStock::STATUS_DELETED])->groupBy('item_id')->orderBy([GodownStock::tableName().'.id'=>SORT_DESC]);
 
         // if(!in_array(Yii::$app->user->identity->role_id,[User::SUPER_ADMIN])){
             //if(Yii::$app->user->identity->role_id==User::DISTRIBUTOR){
@@ -50,10 +50,11 @@ class GodownStockSearch extends GodownStock
                 //$query->andWhere(['distributor.user_id'=>Yii::$app->user->identity->id]);
             //}
         // if(isset($params['sent'])&&($params['sent']==1)){
-             $query->andWhere(['or',
-             [GodownStock::tableName().'.created_by'=>Yii::$app->user->identity->id],
-             ['orders.parent_id'=>Yii::$app->user->identity->id],
-            ]);
+            // if(Yii::$app->user->identity->role_id==User::SUPER_ADMIN){
+                $query->andWhere([GodownStock::tableName().'.parent_id'=>Yii::$app->user->identity->id]);
+            // }else{
+                // $query->andWhere(['orders.parent_id'=>Yii::$app->user->identity->id]);
+            // }
             //  echo'<pre>';print_r($query->all());exit();
                     
         // }
@@ -96,5 +97,15 @@ class GodownStockSearch extends GodownStock
             ->andFilterWhere(['like', 'item_name', $this->item_name])
             ->andFilterWhere(['like', 'barcode', $this->barcode]);
         return $dataProvider;
+    }
+
+    public function searchItemWise($item_id){
+        $query = GodownStock::find()->select([GodownStock::tableName().'.*','SUM('.GodownStock::tableName().'.qty) as total_qty','SUM('.GodownStock::tableName().'.amount) as total_amount','MAX('.GodownStock::tableName().'.created_dt) as latest_created_dt','GROUP_CONCAT('.GodownStock::tableName().'.id) as all_ids'])->andWhere(['!=',GodownStock::tableName().'.status',GodownStock::STATUS_DELETED])->groupBy('item_id')->orderBy([GodownStock::tableName().'.id'=>SORT_DESC]);
+        $query->joinWith(['order','order.dealer','order.dealer.distributor']);
+        $query->andWhere([GodownStock::tableName().'.parent_id'=>Yii::$app->user->identity->id]);
+        if(isset($item_id) && !empty($item_id)){
+            $query->andFilterWhere(['=',GodownStock::tableName().'.item_id',$item_id]);
+        }
+        return $query;
     }
 }

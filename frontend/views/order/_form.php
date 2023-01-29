@@ -59,25 +59,33 @@ $items=Products::find()->where(['status'=>Products::STATUS_ACTIVE])->asArray()->
                         <div class="row">
                             <div class="col-sm-2">
                                 <?= $form->field($modelAddress, "[{$i}]item_id")->dropDownList(ArrayHelper::map(Products::find()->where(['status'=>Products::STATUS_ACTIVE])->all(),'id','item_name'),["prompt"=>"Select Items",'class' => 'select2 form-control']); ?>
-                                <?= $form->field($modelAddress, "[{$i}]item_name",['template'=>'{input}'])->hiddenInput(['maxlength' => true]) ?>
-                                <?= $form->field($modelAddress, "[{$i}]pack")->textInput(['maxlength' => true,'readonly'=>true]) ?>
+                                <?= $form->field($modelAddress, "[{$i}]item_name",['template'=>'{input}'])->hiddenInput(['maxlength' => true]) ?>           
                             </div>
                             <div class="col-sm-2">
+                            <?= $form->field($modelAddress, "[{$i}]pack")->textInput(['maxlength' => true,'readonly'=>true]) ?>
+                            </div>
+                            <div class="col-sm-1">
                                 <?= $form->field($modelAddress, "[{$i}]total_pack")->textInput(['maxlength' => true]) ?>
-                                <?= $form->field($modelAddress, "[{$i}]qty")->textInput(['maxlength' => true,'type'=>'number','class'=>'item-qty form-control']) ?>
                             </div>
-                            <div class="col-sm-2">
+                            <div class="col-sm-1">
+                            <?= $form->field($modelAddress, "[{$i}]qty")->textInput(['maxlength' => true,'type'=>'number','class'=>'item-qty form-control']) ?>
+                            </div>
+                            <div class="col-sm-1">
                                 <?= $form->field($modelAddress, "[{$i}]tax")->textInput(['maxlength' => true,"readonly"=>true]) ?>
                             </div>
                        
-                            <div class="col-sm-2">
+                            <div class="col-sm-1">
                                 <?= $form->field($modelAddress, "[{$i}]rate")->textInput(['maxlength' => true,"readonly"=>true]) ?>
                             </div>
                             <div class="col-sm-2">
                                 <?= $form->field($modelAddress, "[{$i}]amount")->textInput(['maxlength' => true,"readonly"=>true,'class'=>'item-amt form-control']) ?>
                             </div>
-                            <div class="col-sm-2">
+                            <div class="col-sm-1">
                                 <?= $form->field($modelAddress, "[{$i}]discount")->textInput(['maxlength' => true,"readonly"=>true]) ?>
+                            </div>
+                            <div class="col-sm-1">
+                                <?= $form->field($modelAddress, "[{$i}]total_points")->textInput(['maxlength' => true,"readonly"=>true,'class'=>'item-point form-control']) ?>
+                                <?= $form->field($modelAddress, "[{$i}]point",['template'=>'{input}'])->hiddenInput(['maxlength' => true,"readonly"=>true]) ?>
                             </div>
                     </div>
                 </div>
@@ -93,6 +101,7 @@ $items=Products::find()->where(['status'=>Products::STATUS_ACTIVE])->asArray()->
             <button type="button" class="add-item btn btn-success btn-sm pull-right"><i class="text-20 i-Add"></i></button>
             <div class="float-right col-md-2">Total Quantity:<input type="number" id="total_qty" class="form-control"></div>
             <div class="float-right col-md-2">Total Amount:<input type="number" id="total_amt" class="form-control"></div>
+            <!-- <div class="float-right col-md-2">Total Point:<input type="number" id="total_point" class="form-control"></div> -->
         </div>
     </div>
 
@@ -103,6 +112,7 @@ $items=Products::find()->where(['status'=>Products::STATUS_ACTIVE])->asArray()->
 $this->registerJs('
 var total_amt=0;
 var total_qty=0;
+var total_point=0;
 var count=0;
 var count_items=1;
 $(".dynamicform_wrapper").on("beforeInsert", function(e, item) {
@@ -237,6 +247,8 @@ function getCalculate(i){
     amount=amount+tax;
     amount=amount-($("#orders-"+i+"-discount").val()*amount)/100;
     $("#orders-"+i+"-amount").val(parseInt(amount));
+    $("#orders-"+i+"-total_points").val(($("#orders-"+i+"-point").val())*quantity);
+
 }
 function getTotalFromQty(n){
     $("#orders-"+n+"-total_pack").val(($("#orders-"+n+"-qty").val())/($("#orders-"+n+"-pack").val()));
@@ -252,6 +264,7 @@ function getalldetails(count,product_id){
         $("#orders-"+count+"-rate").val(response.current_rate);
         $("#orders-"+count+"-tax").val(response.taxName.percentage);
         $("#orders-"+count+"-discount").val(response.discount);
+        $("#orders-"+count+"-point").val(response.point);
         getCalculate(count)
         getTotalQtyAmt();
     })
@@ -267,6 +280,7 @@ $("#orders-"+count+"-qty").blur(function(){
 function getTotalQtyAmt(){
     total_qty=0;
     total_amt=0;
+    total_point=0;
     $(".item-qty").each(function(index,element){
         if($(element).val()==""){
             total_qty=parseInt(total_qty)+0;   
@@ -281,11 +295,20 @@ function getTotalQtyAmt(){
             total_amt=parseInt(total_amt)+parseInt($(element).val());   
         }
     })
+    $(".item-point").each(function(index,element){
+        if($(element).val()==""){
+            total_point=parseInt(total_point)+0;   
+        }else{
+            total_point=parseInt(total_point)+parseInt($(element).val());   
+        }
+    })
     $("#total_qty").val(total_qty);
     $("#total_amt").val(total_amt);
+    $("#total_point").val(total_point);
 }
 $("#total_qty").prop("disabled",true);
 $("#total_amt").prop("disabled",true);
+$("#total_point").prop("disabled",true);
 ',View::POS_END);
 
 ?>

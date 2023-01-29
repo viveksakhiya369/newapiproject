@@ -158,20 +158,33 @@ class OrderController extends Controller
                                 $model[$new_key]->overall_discount=isset($new_val['overall_discount']) ? $new_val['overall_discount'] : 0;
                                 $model[$new_key]->discount=isset($new_val['discount']) ? $new_val['discount'] : 0;
                             }
-                                $model[$new_key]->status =(Yii::$app->user->identity->role_id==User::SUPER_ADMIN) ? Orders::STATUS_APPROVED : Orders::STATUS_INPROGRESS;
+                                $model[$new_key]->barcode = isset($new_val['barcode']) ? $new_val['barcode'] : "";
+                                $model[$new_key]->status = Orders::STATUS_APPROVED;
             
                             // echo'<pre>';print_r($model);exit();
+                            if(CommonHelpers::addPoints($model[$new_key])==false){
+                                return $this->redirect(Url::to(['order/index', 'receieved' => true]));
+                            }
+                            if(CommonHelpers::AddGodownStock($model[$new_key])==false){
+                                return $this->redirect(Url::to(['order/index', 'receieved' => true]));
+                            }
                             if(!($model[$new_key]->save(false))){
                                 $transaction->rollBack();
                                 break;
                             }
                         }else{
                             $new_val['order_no']=$order_no;
-                            $new_val['status']=(Yii::$app->user->identity->role_id==User::SUPER_ADMIN) ? Orders::STATUS_APPROVED : Orders::STATUS_INPROGRESS;
+                            $new_val['status']=Orders::STATUS_APPROVED;
                             $new_val['parent_id']=$model[0]->parent_id;
                             $post_data[$model[0]->formName()] = $new_val;
                             $order_model=new Orders();
                             if($order_model->load($post_data)){
+                                if(CommonHelpers::addPoints($order_model)==false){
+                                    return $this->redirect(Url::to(['order/index', 'receieved' => true]));
+                                }
+                                if(CommonHelpers::AddGodownStock($order_model)==false){
+                                    return $this->redirect(Url::to(['order/index', 'receieved' => true]));
+                                }
                                 if(!($order_model->save(false))){
                                     $transaction->rollBack();
                                     break;
@@ -200,8 +213,16 @@ class OrderController extends Controller
                                 $model[$i]->overall_discount=isset($new_order[$i]['overall_discount']) ? $new_order[$i]['overall_discount'] : 0;
                                 $model[$i]->discount=isset($new_order[$i]['discount']) ? $new_order[$i]['discount'] : 0;
                             }
-                            $model[$i]->status =(Yii::$app->user->identity->role_id==User::SUPER_ADMIN) ? Orders::STATUS_APPROVED : Orders::STATUS_INPROGRESS;
+                            $model[$i]->barcode=isset($new_order[$i]['barcode']) ? $new_order[$i]['barcode'] : 0;
+                            $model[$i]->status = Orders::STATUS_APPROVED;
                             // echo'<pre>';print_r($model);exit();
+                            // CommonHelpers::AddGodownStock($model);
+                            if(CommonHelpers::addPoints($model[$i])==false){
+                                return $this->redirect(Url::to(['order/index', 'receieved' => true]));
+                            }
+                            if(CommonHelpers::AddGodownStock($model[$i])==false){
+                                return $this->redirect(Url::to(['order/index', 'receieved' => true]));
+                            }
                             if(!($model[$i]->save(false))){
                                 $transaction->rollBack();
                                 break;

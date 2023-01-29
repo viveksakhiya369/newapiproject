@@ -5,44 +5,31 @@ namespace common\models;
 use Yii;
 
 /**
- * This is the model class for table "godown_stock".
+ * This is the model class for table "points".
  *
  * @property int $id
- * @property int $parent_id
+ * @property int $sender_id
+ * @property int $receiver_id
  * @property int $item_id
- * @property string $item_name
- * @property int $barcode
- * @property int $stock
- * @property int $rate
- * @property int $amount
+ * @property int $quantity
+ * @property int $points
  * @property int $status
  * @property string $created_dt
  * @property int $created_by
  * @property string $updated_dt
  * @property int $updated_by
  */
-class GodownStock extends \yii\db\ActiveRecord
+class Points extends \yii\db\ActiveRecord
 {
-    const INWARD_TYPE_GODOWN=0;
-    const INWARD_TYPE_SHOP=1;
     const STATUS_ACTIVE=1;
     const STATUS_DELETED=2;
     const STATUS_INACTIVE=3;
-    public $tax;
-    public $pack;
-    public $discount;
-    public $total_qty;
-    public $inward_type;
-    public $total_amount;
-    public $latest_created_dt;
-    public $total_pack;
-    public $all_ids;
     /**
      * {@inheritdoc}
      */
     public static function tableName()
     {
-        return 'godown_stock';
+        return 'points';
     }
 
     /**
@@ -51,10 +38,9 @@ class GodownStock extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['item_id', 'item_name', 'qty','inward_type'], 'required'],
-            [['id', 'parent_id', 'item_id', 'stock', 'rate', 'amount', 'status', 'created_by', 'updated_by'], 'integer'],
-            [['created_dt', 'updated_dt','tax','pack','discount','barcode','total_qty','inward_type','total_amount','latest_created_dt','total_pack','all_ids'], 'safe'],
-            [['item_name'], 'string', 'max' => 255],
+            [['sender_id', 'receiver_id', 'item_id', 'quantity', 'points', 'status', 'created_dt', 'created_by', 'updated_dt', 'updated_by'], 'required'],
+            [['sender_id', 'receiver_id', 'item_id', 'quantity', 'points', 'status', 'created_by', 'updated_by'], 'integer'],
+            [['created_dt', 'updated_dt'], 'safe'],
         ];
     }
 
@@ -65,13 +51,11 @@ class GodownStock extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'parent_id' => 'Parent ID',
-            'item_id' => 'Item Name',
-            'item_name' => 'Item Name',
-            'barcode' => 'Barcode',
-            'stock' => 'Stock',
-            'rate' => 'Rate',
-            'amount' => 'Amount',
+            'sender_id' => 'Sender ID',
+            'receiver_id' => 'Receiver ID',
+            'item_id' => 'Item ID',
+            'quantity' => 'Quantity',
+            'points' => 'Points',
             'status' => 'Status',
             'created_dt' => 'Created Dt',
             'created_by' => 'Created By',
@@ -93,9 +77,5 @@ class GodownStock extends \yii\db\ActiveRecord
         } else {
             return false;
         }
-    }
-
-    public function getOrder(){
-        return $this->hasOne(Orders::className(),['id'=>'order_id']);
     }
 }

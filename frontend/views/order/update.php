@@ -24,6 +24,7 @@ foreach($model as $i => $val){
 }
 foreach($model as $i => $val){
     $this->registerJs('
+        getalldetails('.$i.',$("#orders-'.$i.'-item_id").val());
         var old_discount'.$i.'='.$val->discount.';
         var old_amount'.$i.'='.$val->amount.';
         $("#total_qty").val('.$total_qty.');

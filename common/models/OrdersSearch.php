@@ -55,7 +55,9 @@ class OrdersSearch extends Orders
                         
             }
         }else{
-            $query->joinWith(['dealer','dealer.distributor','distributor']);
+            // $query->joinWith(['dealer','dealer.distributor','distributor']);
+            $query->joinWith(['user']);
+            $query->andWhere(['!=',User::tableName().'.role_id',User::DEALER]);
         }
 
         // add conditions that should always apply here

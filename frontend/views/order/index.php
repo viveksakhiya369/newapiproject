@@ -213,7 +213,9 @@ use kartik\grid\GridViewAsset;
                                 },
                                 'update' => function ($url, $model, $key) {
                                     if (Yii::$app->request->get('receieved') && in_array(Yii::$app->user->identity->role_id, [User::DISTRIBUTOR, User::SUPER_ADMIN]) && ($model->status!=Orders::STATUS_APPROVED)) {
-                                        
+                                        if($model->status==Orders::STATUS_QUEUED && isset($model->dealer)){
+                                            return "";
+                                        }
                                         return Html::a('<i class="text-20 i-Pen-3"></i>', (Yii::$app->request->get('receieved')) ? Url::to(['order/update', 'order_no' => $model->order_no]) : Url::to(['order/send-update','order_no'=>$model->order_no]), [
                                             'title' => 'update',
                                         ]);

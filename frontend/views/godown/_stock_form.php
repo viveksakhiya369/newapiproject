@@ -254,6 +254,7 @@ function getalldetails(count,product_id){
         $("#godownstock-"+count+"-rate").val(response.current_rate);
         $("#godownstock-"+count+"-tax").val(response.taxName.percentage);
         $("#godownstock-"+count+"-discount").val(response.discount);
+        $("#godownstock-"+count+"-barcode").val(response.barcode);
         getCalculate(count)
         getTotalQtyAmt();
     })
