@@ -145,7 +145,7 @@ class CommonHelpers
         // echo'<pre>';print_r($order_model);exit();
         $current_godown = (new GodownStockSearch())->searchItemWise($order_model->item_id)->one();
         if (isset($current_godown)) {
-            if ($current_godown->total_qty > $order_model->qty) {
+            if ($current_godown->total_qty >= $order_model->qty) {
                 $god_model = new GodownStock();
                 $god_model->parent_id = $order_model->parent_id;
                 $god_model->order_id = $order_model->id;
