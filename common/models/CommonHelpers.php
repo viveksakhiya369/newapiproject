@@ -226,7 +226,7 @@ class CommonHelpers
         }else if(Yii::$app->user->identity->role_id==User::DISTRIBUTOR){
             $existing_points=Points::find()->andWhere(['receiver_id'=>$order_model->parent_id])->andWhere(['item_id'=>$order_model->item_id])->andWhere(['=','status',Points::STATUS_ACTIVE])->one();
             if(isset($existing_points)){
-                if(($order_model->qty > $existing_points->quantity)||(($product->point)*($order_model->qty) > $existing_points->points)){
+                if(($order_model->qty >= $existing_points->quantity)||(($product->point)*($order_model->qty) >= $existing_points->points)){
                     Yii::$app->session->setFlash('error',"You don't have enough quantity");
                     return false;
                 }else{
