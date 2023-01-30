@@ -82,4 +82,12 @@ class Points extends \yii\db\ActiveRecord
     public function getProduct(){
         return $this->hasOne(Products::className(),['id'=>'item_id']);
     }
+
+    public function getSender(){
+        return $this->hasOne(User::className(),['id'=>'sender_id']);
+    }
+
+    public function getReceiever(){
+        return $this->hasOne(User::className(),['id'=>'receiver_id']);
+    }
 }

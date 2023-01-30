@@ -48,6 +48,22 @@ use kartik\grid\GridView;
                                     }
                                 ],
                                 [
+                                    'attribute'=>'sender',
+                                    'format'=>'html',
+                                    'label'=>'Sender Name',
+                                    'value'=> function($data){
+                                        return $data->sender->username;
+                                    }
+                                ],
+                                [
+                                    'attribute'=>'receiver',
+                                    'format'=>'html',
+                                    'label'=>'Receiver Name',
+                                    'value'=> function($data){
+                                        return $data->receiever->username;
+                                    }
+                                ],
+                                [
                                     'attribute'=>'points',
                                     'format'=>'html',
                                     'label'=>'Points',
@@ -67,51 +83,51 @@ use kartik\grid\GridView;
                                         }
                                     }
                                 ],
-                                [
-                                    'class' => 'kartik\grid\ActionColumn',
-                                    'header' => "Action",
-                                    'template' => ' {update} {delete} {inactive} {active}',
-                                    'buttons'=>[
-                                        'update'=>function($url,$model,$key){
-                                            return Html::a('<i class="text-20 i-Pen-3"></i>',Url::to(['distributor/update','id'=>$model->id]),[
-                                                'title'=>'update',
-                                            ]);
-                                        },
-                                        'delete'=>function($url,$model,$key){
-                                            return Html::a('<i class="text-20 i-Delete-File"></i>',Url::to(['distributor/delete','id'=>$model->id]),[
-                                                'title'=>'delete',
-                                                'data'=>[
-                                                    'confirm'=>'Delete confirm?',
-                                                    'method'=>'post',
-                                                ]
-                                            ]);
-                                        },
-                                        'active'=> function($url,$model,$key){
-                                            if($model->status==Distributor::STATUS_INACTIVE){
-                                                return Html::a('<i class="text-20 i-Add-User"></i>',Url::to(['distributor/change-status','id'=>$model->id]),[
-                                                    'class'=>'',
-                                                    'title'=>'active',
-                                                    'data'=>[
-                                                        'confirm'=>'Active confirm?',
-                                                        'method'=>'post',
-                                                    ]
-                                                ]);
-                                            }
-                                        },
-                                        'inactive'=> function($url,$model,$key){
-                                            if($model->status==Distributor::STATUS_ACTIVE){
-                                                return Html::a('<i class="text-20 i-Remove-User"></i>',Url::to(['distributor/change-status','id'=>$model->id]),[
-                                                    'class'=>'',
-                                                    'title'=>'active',
-                                                    'data'=>[
-                                                        'confirm'=>'Inctive confirm?',
-                                                        'method'=>'post',
-                                                    ]
-                                                ]);
-                                            }
-                                        }
-                                    ]
-                                ],
+                                // [
+                                //     'class' => 'kartik\grid\ActionColumn',
+                                //     'header' => "Action",
+                                //     'template' => ' {update} {delete} {inactive} {active}',
+                                //     'buttons'=>[
+                                //         'update'=>function($url,$model,$key){
+                                //             return Html::a('<i class="text-20 i-Pen-3"></i>',Url::to(['distributor/update','id'=>$model->id]),[
+                                //                 'title'=>'update',
+                                //             ]);
+                                //         },
+                                //         'delete'=>function($url,$model,$key){
+                                //             return Html::a('<i class="text-20 i-Delete-File"></i>',Url::to(['distributor/delete','id'=>$model->id]),[
+                                //                 'title'=>'delete',
+                                //                 'data'=>[
+                                //                     'confirm'=>'Delete confirm?',
+                                //                     'method'=>'post',
+                                //                 ]
+                                //             ]);
+                                //         },
+                                //         'active'=> function($url,$model,$key){
+                                //             if($model->status==Distributor::STATUS_INACTIVE){
+                                //                 return Html::a('<i class="text-20 i-Add-User"></i>',Url::to(['distributor/change-status','id'=>$model->id]),[
+                                //                     'class'=>'',
+                                //                     'title'=>'active',
+                                //                     'data'=>[
+                                //                         'confirm'=>'Active confirm?',
+                                //                         'method'=>'post',
+                                //                     ]
+                                //                 ]);
+                                //             }
+                                //         },
+                                //         'inactive'=> function($url,$model,$key){
+                                //             if($model->status==Distributor::STATUS_ACTIVE){
+                                //                 return Html::a('<i class="text-20 i-Remove-User"></i>',Url::to(['distributor/change-status','id'=>$model->id]),[
+                                //                     'class'=>'',
+                                //                     'title'=>'active',
+                                //                     'data'=>[
+                                //                         'confirm'=>'Inctive confirm?',
+                                //                         'method'=>'post',
+                                //                     ]
+                                //                 ]);
+                                //             }
+                                //         }
+                                //     ]
+                                // ],
                             ]
                         ])
                     ?>
