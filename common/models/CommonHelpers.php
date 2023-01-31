@@ -200,53 +200,41 @@ class CommonHelpers
         }
     }
 
-    public static function addPoints($order_model){
-        // echo'<pre>';print_r($order_model);exit();
-        $product=Products::find()->andWhere(['!=','status',Products::STATUS_DELETED])->andWhere(['id'=>$order_model->item_id])->one();
-        // echo'<pre>';print_r($product);exit();
-        if(Yii::$app->user->identity->role_id==User::SUPER_ADMIN){
-            $existing_points=Points::find()->andWhere(['receiver_id'=>$order_model->parent_id])->andWhere(['item_id'=>$order_model->item_id])->andWhere(['=','status',Points::STATUS_ACTIVE])->one();
-            if(isset($existing_points)){
-                $existing_points->quantity=$existing_points->quantity+$order_model->qty;
-                $existing_points->points=$existing_points->points+($product->point)*($order_model->qty);
-                $existing_points->save(false);
-            }else{
-                $point=new Points();
-                $point->sender_id=Yii::$app->user->identity->id;
-                $point->receiver_id=$order_model->parent_id;
-                $point->item_id=$order_model->item_id;
-                $point->quantity=$order_model->qty;
-                $point->points=($product->point)*($order_model->qty);
-                $point->status=Points::STATUS_ACTIVE;
-                if(!($point->save(false))){
-                    return false;
-                }
-            }
-            return true;
-        }else if(Yii::$app->user->identity->role_id==User::DISTRIBUTOR){
-            $existing_points=Points::find()->andWhere(['receiver_id'=>$order_model->parent_id])->andWhere(['item_id'=>$order_model->item_id])->andWhere(['=','status',Points::STATUS_ACTIVE])->one();
-            if(isset($existing_points)){
-                if(($order_model->qty >= $existing_points->quantity)||(($product->point)*($order_model->qty) >= $existing_points->points)){
-                    Yii::$app->session->setFlash('error',"You don't have enough quantity");
-                    return false;
-                }else{
-                    $existing_points->quantity=$existing_points->quantity-$order_model->qty;
-                    $existing_points->points=$existing_points->points-($product->point)*($order_model->qty);
-                    $existing_points->save(false);
-                }
-            }else{
-                $point=new Points();
-                $point->sender_id=Yii::$app->user->identity->id;
-                $point->receiver_id=$order_model->parent_id;
-                $point->item_id=$order_model->item_id;
-                $point->quantity=$order_model->qty;
-                $point->points=($product->point)*($order_model->qty);
-                $point->status=Points::STATUS_ACTIVE;
-                if(!($point->save(false))){
-                    return false;
-                }
-            }
-            return true;
+    public static function addPoints($order_models,$order_number){
+        $total_points=0;
+        $total_qty=0;
+        $all_items=[];
+        foreach($order_models as $i => $order_model){
+            $product=Products::find()->andWhere(['!=','status',Products::STATUS_DELETED])->andWhere(['id'=>$order_model->item_id])->one();
+            $total_points=$total_points+(($product->point)*($order_model->qty));
+            $total_qty=$total_qty+$order_model->qty;
+            $all_items[]=$order_model->item_id;
         }
+        $point=new Points();
+        $point->sender_id=Yii::$app->user->identity->id;
+        $point->receiver_id=$order_model->parent_id;
+        $point->order_id=$order_number;
+        $point->item_id=implode(",",$all_items);
+        $point->quantity=$total_qty;
+        $point->points=$total_points;
+        $point->status=Points::STATUS_ACTIVE;
+        if(!($point->save(false))){
+            return false;
+        }
+        return true;
+        
+    }
+
+    public static function getSumOfPoints($arr_datas){
+        // return 'hello';
+        $total_points=0;
+        foreach($arr_datas as $i => $arr_data){
+            if($arr_data->sender_id==Yii::$app->user->identity->id){
+                $total_points=$total_points-$arr_data->points;
+            }else{
+                $total_points=$total_points+$arr_data->points;
+            }
+        }
+        return $total_points;
     }
 }

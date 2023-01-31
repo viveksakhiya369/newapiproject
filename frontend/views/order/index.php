@@ -50,6 +50,7 @@ use kartik\grid\GridViewAsset;
 
             echo GridView::widget([
                 'dataProvider' => $searchdata,
+                'responsiveWrap' => false,
                 'layout' => "{items}\n<div class='float-left'>{summary}</div>\n<div class='float-right'>{pager}</div>",
                 'columns' => [
                     [
@@ -153,6 +154,7 @@ use kartik\grid\GridViewAsset;
                 }else if((Yii::$app->user->identity->role_id==User::SUPER_ADMIN) && (Yii::$app->request->get('receieved'))){
                     echo GridView::widget([
                         'dataProvider' => $searchdata,
+                        'responsiveWrap' => false,
                         'layout' => "{items}\n<div class='float-left'>{summary}</div>\n<div class='float-right'>{pager}</div>",
                         'columns' => [
                             [
@@ -259,6 +261,7 @@ use kartik\grid\GridViewAsset;
                 }else{
                     echo GridView::widget([
                         'dataProvider' => $searchdata,
+                        'responsiveWrap' => false,
                         'layout' => "{items}\n<div class='float-left'>{summary}</div>\n<div class='float-right'>{pager}</div>",
                         'columns' => [
                             [

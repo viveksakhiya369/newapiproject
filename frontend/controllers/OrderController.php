@@ -162,9 +162,10 @@ class OrderController extends Controller
                             $model[$new_key]->status = Orders::STATUS_APPROVED;
 
                             // echo'<pre>';print_r($model);exit();
-                            if (CommonHelpers::addPoints($model[$new_key]) == false) {
-                                return $this->redirect(Url::to(['order/index', 'receieved' => true]));
-                            }
+                            $point_approved_order[] = $model[$new_key];
+                            // if (CommonHelpers::addPoints($model[$new_key]) == false) {
+                            //     return $this->redirect(Url::to(['order/index', 'receieved' => true]));
+                            // }
                             if (CommonHelpers::AddGodownStock($model[$new_key]) == false) {
                                 return $this->redirect(Url::to(['order/index', 'receieved' => true]));
                             }
@@ -179,9 +180,10 @@ class OrderController extends Controller
                             $post_data[$model[0]->formName()] = $new_val;
                             $order_model = new Orders();
                             if ($order_model->load($post_data)) {
-                                if (CommonHelpers::addPoints($order_model) == false) {
-                                    return $this->redirect(Url::to(['order/index', 'receieved' => true]));
-                                }
+                                $point_approved_order[] = $order_model;
+                                // if (CommonHelpers::addPoints($order_model) == false) {
+                                //     return $this->redirect(Url::to(['order/index', 'receieved' => true]));
+                                // }
                                 if (CommonHelpers::AddGodownStock($order_model) == false) {
                                     return $this->redirect(Url::to(['order/index', 'receieved' => true]));
                                 }
@@ -211,8 +213,8 @@ class OrderController extends Controller
                                 unset($model[$i]);
                             }
                         }
-                    }else{
-                        Yii::$app->session->setFlash('error','something went worng!!');
+                    } else {
+                        Yii::$app->session->setFlash('error', 'something went worng!!');
                         return $this->redirect(Url::to(['order/index', 'receieved' => true]));
                     }
                     $model = array_values($model);
@@ -242,10 +244,10 @@ class OrderController extends Controller
                             $model[$i]->barcode = isset($new_order[$i]['barcode']) ? $new_order[$i]['barcode'] : 0;
                             $model[$i]->status = Orders::STATUS_APPROVED;
                             // echo'<pre>';print_r($model);exit();
-                            // CommonHelpers::AddGodownStock($model);
-                            if (CommonHelpers::addPoints($model[$i]) == false) {
-                                return $this->redirect(Url::to(['order/index', 'receieved' => true]));
-                            }
+                            $point_approved_order[] = $model[$i];
+                            // if (CommonHelpers::addPoints($model[$i]) == false) {
+                            //     return $this->redirect(Url::to(['order/index', 'receieved' => true]));
+                            // }
                             if (CommonHelpers::AddGodownStock($model[$i]) == false) {
                                 return $this->redirect(Url::to(['order/index', 'receieved' => true]));
                             }
@@ -255,6 +257,10 @@ class OrderController extends Controller
                             }
                         }
                     }
+                }
+                // echo'<pre>';print_r($point_approved_order);exit();
+                if (CommonHelpers::addPoints($point_approved_order, $order_no) == false) {
+                    return $this->redirect(Url::to(['order/index', 'receieved' => true]));
                 }
                 $transaction->commit();
                 Yii::$app->session->setFlash("success", "order has been updated successfully");

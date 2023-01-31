@@ -59,6 +59,7 @@ use kartik\grid\GridView;
                     <?php
                         echo GridView::widget([
                             'dataProvider'=>$dataProvider,
+                            'responsiveWrap' => false,
                             'layout' => "{items}\n<div class='float-left'>{summary}</div>\n<div class='float-right'>{pager}</div>",
                             'columns'=>[
                                 [

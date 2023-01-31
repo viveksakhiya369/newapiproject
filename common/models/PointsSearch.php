@@ -46,7 +46,11 @@ class PointsSearch extends Points
 
         // add conditions that should always apply here
         if(!in_array(Yii::$app->user->identity->role_id,[User::SUPER_ADMIN])){
-            $query->andWhere(['receiver_id'=>Yii::$app->user->identity->id]);
+            $query->andWhere(['or',
+            ['receiver_id'=>Yii::$app->user->identity->id],
+            ['sender_id'=>Yii::$app->user->identity->id]]);
+        }else{
+            $query->andWhere(['sender_id'=>Yii::$app->user->identity->id]);
         }
 
         $dataProvider = new ActiveDataProvider([

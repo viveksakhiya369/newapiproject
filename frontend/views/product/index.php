@@ -4,9 +4,10 @@ use common\models\City;
 use common\models\CommonHelpers;
 use common\models\Distributor;
 use common\models\States;
-use yii\grid\GridView;
+// use yii\grid\GridView;
 use yii\helpers\Html;
 use yii\helpers\Url;
+use kartik\grid\GridView;
 
 // echo'<pre>';print_r($dataProvider->getModels());exit();
 // echo'<pre>';print_r($this->context->action->id);exit();
@@ -23,10 +24,8 @@ use yii\helpers\Url;
                     <?php
                         echo GridView::widget([
                             'dataProvider'=>$searchdata,
-                            'options' => [
-                                'class'=>'card-body table table-striped table-bordered table-responsive'
-                                ],
-                            'layout' => "{items}\n{summary}\n{pager}",
+                            'responsiveWrap' => false,
+                            'layout' => "{items}\n<div class='float-left'>{summary}</div>\n<div class='float-right'>{pager}</div>",
                             'columns'=>[
                                 [
                                     'class'=>'yii\grid\SerialColumn',

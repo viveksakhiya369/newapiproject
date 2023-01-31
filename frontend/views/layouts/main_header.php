@@ -5,7 +5,7 @@ use common\models\User;
 
 ?>
 <div class="main-header">
-    <img src="<?= Yii::$app->request->baseUrl?>/images/logo.jpg" style="width: 250px; height: 70px;" alt="">
+    <img src="<?= Yii::$app->request->baseUrl?>/images/logo.jpg" style="width: 220px; height: 70px;" alt="">
             <!-- <div class="logo">
             </div> -->
             <div class="menu-toggle">

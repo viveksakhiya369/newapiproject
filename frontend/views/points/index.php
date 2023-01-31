@@ -23,8 +23,11 @@ use kartik\grid\GridView;
                     <?php echo $this->render('_search',['searchmodel'=>$searchmodel]) ?>
                 <div class="row">
                     <?php
+                        $datap=$data;
                         echo GridView::widget([
                             'dataProvider'=>$data,
+                            'responsiveWrap' => false,
+                            'showFooter' => true,
                             'layout' => "{items}\n<div class='float-left'>{summary}</div>\n<div class='float-right'>{pager}</div>",
                             'columns'=>[
                                 [
@@ -32,11 +35,11 @@ use kartik\grid\GridView;
                                     'header'=>'sr.no'
                                 ],
                                 [
-                                    'attribute'=>'item_id',
+                                    'attribute'=>'order_id',
                                     'format'=>'html',
-                                    'label'=>'Item Name',
+                                    'label'=>'Order No',
                                     'value'=> function($data){
-                                        return $data->product->item_name;
+                                        return $data->order_id;
                                     }
                                 ],
                                 [
@@ -50,7 +53,7 @@ use kartik\grid\GridView;
                                 [
                                     'attribute'=>'sender',
                                     'format'=>'html',
-                                    'label'=>'Sender Name',
+                                    'label'=>'From',
                                     'value'=> function($data){
                                         return $data->sender->username;
                                     }
@@ -58,7 +61,7 @@ use kartik\grid\GridView;
                                 [
                                     'attribute'=>'receiver',
                                     'format'=>'html',
-                                    'label'=>'Receiver Name',
+                                    'label'=>'To',
                                     'value'=> function($data){
                                         return $data->receiever->username;
                                     }
@@ -67,8 +70,13 @@ use kartik\grid\GridView;
                                     'attribute'=>'points',
                                     'format'=>'html',
                                     'label'=>'Points',
+                                    'footer' => CommonHelpers::getSumOfPoints($datap->getModels()),
                                     'value'=> function($data){
-                                        return $data->points;
+                                        if($data->sender_id==Yii::$app->user->identity->id){
+                                            return '-'.$data->points;
+                                        }else{
+                                            return '+'.$data->points;
+                                        }
                                     }
                                 ],
                                 [
@@ -83,6 +91,10 @@ use kartik\grid\GridView;
                                         }
                                     }
                                 ],
+                                // [
+                                //     'attribute'=>'price',
+                                           
+                                // ],
                                 // [
                                 //     'class' => 'kartik\grid\ActionColumn',
                                 //     'header' => "Action",

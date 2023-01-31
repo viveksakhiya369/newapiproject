@@ -24,9 +24,7 @@ use kartik\grid\GridView;
                     <?php
                         echo GridView::widget([
                             'dataProvider'=>$searchdata,
-                            // 'options' => [
-                            //     'class'=>'card-body table table-striped table-bordered table-responsive'
-                            //     ],
+                            'responsiveWrap' => false,
                             'layout' => "{items}\n<div class='float-left'>{summary}</div>\n<div class='float-right'>{pager}</div>",
                             'columns'=>[
                                 [

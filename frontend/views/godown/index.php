@@ -47,6 +47,7 @@ use kartik\grid\GridView;
         Pjax::begin();
         echo GridView::widget([
             'dataProvider' => $data,
+            'responsiveWrap' => false,
             'layout' => "{items}\n<div class='float-left'>{summary}</div>\n<div class='float-right'>{pager}</div>",
             'columns' => [
                 [
