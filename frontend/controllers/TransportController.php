@@ -21,7 +21,7 @@ class TransportController extends Controller{
                 $this->redirect(Yii::$app->getUrlManager()->createUrl('site/login'));
                 return false;
             }
-            if(in_array(Yii::$app->user->identity->role_id,[User::DEALER])){
+            if(in_array(Yii::$app->user->identity->role_id,[])){
                 Yii::$app->session->setFlash('error','Permission Denied');
                 $this->redirect(Yii::$app->getUrlManager()->createUrl('site/index'));
                 return false;

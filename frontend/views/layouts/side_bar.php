@@ -125,8 +125,10 @@ use yii\helpers\Url;
                     <?php if(in_array(Yii::$app->user->identity->role_id,[User::SALES_PERSON,User::DISTRIBUTOR,User::DEALER])) { ?>
                     <li class="nav-item"><a href="<?php echo yii\helpers\Url::to(['order/index','sent'=>true]) ?>"><i class="nav-icon i-Clock-4"></i><span class="item-name">Sent Orders</span></a></li>
                     <?php } ?>
-                    <?php if(in_array(Yii::$app->user->identity->role_id,[User::SUPER_ADMIN,User::SALES_PERSON,User::DISTRIBUTOR])) { ?>
+                    <?php if(in_array(Yii::$app->user->identity->role_id,[User::SUPER_ADMIN,User::SALES_PERSON,User::DISTRIBUTOR,User::DEALER])) { ?>
                         <li class="nav-item"><a href="<?php echo yii\helpers\Url::to(['pendingorder/index']) ?>"><i class="nav-icon i-Clock-4"></i><span class="item-name">Pending Orders</span></a></li>
+                    <?php }if(in_array(Yii::$app->user->identity->role_id,[User::DEALER])){ ?>
+                        <li class="nav-item"><a href="<?php echo yii\helpers\Url::to(['sellorder/index','sell_order'=>true]) ?>"><i class="nav-icon i-Clock-4"></i><span class="item-name">Selling Orders</span></a></li>
                     <?php } ?>
                 </ul>
                 

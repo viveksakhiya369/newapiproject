@@ -4,11 +4,14 @@ namespace frontend\controllers;
 
 use common\models\City;
 use common\models\CommonHelpers;
+use common\models\Karigar;
 use common\models\Products;
 use common\models\User;
+use Twilio\TwiML\Voice\Prompt;
 use Yii;
 use yii\web\Controller;
 use yii\helpers\ArrayHelper;
+use yii\helpers\Html;
 
 class AjaxController extends Controller{
 
@@ -46,6 +49,17 @@ class AjaxController extends Controller{
 
     public function actionTest(){
         return $this->render('test');
+    }
+
+    public function actionGetKarigarFromMobile(){   
+        $karigar=Karigar::find()->joinWith('user')->andWhere(['!=',Karigar::tableName().'.status',User::STATUS_DELETED])->andWhere([User::tableName().'.mobile_num'=>Yii::$app->request->post('mobile_num')])->one();
+        if(isset($karigar)){
+            $response['name']=$karigar->name;
+            $response['parent_id']=$karigar->user->id;
+            return json_encode($response);
+        }else{
+            return "";
+        }
     }
 
 }

@@ -54,10 +54,16 @@ class OrdersSearch extends Orders
                 $query->andWhere(['orders.parent_id'=>Yii::$app->user->identity->id]);
                         
             }
+            if(isset($params['sell_order'])&&($params['sell_order']==1)&&(in_array(Yii::$app->user->identity->role_id,[User::DEALER]))){
+                $query->joinWith(['user'])
+                    ->andWhere([User::tableName().'.role_id'=>User::KARIGAR])
+                    ->andWhere([Orders::tableName().'.created_by'=>Yii::$app->user->identity->id]);
+
+            }
         }else{
             // $query->joinWith(['dealer','dealer.distributor','distributor']);
             $query->joinWith(['user']);
-            $query->andWhere(['!=',User::tableName().'.role_id',User::DEALER]);
+            $query->andWhere(['NOT IN',User::tableName().'.role_id',[User::DEALER,User::KARIGAR]]);
         }
 
         // add conditions that should always apply here

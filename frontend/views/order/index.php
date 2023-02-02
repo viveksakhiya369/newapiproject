@@ -318,7 +318,7 @@ use kartik\grid\GridViewAsset;
                                     }
                                 },
                                 'transport' => function ($url, $model, $key) {
-                                    if ( in_array(Yii::$app->user->identity->role_id, [User::DISTRIBUTOR, User::SUPER_ADMIN])) {
+                                    if ( in_array(Yii::$app->user->identity->role_id, [User::DISTRIBUTOR, User::SUPER_ADMIN,User::DEALER])) {
                                         $transport=Transport::find()->where(['order_no'=>$model->order_no])->one();
                                         // echo'<pre>';print_r();exit();
                                         if(isset($transport) && (Yii::$app->request->get('sent')) && (!empty($transport))){

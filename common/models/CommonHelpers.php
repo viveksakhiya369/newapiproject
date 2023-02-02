@@ -5,6 +5,7 @@ namespace common\models;
 use PHPUnit\Framework\Constraint\Count;
 use Yii;
 use Twilio\Rest\Client;
+use yii\helpers\ArrayHelper;
 use yii\web\Controller;
 
 class CommonHelpers
@@ -236,5 +237,9 @@ class CommonHelpers
             }
         }
         return $total_points;
+    }
+
+    public static function GetKarigarList(){
+        $data=ArrayHelper::map((new KarigarSearch())->search('')->getModels(),'id','name');
     }
 }
