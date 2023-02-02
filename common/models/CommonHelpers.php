@@ -236,6 +236,9 @@ class CommonHelpers
                 $total_points=$total_points+$arr_data->points;
             }
         }
+        if(in_array(Yii::$app->user->identity->role_id,[User::SUPER_ADMIN])){
+            return abs($total_points);
+        }
         return $total_points;
     }
 

@@ -7,6 +7,7 @@ use common\models\User;
 use yii\helpers\ArrayHelper;
 use common\models\States;
 use common\models\City;
+use yii\web\View;
 use yii\widgets\Pjax;
 
 ?>
@@ -30,7 +31,7 @@ $form = ActiveForm::begin();
                             <?= $form->field($model, 'vehicle_number')->textInput(['class' => 'form-control', 'placeholder' => 'Enter Mobile Number']) ?>
                         </div>
                         <div class="col-md-4 form-group mb-3">
-                            <?= $form->field($model, 'transpotation_id')->textInput(['class' => 'form-control', 'placeholder' => 'Enter Mobile Number','readonly'=>true,'value'=>"CONVAXTID".Yii::$app->request->get('order_no')]) ?>
+                            <?= $form->field($model, 'transpotation_id')->textInput(['class' => 'form-control', 'placeholder' => 'Enter Mobile Number']) ?>
                         </div>
                         <?php if(Yii::$app->request->get('receieved')){ ?>
                         <div class="col-md-12">
@@ -45,3 +46,16 @@ $form = ActiveForm::begin();
 </div>
 <?php ActiveForm::end(); ?>
 <?php Pjax::end() ?>
+<?php
+if(!(Yii::$app->request->get('receieved'))){
+    $this->registerJs('
+    
+    $("#transport-driver_name").prop("disabled",true);
+    $("#transport-vehicle_number").prop("disabled",true);
+    $("#transport-transpotation_id").prop("disabled",true);
+        
+',View::POS_END);
+}
+
+
+?>

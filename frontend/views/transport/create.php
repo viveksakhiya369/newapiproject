@@ -18,24 +18,15 @@ use yii\web\View;
                 <?=   $this->render('_form',['model'=>$model]) ?>
 </div>
 <?php
-
-$this->registerJs('
-    if($("#state_id").val()!=""){
-        getCityDropDown();
-    }
-    $("#state_id").change(function(){
-        getCityDropDown();
-    });
-    function getCityDropDown(){
-        $.post("'.Url::toRoute(['ajax/get-city-name']).'",{
-            state_id:$("#state_id").val()
-        },
-        function(data){
-            $("#city_id").html(data);
-            console.log(data);
-        })
-    }
+if(!(Yii::$app->request->get('receieved'))){
+    $this->registerJs('
+    
+    $("#transport-driver_name").prop("disabled",true);
+    $("#transport-vehicle_number").prop("disabled",true);
+    $("#transport-transpotation_id").prop("disabled",true);
         
 ',View::POS_END);
+}
+
 
 ?>

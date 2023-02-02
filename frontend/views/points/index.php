@@ -5,6 +5,7 @@ use common\models\CommonHelpers;
 use common\models\Distributor;
 use common\models\Points;
 use common\models\States;
+use common\models\User;
 // use yii\grid\GridView;
 use yii\helpers\Html;
 use yii\helpers\Url;
@@ -72,6 +73,9 @@ use kartik\grid\GridView;
                                     'label'=>'Points',
                                     'footer' => CommonHelpers::getSumOfPoints($datap->getModels()),
                                     'value'=> function($data){
+                                        if(($data->sender_id==Yii::$app->user->identity->id) && (in_array(Yii::$app->user->identity->role_id,[User::SUPER_ADMIN]))){
+                                            return $data->points;
+                                        }
                                         if($data->sender_id==Yii::$app->user->identity->id){
                                             return '-'.$data->points;
                                         }else{

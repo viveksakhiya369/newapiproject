@@ -1,13 +1,15 @@
 <?php
 
 use common\models\Orders;
+use yii\helpers\Url;
+
 // echo '<pre>';print_r($order_details);exit;
 // echo '<pre>';print_r();exit;
 // echo'<pre>';print_r($result);exit();
 ?>
 <div class="card"><!----><!---->
     <div class="card-body"><!----><!---->
-        <div class="d-sm-flex mb-5"><span class="m-auto"></span><button type="button" class="btn btn-outline-danger mr-3 mb-3">Back</button>
+        <div class="d-sm-flex mb-5"><span class="m-auto"></span><a href="<?= Url::to(['order/index','sent'=>true]) ?>"><span  class="btn btn-outline-danger mr-3 mb-3">Back</span></a>
         <!-- <button type="button" class="btn btn-outline-danger mr-3 mb-3">Edit Invoice</button> -->
         <button type="button" class="btn btn-primary mr-3 mb-3">print Invoice</button></div>
         <div id="print-area" class="print-area">

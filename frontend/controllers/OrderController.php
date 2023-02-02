@@ -94,6 +94,10 @@ class OrderController extends Controller
     public function actionIndex()
     {
         $searchmodel = new OrdersSearch();
+        if((Yii::$app->user->identity->role_id==User::DEALER) && (isset(Yii::$app->request->queryParams['receieved'])) && (Yii::$app->request->queryParams['receieved']==1)){
+            Yii::$app->session->setFlash("error","Permission Denied");
+            return $this->redirect(Url::to(['site/get-index']));
+        }
         $searchdata = $searchmodel->search(Yii::$app->request->queryParams);
         return $this->render('index', [
             'searchmodel' => $searchmodel,
