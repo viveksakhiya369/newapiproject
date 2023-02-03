@@ -9,7 +9,7 @@ use yii\helpers\Url;
                     <li class="nav-item"><a class="nav-item-hold" href="<?php echo yii\helpers\Url::to(['site/get-index']) ?>"><i class="nav-icon i-Bar-Chart"></i><span class="nav-text">Dashboard</span></a>
                         <div class="triangle"></div>
                     </li>
-                    <?php if(in_array(Yii::$app->user->identity->role_id,[User::SUPER_ADMIN,User::DISTRIBUTOR,User::DEALER,User::SALES_PERSON])){ ?>
+                    <?php if(in_array(Yii::$app->user->identity->role_id,[User::SUPER_ADMIN,User::DISTRIBUTOR,User::DEALER])){ ?>
                     <li class="nav-item" data-item="users"><a class="nav-item-hold" href="<?php echo yii\helpers\Url::to(['user/index']) ?>"><i class="nav-icon i-Administrator"></i><span class="nav-text">Manage Users</span></a>
                         <div class="triangle"></div>
                     </li>
