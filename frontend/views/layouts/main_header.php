@@ -18,6 +18,7 @@ use common\models\User;
             <div style="margin: auto"></div>
             <div class="header-part-right">
                 <!-- Full screen toggle -->
+                <span class="btn btn-success m-1"><?= User::ROLE_ARR[Yii::$app->user->identity->role_id]?></span>
                 <i class="i-Full-Screen header-icon d-none d-sm-inline-block" data-fullscreen></i>
                 <!-- Notificaiton -->
                 <div class="dropdown">

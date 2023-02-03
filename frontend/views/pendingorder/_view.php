@@ -73,7 +73,7 @@ use yii\helpers\Url;
                                     <div>Quantity</div>
                                 </th>
                                 <th role="columnheader" scope="col" aria-colindex="5" class="">
-                                    <div>Rate</div>
+                                    <div>Amount</div>
                                 </th>
                             </tr>
                         </thead>
