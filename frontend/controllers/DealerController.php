@@ -72,6 +72,7 @@ class DealerController extends Controller{
     public function actionCreate(){
         $model=new Dealer();
         $usermodel=new User();
+        $usermodel->scenario="newpass";
 
         $transaction=Yii::$app->db->beginTransaction();
         
@@ -82,14 +83,14 @@ class DealerController extends Controller{
                     // echo'<pre>';print_r($model);exit();
                     if($model->validate() && $usermodel->validate()){
                         $usermodel->role_id=User::DEALER;
-                        $rndm_password=CommonHelpers::randomStringGenerate(8);
-                        $usermodel->password_hash=Yii::$app->security->generatePasswordHash($rndm_password);
+                        // $rndm_password=CommonHelpers::randomStringGenerate(8);
+                        $usermodel->password_hash=Yii::$app->security->generatePasswordHash($usermodel->password);
                         if($usermodel->save(false)){
                             $model->user_id=$usermodel->id;
                             $model->parent_id=Distributor::getDistributorId(Yii::$app->user->identity->id);
                         }
                         if($model->save(false)){
-                            //CommonHelpers::sendOtp($usermodel,$rndm_password);
+                            //CommonHelpers::sendOtp($usermodel,$usermodel->password);
                         }
                         $transaction->commit();
                         Yii::$app->session->setFlash('success','Dealer added successfully');

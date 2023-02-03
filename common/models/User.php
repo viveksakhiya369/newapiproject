@@ -26,7 +26,7 @@ use yii\web\IdentityInterface;
 class User extends ActiveRecord implements IdentityInterface
 {
     // public $role_id;
-
+    public $password;
     const STATUS_DELETED = 0;
     const STATUS_INACTIVE = 9;
     const STATUS_ACTIVE = 10;
@@ -74,6 +74,9 @@ class User extends ActiveRecord implements IdentityInterface
             [['email'],'safe'],
             [['mobile_num'],'integer'],
             [['mobile_num','email'],'unique'],
+            [['password'],'safe'],
+            [['password'],'required','on'=>'newpass'],
+            ['password','match','pattern'=>'/^.*(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).*$/','message'=>'New password must contain at least one lower and upper case character and a digit.','on' => 'newpass'],
             ['mobile_num', 'match', 'pattern'=>"/^[0-9]{3}[0-9]{3}[0-9]{2}[0-9]{2}$/",'message'=> 'Mobile Number should have 10 digits.'],
             ['status', 'default', 'value' => self::STATUS_ACTIVE],
             ['status', 'in', 'range' => [self::STATUS_ACTIVE, self::STATUS_INACTIVE, self::STATUS_DELETED]],

@@ -52,6 +52,16 @@ foreach($model as $i => $val){
             getCalculate('.$i.');
             getTotalQtyAmt();
         });
+        $("#orders-'.$i.'-discount").change(function(){
+            getTotalFromQty('.$i.');
+            getCalculate('.$i.');
+            getTotalQtyAmt();
+        });
+        $("#orders-'.$i.'-discount").keyup(function(){
+            getTotalFromQty('.$i.');
+            getCalculate('.$i.');
+            getTotalQtyAmt();
+        });
         $("#orders-'.$i.'-total_pack").keyup(function(){
             getQtyfromTotalItems('.$i.');
             getCalculate('.$i.')
@@ -71,7 +81,7 @@ foreach($model as $i => $val){
                 var quantity=$("#orders-'.$i.'-qty").val();
                 var amount=quantity * rate;
                 var tax=($("#orders-'.$i.'-tax").val()*amount)/100;
-                amount=amount+tax;
+                // amount=amount+tax;
                 amount=amount-($(this).val()*amount)/100;
                 $("#orders-'.$i.'-amount").val(parseInt(amount));
                 $("#orders-'.$i.'-discount").val($(this).val())
@@ -91,7 +101,7 @@ foreach($model as $i => $val){
                 var quantity=$("#orders-'.$i.'-qty").val();
                 var amount=quantity * rate;
                 var tax=($("#orders-'.$i.'-tax").val()*amount)/100;
-                amount=amount+tax;
+                // amount=amount+tax;
                 amount=amount-($(this).val()*amount)/100;
                 $("#orders-'.$i.'-amount").val(parseInt(amount));
                 $("#orders-'.$i.'-discount").val($(this).val())

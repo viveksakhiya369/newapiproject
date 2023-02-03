@@ -71,18 +71,18 @@ use yii\widgets\ActiveForm;
                                     <div class="col-sm-2">
                                         <?= $form->field($modelAddress, "[{$i}]qty")->textInput(['maxlength' => true, 'type' => 'number', 'class' => 'item-qty form-control' ,'min'=>1]) ?>
 
+                                        <?= $form->field($modelAddress, "[{$i}]tax", ['template' => '{input}'])->hiddenInput(['maxlength' => true, "readonly" => true]) ?>
                                     </div>
-                                    <div class="col-sm-1">
-                                        <?= $form->field($modelAddress, "[{$i}]tax")->textInput(['maxlength' => true, "readonly" => true]) ?>
-                                    </div>
-                                    <div class="col-sm-1">
+                                    <!-- <div class="col-sm-1">
+                                    </div> -->
+                                    <div class="col-sm-2">
                                         <?= $form->field($modelAddress, "[{$i}]rate")->textInput(['maxlength' => true, "readonly" => true]) ?>
                                     </div>
                                     <div class="col-sm-2">
                                         <?= $form->field($modelAddress, "[{$i}]amount")->textInput(['maxlength' => true, "readonly" => true, 'class' => 'item-amt form-control']) ?>
                                     </div>
                                     <div class="col-sm-1">
-                                        <?= $form->field($modelAddress, "[{$i}]discount")->textInput(['maxlength' => true, "readonly" => true]) ?>
+                                        <?= $form->field($modelAddress, "[{$i}]discount")->textInput(['maxlength' => true]) ?>
                                     </div>
                                     <div class="col-sm-1">
                                         <?= $form->field($modelAddress, "[{$i}]total_points")->textInput(['maxlength' => true,"readonly"=>true,'class'=>'item-point form-control']) ?>
@@ -129,6 +129,7 @@ $(".dynamicform_wrapper").on("afterInsert", function(e, item) {
     count_items++;
     count++;
     
+    getCleanObj(count);
     $("#orders-"+count+"-qty").blur(function(){
         getCalculate(i);
         getTotalQtyAmt()
@@ -159,7 +160,17 @@ $(".dynamicform_wrapper").on("afterInsert", function(e, item) {
             getQtyfromTotalItems(i);
             getCalculate(i);
             getTotalQtyAmt();
-        })
+        });
+        $("#orders-"+i+"-discount").change(function(){
+            getQtyfromTotalItems(i);
+            getCalculate(i);
+            getTotalQtyAmt();
+        });
+        $("#orders-"+i+"-discount").keyup(function(){
+            getQtyfromTotalItems(i);
+            getCalculate(i);
+            getTotalQtyAmt();
+        });
         $("#over_dis").keyup(function(){
             if($(this).val()!=""){
                 
@@ -168,7 +179,7 @@ $(".dynamicform_wrapper").on("afterInsert", function(e, item) {
                 var quantity=$("#orders-"+i+"-qty").val();
                 var amount=quantity * rate;
                 var tax=($("#orders-"+i+"-tax").val()*amount)/100;
-                amount=amount+tax;
+                // amount=amount+tax;
                 amount=amount-($(this).val()*amount)/100;
                 $("#orders-"+i+"-amount").val(parseInt(amount));
                 $("#orders-"+i+"-discount").val($(this).val())
@@ -184,7 +195,7 @@ $(".dynamicform_wrapper").on("afterInsert", function(e, item) {
                 var quantity=$("#orders-"+i+"-qty").val();
                 var amount=quantity * rate;
                 var tax=($("#orders-"+i+"-tax").val()*amount)/100;
-                amount=amount+tax;
+                // amount=amount+tax;
                 amount=amount-($(this).val()*amount)/100;
                 $("#orders-"+i+"-amount").val(parseInt(amount));
                 $("#orders-"+i+"-discount").val($(this).val())
@@ -223,6 +234,16 @@ $(".dynamicform_wrapper").on("afterDelete", function(e) {
             getCalculate(i);
             getTotalQtyAmt();
         })
+        $("#orders-"+i+"-discount").change(function(){
+            getQtyfromTotalItems(i);
+            getCalculate(i);
+            getTotalQtyAmt();
+        });
+        $("#orders-"+i+"-discount").keyup(function(){
+            getQtyfromTotalItems(i);
+            getCalculate(i);
+            getTotalQtyAmt();
+        });
 
         $("#orders-"+i+"-total_pack").keyup(function(){
             getQtyfromTotalItems(i);
@@ -249,7 +270,7 @@ function getCalculate(i){
     var quantity=$("#orders-"+i+"-qty").val();
     var amount=quantity * rate;
     var tax=($("#orders-"+i+"-tax").val()*amount)/100;
-    amount=amount+tax;
+    // amount=amount+tax;
     if(($("#over_dis").val()!=0) && ($("#over_dis").val()!="")){
         amount=amount-($("#over_dis").val()*amount)/100;
     }else{
@@ -321,7 +342,20 @@ function getTotalQtyAmt(){
 $("#total_qty").prop("disabled",true);
 $("#total_amt").prop("disabled",true);
 $("#total_point").prop("disabled",true);
-
+function getCleanObj(i){
+        $("#orders-"+i+"-item_id").val("").trigger("change");
+        $("#orders-"+i+"-item_name").val("");
+        $("#orders-"+i+"-pack").val("");
+        $("#orders-"+i+"-rate").val("");
+        $("#orders-"+i+"-tax").val("");
+        $("#orders-"+i+"-discount").val("");
+        $("#orders-"+i+"-barcode").val("");
+        $("#orders-"+i+"-point").val("");
+        $("#orders-"+i+"-total_pack").val("");
+        $("#orders-"+i+"-qty").val("");
+        $("#orders-"+i+"-amount").val("");
+        $("#orders-"+i+"-total_points").val("");
+}
 ',View::POS_END);
 
 ?>

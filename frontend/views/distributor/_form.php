@@ -7,7 +7,6 @@ use common\models\User;
 use yii\helpers\ArrayHelper;
 use common\models\States;
 use common\models\City;
-
 ?>
 <?php
  $form = ActiveForm::begin([
@@ -27,6 +26,11 @@ use common\models\City;
                                         <div class="col-md-6 form-group mb-3">
                                             <?= $form->field($usermodel,'email')->textInput(['class' => 'form-control','placeholder'=>'Enter Your Email']) ?>
                                         </div>
+                                        <?php if($usermodel->isNewRecord){ ?>
+                                        <div class="col-md-6 form-group mb-3">
+                                            <?= $form->field($usermodel,'password')->passwordInput(['class' => 'form-control','placeholder'=>'Enter Password']) ?>
+                                        </div>
+                                        <?php } ?>
                                         <div class="col-md-6 form-group mb-3">
                                             <?= $form->field($model,'dist_name')->textInput(['class' => 'form-control','placeholder'=>'Enter Your Distributor Name']) ?>
                                         </div>

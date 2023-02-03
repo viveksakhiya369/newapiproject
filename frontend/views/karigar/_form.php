@@ -24,6 +24,11 @@ use common\models\City;
                                         <div class="col-md-6 form-group mb-3">
                                             <?= $form->field($usermodel,'mobile_num')->textInput(['class' => 'form-control','placeholder'=>'Enter Mobile Number']) ?>
                                         </div>
+                                        <?php if($usermodel->isNewRecord){ ?>
+                                        <div class="col-md-6 form-group mb-3">
+                                            <?= $form->field($usermodel,'password')->passwordInput(['class' => 'form-control','placeholder'=>'Enter Password']) ?>
+                                        </div>
+                                        <?php } ?>
                                         <div class="col-md-6 form-group mb-3">
                                             <?= $form->field($model,'name')->textInput(['class' => 'form-control','placeholder'=>'Enter Full Name']) ?>
                                         </div>

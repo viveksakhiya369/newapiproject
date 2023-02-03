@@ -45,7 +45,7 @@ class Dealer extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['address', 'city', 'taluka', 'state', 'gstin', 'pan', 'owner_name'], 'required'],
+            [['address', 'city', 'taluka', 'state', 'gstin', 'pan', 'owner_name','dealer_name'], 'required'],
             [['user_id', 'parent_id', 'status', 'created_by', 'updated_by'], 'integer'],
             [['created_dt', 'updated_dt'], 'safe'],
             [['dealer_name', 'address', 'city', 'taluka', 'state', 'gstin', 'pan', 'owner_name'], 'string', 'max' => 255],

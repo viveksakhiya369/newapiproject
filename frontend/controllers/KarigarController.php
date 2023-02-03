@@ -67,6 +67,7 @@ class KarigarController extends Controller{
     public function actionCreate(){
         $model=new Karigar();
         $usermodel=new User();
+        $usermodel->scenario="newpass";
 
         $transaction=Yii::$app->db->beginTransaction();
         
@@ -77,14 +78,14 @@ class KarigarController extends Controller{
                         
                         if($model->validate() && $usermodel->validate()){
                             $usermodel->role_id=User::KARIGAR;
-                            $rndm_password=CommonHelpers::randomStringGenerate(8);
-                            $usermodel->password_hash=Yii::$app->security->generatePasswordHash($rndm_password);
+                            // $rndm_password=CommonHelpers::randomStringGenerate(8);
+                            $usermodel->password_hash=Yii::$app->security->generatePasswordHash($usermodel->password);
                             if($usermodel->save(false)){
                                 $model->user_id=$usermodel->id;
                                 $model->parent_id=Dealer::getDealerId(Yii::$app->user->identity->id);
                             }
                             if($model->save(false)){
-                                // CommonHelpers::sendOtp($usermodel,$rndm_password);
+                                // CommonHelpers::sendOtp($usermodel,$usermodel->password);
                             }
                             $transaction->commit();
                             Yii::$app->session->setFlash('success','Karigar Created Successfully');
