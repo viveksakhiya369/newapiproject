@@ -64,6 +64,30 @@ use kartik\grid\GridViewAsset;
                     }
                 ],
                 [
+                    'attribute' => 'total_discount',
+                    'format' => 'html',
+                    'label' => 'Total Discount',
+                    'value' => function ($data) {
+                        return $data->all_discount;
+                    }
+                ],
+                [
+                    'attribute' => 'total_amount',
+                    'format' => 'html',
+                    'label' => 'Total Amount',
+                    'value' => function ($data) {
+                        return $data->all_amount;
+                    }
+                ],
+                [
+                    'attribute' => 'total_points',
+                    'format' => 'html',
+                    'label' => 'Total Points',
+                    'value' => function ($data) {
+                        return $data->total_points;
+                    }
+                ],
+                [
                     'attribute' => 'created_dt',
                     'format' => 'html',
                     'label' => 'Created Date',

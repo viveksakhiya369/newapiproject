@@ -42,7 +42,7 @@ class PendingOrdersSearch extends PendingOrders
      */
     public function search($params)
     {
-        $query = PendingOrders::find()->andWhere(['!=',PendingOrders::tableName().'.status',Orders::STATUS_DELETED])->orderBy([PendingOrders::tableName().".id"=>SORT_DESC])->groupBy(PendingOrders::tableName().'.order_no');
+        $query = PendingOrders::find()->select([PendingOrders::tableName().'.*','GROUP_CONCAT('.PendingOrders::tableName().'.discount) as all_discount','GROUP_CONCAT('.PendingOrders::tableName().'.amount) as all_amount','GROUP_CONCAT('.PendingOrders::tableName().'.qty) as all_qty','GROUP_CONCAT('.PendingOrders::tableName().'.rate) as all_rate','GROUP_CONCAT('.PendingOrders::tableName().'.item_id) as all_item_id'])->andWhere(['!=',PendingOrders::tableName().'.status',Orders::STATUS_DELETED])->orderBy([PendingOrders::tableName().".id"=>SORT_DESC])->groupBy(PendingOrders::tableName().'.order_no');
 
         if(!in_array(Yii::$app->user->identity->role_id,[User::SUPER_ADMIN])){
                 //if(Yii::$app->user->identity->role_id==User::DISTRIBUTOR){
@@ -63,6 +63,9 @@ class PendingOrdersSearch extends PendingOrders
             'query' => $query,
         ]);
 
+        if(isset($params['order_no']) && !empty($params['order_no'])){
+            $query->andWhere([PendingOrders::tableName().'.order_no'=>$params['order_no']]);
+        }
         $this->load($params);
 
         if (!$this->validate()) {

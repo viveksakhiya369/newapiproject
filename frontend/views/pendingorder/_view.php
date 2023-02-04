@@ -1,6 +1,7 @@
 <?php
 
 use common\models\Orders;
+use common\models\Products;
 use yii\helpers\Url;
 
 // echo '<pre>';print_r($order_details);exit;
@@ -56,7 +57,7 @@ use yii\helpers\Url;
                 <div class="table-responsive col-md-12">
                     <table role="table" aria-busy="false" aria-colcount="5" class="table b-table table-hover" id="__BVID__155"><!----><!---->
                         <thead role="rowgroup" class=""><!---->
-                            <tr role="row" class="">
+                        <tr role="row" class="">
                                 <th role="columnheader" scope="col" aria-colindex="1" class="">
                                     <div>Index</div>
                                 </th>
@@ -64,16 +65,28 @@ use yii\helpers\Url;
                                     <div>Item Name</div>
                                 </th>
                                 <th role="columnheader" scope="col" aria-colindex="3" class="">
+                                    <div>Items/pack</div>
+                                </th>
+                                <th role="columnheader" scope="col" aria-colindex="3" class="">
+                                    <div>Total Pack</div>
+                                </th>
+                                <th role="columnheader" scope="col" aria-colindex="3" class="">
                                     <div>Unit Price</div>
                                 </th>
                                 <th role="columnheader" scope="col" aria-colindex="4" class="">
                                     <div>Unit</div>
+                                </th>
+                                <th role="columnheader" scope="col" aria-colindex="5" class="">
+                                    <div>Discount %</div>
                                 </th>
                                 <th role="columnheader" scope="col" aria-colindex="4" class="">
                                     <div>Quantity</div>
                                 </th>
                                 <th role="columnheader" scope="col" aria-colindex="5" class="">
                                     <div>Amount</div>
+                                </th>
+                                <th role="columnheader" scope="col" aria-colindex="5" class="">
+                                    <div>Points</div>
                                 </th>
                             </tr>
                         </thead>
@@ -92,17 +105,22 @@ use yii\helpers\Url;
                             <tr role="row" class="">
                                 <td aria-colindex="1" role="cell" class=""><?= $count ?></td>
                                 <td aria-colindex="2" role="cell" class=""><?= $value->item_name ?></td>
+                                <td aria-colindex="2" role="cell" class=""><?= $value->pack ?></td>
+                                <td aria-colindex="2" role="cell" class=""><?= $value->total_pack ?></td>
                                 <td aria-colindex="3" role="cell" class=""><?= $value->rate?></td>
                                 <td aria-colindex="4" role="cell" class=""><?= $value->pack ?></td>
+                                <td aria-colindex="5" role="cell" class=""><?= $value->discount ?></td>
                                 <td aria-colindex="4" role="cell" class=""><?= $value->qty ?></td>
                                 <td aria-colindex="5" role="cell" class=""><?= $value->amount ?></td>
+                                <td aria-colindex="5" role="cell" class=""><?= (Products::findOne($value->item_id)->point)*($value->qty) ?></td>
                             </tr>
                             <?php } ?>
                             <tr role="row" class="">
-                                <td role="cell" class="" colspan="3"></td>
+                                <td role="cell" class="" colspan="6"></td>
                                 <td role="cell" class="font-weight-bold">Total:</td>
                                 <td role="cell" class="font-weight-bold"><?= $qty_total ?></td>
                                 <td role="cell" class="font-weight-bold"><?= $total ?></td>
+                                <td role="cell" class="font-weight-bold"><?= $order_details['total_points'] ?></td>
                             </tr>
                         </tbody><!---->
                     </table>

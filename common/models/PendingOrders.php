@@ -27,6 +27,12 @@ use Yii;
  */
 class PendingOrders extends \yii\db\ActiveRecord
 {
+    public $total_points;
+    public $all_discount;
+    public $all_amount;
+    public $all_qty;
+    public $all_rate;
+    public $all_item_id;
     /**
      * {@inheritdoc}
      */
@@ -43,7 +49,7 @@ class PendingOrders extends \yii\db\ActiveRecord
         return [
             [['old_order_id', 'parent_id', 'order_no', 'item_id', 'item_name', 'qty', 'order_qty', 'pack', 'rate', 'amount', 'salesman_id', 'status', 'created_dt', 'created_by', 'updated_dt', 'updated_by'], 'required'],
             [['old_order_id', 'parent_id', 'order_no', 'item_id', 'qty', 'order_qty', 'rate', 'amount', 'salesman_id', 'status', 'created_by', 'updated_by'], 'integer'],
-            [['created_dt', 'updated_dt'], 'safe'],
+            [['created_dt', 'updated_dt','total_points','all_discount','all_qty','all_rate','all_item_id'], 'safe'],
             [['item_name', 'pack'], 'string', 'max' => 255],
         ];
     }

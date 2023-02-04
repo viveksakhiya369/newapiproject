@@ -28,6 +28,11 @@ class Orders extends \yii\db\ActiveRecord
     public $barcode;
     public $point;
     public $total_points;
+    public $all_discount;
+    public $all_amount;
+    public $all_qty;
+    public $all_rate;
+    public $all_item_id;
     // public $total_pack;
 
     const STATUS_QUEUED=1;
@@ -59,7 +64,7 @@ class Orders extends \yii\db\ActiveRecord
             [['item_id', 'qty','tax','rate', 'discount', 'amount'], 'required'],
             [['inward_type'],'required','on'=>'Inward'],
             [['parent_id', 'order_no', 'item_id', 'qty', 'rate', 'status', 'created_by', 'updated_by','total_pack'], 'integer'],
-            [['created_dt','overall_discount', 'updated_dt','inward_type','barcode','total_items','point','total_points'], 'safe'],
+            [['created_dt','overall_discount', 'updated_dt','inward_type','barcode','total_items','point','total_points','all_discount','all_qty','all_rate','all_item_id'], 'safe'],
             [['item_name', 'pack'], 'string', 'max' => 255],
         ];
     }

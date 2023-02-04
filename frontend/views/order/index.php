@@ -1,5 +1,4 @@
 <?php
-
 use common\models\City;
 use common\models\CommonHelpers;
 use common\models\Distributor;
@@ -63,6 +62,30 @@ use kartik\grid\GridViewAsset;
                         'label' => 'Order No',
                         'value' => function ($data) {
                             return $data->order_no;
+                        }
+                    ],
+                    [
+                        'attribute' => 'total_discount',
+                        'format' => 'html',
+                        'label' => 'Total Discount',
+                        'value' => function ($data) {
+                            return $data->all_discount;
+                        }
+                    ],
+                    [
+                        'attribute' => 'total_amount',
+                        'format' => 'html',
+                        'label' => 'Total Amount',
+                        'value' => function ($data) {
+                            return $data->all_amount;
+                        }
+                    ],
+                    [
+                        'attribute' => 'total_points',
+                        'format' => 'html',
+                        'label' => 'Total Points',
+                        'value' => function ($data) {
+                            return $data->total_points;
                         }
                     ],
                     [
@@ -170,6 +193,30 @@ use kartik\grid\GridViewAsset;
                                 }
                             ],
                             [
+                                'attribute' => 'total_discount',
+                                'format' => 'html',
+                                'label' => 'Total Discount',
+                                'value' => function ($data) {
+                                    return $data->all_discount;
+                                }
+                            ],
+                            [
+                                'attribute' => 'total_amount',
+                                'format' => 'html',
+                                'label' => 'Total Amount',
+                                'value' => function ($data) {
+                                    return $data->all_amount;
+                                }
+                            ],
+                            [
+                                'attribute' => 'total_points',
+                                'format' => 'html',
+                                'label' => 'Total Points',
+                                'value' => function ($data) {
+                                    return $data->total_points;
+                                }
+                            ],
+                            [
                                 'attribute' => 'created_dt',
                                 'format' => 'html',
                                 'label' => 'Created Date',
@@ -274,6 +321,30 @@ use kartik\grid\GridViewAsset;
                                 'label' => 'Order No',
                                 'value' => function ($data) {
                                     return $data->order_no;
+                                }
+                            ],
+                            [
+                                'attribute' => 'total_discount',
+                                'format' => 'html',
+                                'label' => 'Total Discount',
+                                'value' => function ($data) {
+                                    return $data->all_discount;
+                                }
+                            ],
+                            [
+                                'attribute' => 'total_amount',
+                                'format' => 'html',
+                                'label' => 'Total Amount',
+                                'value' => function ($data) {
+                                    return $data->all_amount;
+                                }
+                            ],
+                            [
+                                'attribute' => 'total_points',
+                                'format' => 'html',
+                                'label' => 'Total Points',
+                                'value' => function ($data) {
+                                    return $data->total_points;
                                 }
                             ],
                             [

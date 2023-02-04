@@ -7,11 +7,13 @@ use common\models\CustomModel;
 use common\models\Orders;
 use common\models\OrdersSearch;
 use common\models\PendingOrders;
+use common\models\Products;
 use common\models\User;
 use Exception;
 use Yii;
 use yii\base\Model;
 use yii\bootstrap5\Modal;
+use yii\data\ArrayDataProvider;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Url;
 use yii\web\Controller;
@@ -99,9 +101,34 @@ class OrderController extends Controller
             return $this->redirect(Url::to(['site/get-index']));
         }
         $searchdata = $searchmodel->search(Yii::$app->request->queryParams);
+        $all_datas=$searchdata->getModels();
+        foreach($all_datas as $i => $val){
+            // echo'<pre>';print_r($val);exit();
+            $item_ids_array=explode(',',$val->all_item_id);
+            $discount_arary=explode(',',$val->all_discount);
+            $amt_array=explode(',',$val->all_amount);
+            $qty_array=explode(',',$val->all_qty);
+            $rate_array=explode(',',$val->all_rate);
+            $discount_total_amount=0;
+            $total_amt_order=0;
+            $total_order_points=0;
+            foreach($discount_arary as $key => $value){
+                $discount_total_amount+=(($qty_array[$key]*$rate_array[$key])*$discount_arary[$key])/100;
+                $total_amt_order+=$amt_array[$key];
+                $total_order_points+=($qty_array[$key])*((int)Products::findOne($item_ids_array[$key])->point);
+            }
+            $val->all_discount=$discount_total_amount;
+            $val->all_amount=$total_amt_order;
+            $val->total_points=$total_order_points;
+        }
+        // echo'<pre>';print_r($all_datas);exit();
+        $array_data_provider=new ArrayDataProvider([
+            'allModels'=>$searchdata->getModels(),
+        ]);
+        // echo'<pre>';print_r($searchdata->getModels());exit();
         return $this->render('index', [
             'searchmodel' => $searchmodel,
-            'searchdata' => $searchdata,
+            'searchdata' => $array_data_provider,
         ]);
     }
 
@@ -123,11 +150,33 @@ class OrderController extends Controller
             $orders->joinWith(['dealer', 'dealer.distributor']);
         }
         $result = $orders->andWhere([Orders::tableName() . '.order_no' => $order_no])->all();
-        $oneorder = Orders::find()->joinWith(['dealer', 'dealer.distributor'])->andWhere(['order_no' => $order_no])->andWhere(['!=', Orders::tableName() . '.status', Orders::STATUS_DELETED])->groupBy('order_no')->one();
+        $params['order_no']=$order_no;
+        $searchmodel=new OrdersSearch();
+        $searchdata=$searchmodel->search($params);
+        $all_datas=$searchdata->getModels();
+        foreach($all_datas as $i => $val){
+            // echo'<pre>';print_r($val);exit();
+            $item_ids_array=explode(',',$val->all_item_id);
+            $discount_arary=explode(',',$val->all_discount);
+            $amt_array=explode(',',$val->all_amount);
+            $qty_array=explode(',',$val->all_qty);
+            $rate_array=explode(',',$val->all_rate);
+            $discount_total_amount=0;
+            $total_amt_order=0;
+            $total_order_points=0;
+            foreach($discount_arary as $key => $value){
+                $discount_total_amount+=(($qty_array[$key]*$rate_array[$key])*$discount_arary[$key])/100;
+                $total_amt_order+=$amt_array[$key];
+                $total_order_points+=($qty_array[$key])*((int)Products::findOne($item_ids_array[$key])->point);
+            }
+            $val->all_discount=$discount_total_amount;
+            $val->all_amount=$total_amt_order;
+            $val->total_points=$total_order_points;
+        }
         // echo'<pre>';print_r($oneorder);exit();
         return $this->render('_view', [
             'result' => $result,
-            'order_details' => $oneorder,
+            'order_details' => $all_datas[0],
         ]);
     }
 
