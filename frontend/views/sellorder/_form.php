@@ -297,7 +297,7 @@ function getTotalFromQty(n){
     $("#orders-"+n+"-total_pack").val(($("#orders-"+n+"-qty").val())/($("#orders-"+n+"-pack").val()));
 }
 function getalldetails(count,product_id){
-    $.post("'.Url::to(['ajax/get-product-details']).'",{
+    $.post("'.Url::to(['ajax/get-product-details-update']).'",{
         product_id:product_id,
     },function(data){
         var response=JSON.parse(data);

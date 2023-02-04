@@ -281,7 +281,7 @@ function getCalculate(i){
 }
 
 function getalldetails(count,product_id){
-    $.post("'.Url::to(['ajax/get-product-details']).'",{
+    $.post("'.Url::to(['ajax/get-product-details-update']).'",{
         product_id:product_id,
     },function(data){
         var response=JSON.parse(data);

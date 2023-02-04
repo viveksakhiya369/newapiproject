@@ -43,6 +43,12 @@ class AjaxController extends Controller{
         return json_encode($products);
     }
 
+    public function actionGetProductDetailsUpdate(){
+        $products=Products::find()->joinWith('taxName')->where([Products::tableName().'.id'=>Yii::$app->request->post('product_id')])->asArray()->one();
+        $products['current_rate']=(Yii::$app->user->identity->role_id==User::DISTRIBUTOR) ? $products['dealer_rate'] : (Yii::$app->user->identity->role_id==User::SUPER_ADMIN ? $products['wholesale_rate'] : (Yii::$app->user->identity->role_id==User::DEALER ? $products['mrp'] : $products['mrp'] ) );
+        return json_encode($products);
+    }
+
     public function actionGetProductList(){
         return json_encode(Products::find()->where(['like','item_name',Yii::$app->request->post('item_val')])->asArray()->all());
     }
