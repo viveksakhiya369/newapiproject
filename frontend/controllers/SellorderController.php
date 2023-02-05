@@ -75,6 +75,7 @@ class SellorderController extends Controller{
             $transaction = Yii::$app->db->beginTransaction();
             if (Yii::$app->request->isPost) {
                 // echo'<pre>';print_r(Yii::$app->request->post());exit();
+                $missing_items=[];
                 $karigar_parent_id=Yii::$app->request->post('karigar_parent_id');
                 $arr = Yii::$app->request->post('Orders');
                 $new_arr = array();
@@ -102,7 +103,8 @@ class SellorderController extends Controller{
                         $onemodel->order_no = $order_no;
                         $onemodel->status = Orders::STATUS_APPROVED;
                         if (CommonHelpers::AddGodownStock($onemodel) == false) {
-                            return $this->redirect(Url::to(['sellorder/index', 'sell_order' => true]));
+                            $missing_items[]=$onemodel->item_name;
+                            // return $this->redirect(Url::to(['sellorder/index', 'sell_order' => true]));
                         }
                         if (!($flag = $onemodel->save(false))) {
                             $transaction->rollBack();
@@ -112,6 +114,12 @@ class SellorderController extends Controller{
                     if ($flag) {
                         if (CommonHelpers::addPoints($model, $order_no) == false) {
                             return $this->redirect(Url::to(['sellorder/index', 'sell_order' => true]));
+                        }
+                        if(isset($missing_items) && !empty($missing_items)){
+                            Yii::$app->session->setFlash('error',implode(',',$missing_items)." are not available in enough quantity!");
+                            return $this->render('create', [
+                                'model' => $model,
+                            ]);
                         }
                         $transaction->commit();
                         Yii::$app->session->setFlash("success", "Your order placed successfully");

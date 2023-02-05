@@ -191,10 +191,11 @@ class OrderController extends Controller
             try {
                 $transaction = Yii::$app->db->beginTransaction();
                 $new_order = Yii::$app->request->post('Orders');
+                $missing_items=[];
                 // echo'<pre>';var_dump(isset($new_order));exit();
                 if ((isset($new_order)) && (count($new_order) >= count($model))) {
                     foreach ($new_order as $new_key => $new_val) {
-                        if (isset($model[$new_key]) && !empty($model[$new_key])) {
+                        if (isset($model[$new_key]) && !empty($model[$new_key]) && ($model[$new_key]->item_id==$new_val['item_id'])) {
                             if ($new_val['qty'] < $model[$new_key]->qty) {
                                 $pending_order = CommonHelpers::SavePendingOrders($model[$new_key], $new_val);
                                 if ($pending_order == false) {
@@ -220,7 +221,8 @@ class OrderController extends Controller
                             //     return $this->redirect(Url::to(['order/index', 'receieved' => true]));
                             // }
                             if (CommonHelpers::AddGodownStock($model[$new_key]) == false) {
-                                return $this->redirect(Url::to(['order/index', 'receieved' => true]));
+                                $missing_items[]=$model[$new_key]->item_name;
+                                // return $this->redirect(Url::to(['order/index', 'receieved' => true]));
                             }
                             if (!($model[$new_key]->save(false))) {
                                 $transaction->rollBack();
@@ -238,7 +240,8 @@ class OrderController extends Controller
                                 //     return $this->redirect(Url::to(['order/index', 'receieved' => true]));
                                 // }
                                 if (CommonHelpers::AddGodownStock($order_model) == false) {
-                                    return $this->redirect(Url::to(['order/index', 'receieved' => true]));
+                                    $missing_items[]=$order_model->item_name;
+                                    // return $this->redirect(Url::to(['order/index', 'receieved' => true]));
                                 }
                                 if (!($order_model->save(false))) {
                                     $transaction->rollBack();
@@ -302,18 +305,59 @@ class OrderController extends Controller
                             //     return $this->redirect(Url::to(['order/index', 'receieved' => true]));
                             // }
                             if (CommonHelpers::AddGodownStock($model[$i]) == false) {
-                                return $this->redirect(Url::to(['order/index', 'receieved' => true]));
+                                $missing_items[]=$model[$i]->item_name;
+                                // return $this->redirect(Url::to(['order/index', 'receieved' => true]));
                             }
                             if (!($model[$i]->save(false))) {
                                 $transaction->rollBack();
                                 break;
                             }
-                        }
+                        }else{
+                            // echo'<pre>';print_r($new_order);exit();
+                            if(($new_order[$i]['id']==$model[$i]->id) && ($model[$i]->item_id!=$new_order[$i]['item_id'])){
+
+                                $new_order[$i]['order_no'] = $order_no;
+                                $new_order[$i]['status'] = Orders::STATUS_APPROVED;
+                                $new_order[$i]['parent_id'] = $model[0]->parent_id;
+                                $post_data[$model[0]->formName()] = $new_order[$i];
+                                $order_model = new Orders();
+                                if ($order_model->load($post_data)) {
+                                    // echo'<pre>';print_r($order_model);exit();
+                                    $point_approved_order[] = $order_model;
+                                    // if (CommonHelpers::addPoints($order_model) == false) {
+                                        //     return $this->redirect(Url::to(['order/index', 'receieved' => true]));
+                                        // }
+                                        if (CommonHelpers::AddGodownStock($order_model) == false) {
+                                            $missing_items[]=$order_model->item_name;
+                                            // return $this->redirect(Url::to(['order/index', 'receieved' => true]));
+                                        }
+                                        if (!($order_model->save(false))) {
+                                            $transaction->rollBack();
+                                            break;
+                                        }
+                                        $pending_order = CommonHelpers::SavePendingOrders($model[$i]);
+                                        if ($pending_order == false) {
+                                            $transaction->rollBack();
+                                            break;
+                                        }
+                                        $model[$i]->status = Orders::STATUS_DELETED;
+                                        if (!($model[$i]->save(false))) {
+                                            $transaction->rollBack();
+                                            break;
+                                        }
+                                        unset($model[$i]);
+                                            }
+                                        }
+                            }
                     }
                 }
                 // echo'<pre>';print_r($point_approved_order);exit();
                 if (CommonHelpers::addPoints($point_approved_order, $order_no) == false) {
                     return $this->redirect(Url::to(['order/index', 'receieved' => true]));
+                }
+                if(isset($missing_items) && !empty($missing_items)){
+                    Yii::$app->session->setFlash('error',implode(',',$missing_items)." are not available in enough quantity!");
+                    return $this->redirect(Url::to(['order/update','order_no'=>$order_no]));
                 }
                 $transaction->commit();
                 Yii::$app->session->setFlash("success", "order has been updated successfully");

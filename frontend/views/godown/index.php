@@ -48,6 +48,7 @@ use kartik\grid\GridView;
         echo GridView::widget([
             'dataProvider' => $data,
             'responsiveWrap' => false,
+            'showFooter' => true,
             'layout' => "{items}\n<div class='float-left'>{summary}</div>\n<div class='float-right'>{pager}</div>",
             'columns' => [
                 [
@@ -65,6 +66,7 @@ use kartik\grid\GridView;
                 [
                     'attribute' => 'qty',
                     'format' => 'html',
+                    'footer' =>CommonHelpers::getallpoints($data),
                     'label' => 'Quantity',
                     'value' => function ($data) {
                         return $data->total_qty;
@@ -73,7 +75,7 @@ use kartik\grid\GridView;
                 [
                     'attribute' => 'created_dt',
                     'format' => 'html',
-                    'label' => 'Created Date',
+                    'label' => 'Modified Date',
                     'value' => function ($data) {
                         return date('d-m-Y', strtotime($data->latest_created_dt));
                     }

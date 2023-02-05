@@ -192,7 +192,7 @@ class CommonHelpers
                 // Yii::$app->session->setFlash('error','Godown stock is insufficient');
                 return true;
             } else{
-                Yii::$app->session->setFlash('error','Godown stock is insufficient');
+                // Yii::$app->session->setFlash('error','Godown stock is insufficient');
                 return false;
             }
         }else {
@@ -244,5 +244,14 @@ class CommonHelpers
 
     public static function GetKarigarList(){
         $data=ArrayHelper::map((new KarigarSearch())->search('')->getModels(),'id','name');
+    }
+
+    public static function getallpoints($data){
+        $all_datas=$data->getModels();
+        $total_qty=0;
+        foreach($all_datas as $i => $val){
+            $total_qty+=$val->total_qty;
+        }
+        return $total_qty;
     }
 }

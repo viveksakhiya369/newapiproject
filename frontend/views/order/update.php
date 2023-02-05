@@ -37,6 +37,7 @@ foreach($model as $i => $val){
         $("#orders-'.$i.'-item_id").change(function(){
             getalldetails('.$i.',$(this).val());
             setTimeout(function(){
+                getTotalFromQty('.$i.');
                 getCalculate('.$i.');
                 getTotalQtyAmt();
             }, 500);
