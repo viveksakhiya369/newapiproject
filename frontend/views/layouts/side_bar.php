@@ -26,10 +26,10 @@ use yii\helpers\Url;
                         <div class="triangle"></div>
                     </li>
                     <?php } if(in_array(Yii::$app->user->identity->role_id,[User::SUPER_ADMIN,User::DISTRIBUTOR,User::DEALER])){  ?>
-                    <li class="nav-item" data-item="stock"><a class="nav-item-hold" href="<?php echo yii\helpers\Url::to(['stock/index']) ?>"><i class="nav-icon i-Big-Data"></i><span class="nav-text">Manage Stock</span></a>
+                    <li class="nav-item"><a class="nav-item-hold" href="<?php echo yii\helpers\Url::to(['godown/index']) ?>"><i class="nav-icon i-Big-Data"></i><span class="nav-text">Manage Stock</span></a>
                         <div class="triangle"></div>
                     </li>
-                    <?php } if(in_array(Yii::$app->user->identity->role_id,[User::SUPER_ADMIN,User::DISTRIBUTOR,User::DEALER])){  ?>
+                    <?php } if(in_array(Yii::$app->user->identity->role_id,[User::SUPER_ADMIN,User::DISTRIBUTOR,User::DEALER,User::KARIGAR])){  ?>
                     <li class="nav-item"><a class="nav-item-hold" href="<?php echo yii\helpers\Url::to(['points/index']) ?>"><i class="nav-icon i-Coins"></i><span class="nav-text">Manage Points</span></a>
                         <div class="triangle"></div>
                     </li>
@@ -77,7 +77,7 @@ use yii\helpers\Url;
             <div class="sidebar-left-secondary rtl-ps-none" data-perfect-scrollbar="" data-suppress-scroll-x="true">
                 <!-- Submenu Dashboards-->
                 <!-- <ul class="childNav" data-parent="extrakits" style="display: block;">
-                    <!-- <li class="nav-item"><a href=""><i class="nav-icon i-Crop-2"></i><span class="item-name">Role Permissions</span></a></li> -->
+                     <li class="nav-item"><a href=""><i class="nav-icon i-Crop-2"></i><span class="item-name">Role Permissions</span></a></li> -->
                     <!-- <li class="nav-item"><a href="loaders.html"><i class="nav-icon i-Loading-3"></i><span class="item-name">Loaders</span></a></li>
                     <li class="nav-item"><a href="ladda.button.html"><i class="nav-icon i-Loading-2"></i><span class="item-name">Ladda Buttons</span></a></li>
                     <li class="nav-item"><a href="toastr.html"><i class="nav-icon i-Bell"></i><span class="item-name">Toastr</span></a></li>
@@ -102,14 +102,14 @@ use yii\helpers\Url;
                         <li class="nav-item"><a class="nav-item-hold" href="<?php echo yii\helpers\Url::to(['karigar/index']) ?>"><i class="nav-icon i-Farmer"></i><span class="item-name">Manage Karigar</span></a></li>
                     <?php } ?>
                 </ul>
-                <ul class="childNav" data-parent="stock">
-                    <?php if(in_array(Yii::$app->user->identity->role_id,[User::SUPER_ADMIN,User::DEALER,User::DISTRIBUTOR])) { ?>
-                        <li class="nav-item"><a href="<?php echo yii\helpers\Url::to(['godown/index']) ?>"><i class="nav-icon i-Monitor-Analytics"></i><span class="item-name">Godown Stock</span></a></li>
-                    <?php } ?>
-                    <?php //if(in_array(Yii::$app->user->identity->role_id,[User::DEALER,User::DISTRIBUTOR])) { ?>
-                        <!-- <li class="nav-item"><a href="<?php //echo yii\helpers\Url::to(['shop/index']) ?>"><i class="nav-icon i-Network-Window"></i><span class="item-name">Shop Stock</span></a></li> -->
+                <!-- <ul class="childNav" data-parent="stock">
+                    <?php //if(in_array(Yii::$app->user->identity->role_id,[User::SUPER_ADMIN,User::DEALER,User::DISTRIBUTOR])) { ?>
+                        <li class="nav-item"><a href="<?php //echo yii\helpers\Url::to(['godown/index']) ?>"><i class="nav-icon i-Monitor-Analytics"></i><span class="item-name">Godown Stock</span></a></li>
                     <?php //} ?>
-                </ul>
+                    <?php //if(in_array(Yii::$app->user->identity->role_id,[User::DEALER,User::DISTRIBUTOR])) { ?>
+                         <li class="nav-item"><a href="<?php //echo yii\helpers\Url::to(['shop/index']) ?>"><i class="nav-icon i-Network-Window"></i><span class="item-name">Shop Stock</span></a></li> -->
+                    <?php //} ?>
+                </ul> 
                 <!-- <ul class="childNav" data-parent="point">
                     <?php //if(in_array(Yii::$app->user->identity->role_id,[User::SUPER_ADMIN,User::DEALER,User::DISTRIBUTOR])) { ?>
                         <li class="nav-item"><a href="<?php //echo yii\helpers\Url::to(['sendpoints/index']) ?>"><i class="nav-icon i-Sharethis"></i><span class="item-name">Send Points</span></a></li>

@@ -4,6 +4,7 @@ use common\models\City;
 use common\models\CommonHelpers;
 use common\models\Distributor;
 use common\models\Karigar;
+use common\models\Points;
 use common\models\States;
 use common\models\User;
 // use yii\grid\GridView;
@@ -79,6 +80,14 @@ use kartik\grid\GridView;
                                     'label'=>'Dealer name',
                                     'value'=> function($data){
                                         return $data->dealer->dealer_name;
+                                    }
+                                ],
+                                [
+                                    'attribute'=>'total_points',
+                                    'format'=>'html',
+                                    'label'=>'Total Points',
+                                    'value'=> function($data){
+                                        return Points::totalPoint($data->user->id);
                                     }
                                 ],
                                 [

@@ -90,4 +90,10 @@ class Points extends \yii\db\ActiveRecord
     public function getReceiever(){
         return $this->hasOne(User::className(),['id'=>'receiver_id']);
     }
+
+    public static function totalPoint($id){
+            $total_send_point = self::find()->Where(['sender_id' =>$id])->sum('points');
+            $total_received_point = self::find()->Where(['receiver_id' =>$id])->sum('points');
+            return ($total_received_point - $total_send_point);
+    }
 }

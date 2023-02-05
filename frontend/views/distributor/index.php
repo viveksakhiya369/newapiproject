@@ -4,6 +4,7 @@ use common\models\City;
 use common\models\CommonHelpers;
 use common\models\Distributor;
 use common\models\States;
+use common\models\Points;
 // use yii\grid\GridView;
 use yii\helpers\Html;
 use yii\helpers\Url;
@@ -109,6 +110,14 @@ use kartik\grid\GridView;
                                     'label'=>'Mobile Number',
                                     'value'=> function($data){
                                         return $data->user->mobile_num;
+                                    }
+                                ],
+                                [
+                                    'attribute'=>'total_points',
+                                    'format'=>'html',
+                                    'label'=>'Total Points',
+                                    'value'=> function($data){
+                                        return Points::totalPoint($data->user->id);
                                     }
                                 ],
                                 [

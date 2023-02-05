@@ -15,7 +15,7 @@ $this->params['breadcrumbs'][] = $this->title;
 <div class="card">
     <div class="card-body"> 
             <div>
-                <div class="auth-logo text-center mb-4"><img style="width: 250px; height: 100px;" src="<?= Yii::$app->request->baseUrl?>/images/logo.jpg" alt=""></div>
+                <div class="auth-logo text-center mb-4"><img style="width: 250px; height: 70px;" src="<?= Yii::$app->request->baseUrl?>/images/logo.jpg" alt=""></div>
                     <h1 class="mb-3 text-18"><?= Html::encode($this->title) ?></h1>
 
                     <?php $form = ActiveForm::begin(['id' => 'login-form']); ?>

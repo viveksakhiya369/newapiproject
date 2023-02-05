@@ -5,7 +5,7 @@ use common\models\User;
 
 ?>
 <div class="main-header">
-    <img src="<?= Yii::$app->request->baseUrl?>/images/logo.jpg" style="width: 220px; height: 70px;" alt="">
+    <img src="<?= Yii::$app->request->baseUrl?>/images/logo.jpg" style="width: 200px; height: 70px;" alt="">
             <!-- <div class="logo">
             </div> -->
             <div class="menu-toggle">
@@ -33,7 +33,7 @@ use common\models\User;
                                 <i class="i-Lock-User mr-1"></i><b style="font-size:1rem"><?php echo (CommonHelpers::CheckLogin()) ?  Yii::$app->user->identity->username." (".User::ROLE_ARR[Yii::$app->user->identity->role_id].")" : '' ?></b>
                             </div>
                             <?= Html::a('<span class="dropdown-item">Change Password</span>', ['site/reset-password'], ['data' => ['method' => 'post']]) ?>
-                            <a class="dropdown-item">Billing history</a>
+                            <!-- <a class="dropdown-item">Billing history</a> -->
                             <?= Html::a('<span class="dropdown-item">Logout</span>', ['site/logout'], ['data' => ['method' => 'post']]) ?>
                         </div>
                     </div>

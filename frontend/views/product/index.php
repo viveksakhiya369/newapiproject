@@ -95,14 +95,14 @@ use kartik\grid\GridView;
                                         return $data->barcode;
                                     }
                                 ],
-                                [
-                                    'attribute'=>'tax',
-                                    'format'=>'html',
-                                    'label'=>'Tax',
-                                    'value'=> function($data){
-                                        return $data->taxName->name.'-'.$data->taxName->percentage.'%';
-                                    }
-                                ],
+                                // [
+                                //     'attribute'=>'tax',
+                                //     'format'=>'html',
+                                //     'label'=>'Tax',
+                                //     'value'=> function($data){
+                                //         return $data->taxName->name.'-'.$data->taxName->percentage.'%';
+                                //     }
+                                // ],
                                 [
                                     'attribute'=>'purchase_rate',
                                     'format'=>'html',

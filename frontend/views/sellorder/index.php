@@ -64,6 +64,23 @@ use kartik\grid\GridViewAsset;
                     }
                 ],
                 [
+                    'attribute' => 'username',
+                    'format' => 'html',
+                    'label' => 'Karigar Name',
+                    'value' => function ($data) {
+                        return $data->user->username;
+                    }
+                ],
+                [
+                    'attribute' => 'mobile_num',
+                    'format' => 'html',
+                    'label' => 'Mobile No.',
+                    'value' => function ($data) {
+                        // echo '<pre>';print_r($data);exit;
+                        return $data->user->mobile_num;
+                    }
+                ],
+                [
                     'attribute' => 'total_discount',
                     'format' => 'html',
                     'label' => 'Total Discount',

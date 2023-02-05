@@ -65,6 +65,17 @@ use kartik\grid\GridViewAsset;
                         }
                     ],
                     [
+                        'attribute' => 'dealer_name',
+                        'format' => 'html',
+                        'label' => 'Dealer Name',
+                    // 'visible'=>function($data){
+                    //     return (User::findOne( $data->orders->parent_id)->role_id==User::DEALER);
+                    // },
+                    'value' => function ($data) {
+                        return isset($data->dealer->dealer_name) ? $data->dealer->dealer_name : "-";
+                    }
+                    ],
+                    [
                         'attribute' => 'total_discount',
                         'format' => 'html',
                         'label' => 'Total Discount',
@@ -96,17 +107,6 @@ use kartik\grid\GridViewAsset;
                             return date('d-m-Y', strtotime($data->created_dt));
                         }
                     ],
-                    [
-                        'attribute' => 'dealer_name',
-                        'format' => 'html',
-                        'label' => 'Dealer Name',
-                    // 'visible'=>function($data){
-                    //     return (User::findOne( $data->orders->parent_id)->role_id==User::DEALER);
-                    // },
-                    'value' => function ($data) {
-                        return isset($data->dealer->dealer_name) ? $data->dealer->dealer_name : "-";
-                    }
-                ],
                 [
                     'attribute' => 'status',
                     'format' => 'html',
@@ -193,6 +193,17 @@ use kartik\grid\GridViewAsset;
                                 }
                             ],
                             [
+                                'attribute' => 'distributor_name',
+                                'format' => 'html',
+                                'label' => 'Distributor Name',
+                            // 'visible'=>function($data){
+                            //     return (User::findOne( $data->orders->parent_id)->role_id==User::DEALER);
+                            // },
+                            'value' => function ($data) {
+                                return isset($data->dealer->distributor->dist_name) ? $data->dealer->distributor->dist_name : (isset($data->distributor->dist_name) ? $data->distributor->dist_name : "-");
+                            }
+                            ],
+                            [
                                 'attribute' => 'total_discount',
                                 'format' => 'html',
                                 'label' => 'Total Discount',
@@ -224,17 +235,6 @@ use kartik\grid\GridViewAsset;
                                     return date('d-m-Y', strtotime($data->created_dt));
                                 }
                             ],
-                            [
-                                'attribute' => 'distributor_name',
-                                'format' => 'html',
-                                'label' => 'Distributor Name',
-                            // 'visible'=>function($data){
-                            //     return (User::findOne( $data->orders->parent_id)->role_id==User::DEALER);
-                            // },
-                            'value' => function ($data) {
-                                return isset($data->dealer->distributor->dist_name) ? $data->dealer->distributor->dist_name : (isset($data->distributor->dist_name) ? $data->distributor->dist_name : "-");
-                            }
-                        ],
                         [
                             'attribute' => 'status',
                             'format' => 'html',
